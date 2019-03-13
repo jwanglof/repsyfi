@@ -1,2 +1,2 @@
 # silver-octo-goggles
-Workout app, try #2
+Exercise app, try #2

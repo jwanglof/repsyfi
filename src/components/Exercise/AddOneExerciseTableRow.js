@@ -4,7 +4,7 @@ import {Button, ButtonGroup, Input} from 'reactstrap';
 import isEmpty from 'lodash/isEmpty';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 
-const AddOneWorkoutTableRow = ({ dayUid, index, setAddWorkoutViewVisible, initialData={} }) => {
+const AddOneExerciseTableRow = ({ dayUid, index, setAddExerciseViewVisible, initialData={} }) => {
   const [error, setError] = useState(null);
   const [submitErrorMessage, setSubmitErrorMessage] = useState(null);
 
@@ -14,11 +14,11 @@ const AddOneWorkoutTableRow = ({ dayUid, index, setAddWorkoutViewVisible, initia
   const [repsValue, setRepsValue] = useState(initialData.reps || "");
 
   if (submitErrorMessage !== null) {
-    return <ErrorAlert errorText={submitErrorMessage} componentName="AddOneWorkoutTableRow"/>;
+    return <ErrorAlert errorText={submitErrorMessage} componentName="AddOneExerciseTableRow"/>;
   }
 
   if (!dayUid) {
-    return <ErrorAlert errorText="Need a day UID to add a workout!" componentName="AddOneWorkoutTableRow"/>;
+    return <ErrorAlert errorText="Need a day UID to add an exercise!" componentName="AddOneExerciseTableRow"/>;
   }
 
   const onSubmit = async () => {
@@ -42,7 +42,7 @@ const AddOneWorkoutTableRow = ({ dayUid, index, setAddWorkoutViewVisible, initia
         <td colSpan={3}>
           <ButtonGroup className="d-flex">
             <Button type="submit" color="success" className="w-100" onClick={onSubmit}>Save set</Button>
-            <Button color="danger" className="w-100" onClick={() => setAddWorkoutViewVisible(false)}>Discard set</Button>
+            <Button color="danger" className="w-100" onClick={() => setAddExerciseViewVisible(false)}>Discard set</Button>
           </ButtonGroup>
         </td>
       </tr>
@@ -50,11 +50,11 @@ const AddOneWorkoutTableRow = ({ dayUid, index, setAddWorkoutViewVisible, initia
   );
 };
 
-AddOneWorkoutTableRow.propTypes = {
+AddOneExerciseTableRow.propTypes = {
   index: PropTypes.number,
   initialData: PropTypes.object,
-  setAddWorkoutViewVisible: PropTypes.func.isRequired,
+  setAddExerciseViewVisible: PropTypes.func.isRequired,
   dayUid: PropTypes.string.isRequired,
 };
 
-export default AddOneWorkoutTableRow;
+export default AddOneExerciseTableRow;

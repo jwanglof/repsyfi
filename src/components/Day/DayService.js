@@ -10,7 +10,7 @@ export const addNewDay = async dayData => {
     muscleGroups: dayData.muscleGroups,
     uid,
     title: dayData.title,
-    workouts: []
+    exercises: []
   });
   return await uid;
 };

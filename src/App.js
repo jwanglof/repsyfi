@@ -4,14 +4,14 @@ import './App.css';
 import AllDays from './components/Day/AllDays';
 import {
   routeNameAddDay,
-  routeNameAddSetToSpecificWorkout,
-  routeNameAddWorkoutToSpecificDay,
+  routeNameAddSetToSpecificExercise,
+  routeNameAddExerciseToSpecificDay,
   routeNameSpecificDay
 } from './routes';
 import Day from './components/Day/Day';
 import AddDay from './components/Day/AddDay';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import AddWorkoutForm from './components/Workout/AddWorkoutForm';
+import AddExerciseForm from './components/Exercise/AddExerciseForm';
 import AddSetForm from './components/Set/AddSetForm';
 
 const App = ({ route }) => {
@@ -25,11 +25,11 @@ const App = ({ route }) => {
     case routeNameAddDay:
       shownComponent = <AddDay/>;
       break;
-    case routeNameAddWorkoutToSpecificDay:
-      shownComponent = <AddWorkoutForm dayUid={route.params.dayUid}/>;
+    case routeNameAddExerciseToSpecificDay:
+      shownComponent = <AddExerciseForm dayUid={route.params.dayUid}/>;
       break;
-    case routeNameAddSetToSpecificWorkout:
-      shownComponent = <AddSetForm workoutUid={route.params.workoutUid}/>;
+    case routeNameAddSetToSpecificExercise:
+      shownComponent = <AddSetForm exerciseUid={route.params.exerciseUid}/>;
       break;
     default:
       shownComponent = <AllDays/>;

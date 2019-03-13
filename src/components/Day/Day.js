@@ -3,21 +3,21 @@ import './Day.scss';
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Button, Col, Collapse, Row} from 'reactstrap';
-import Workout from '../Workout/Workout';
+import Exercise from '../Exercise/Exercise';
 import {getFormattedDate, getTitle} from './DayUtils';
 import {Link, withRoute} from 'react-router5'
 import {fkDayOne, getSpecificDay} from './DayMockData';
 import isEmpty from 'lodash/isEmpty';
 import Loading from '../shared/Loading';
 import classnames from 'classnames';
-import {routeNameAddWorkoutToSpecificDay} from '../../routes';
-import AddWorkoutForm from '../Workout/AddWorkoutForm';
+import {routeNameAddExerciseToSpecificDay} from '../../routes';
+import AddExerciseForm from '../Exercise/AddExerciseForm';
 
 // TODO Add real-time elapsed timer!
 const Day = ({ router, data={}, uid }) => {
   const [collapseIsOpen, setCollapseIsOpen] = useState(!!uid);
   const [currentData, setCurrentData] = useState(data);
-  const [addWorkoutViewVisible, setAddWorkoutViewVisible] = useState(false);
+  const [addExerciseViewVisible, setAddExerciseViewVisible] = useState(false);
 
   useEffect(() => {
     if (!isEmpty(uid)) {
@@ -35,7 +35,7 @@ const Day = ({ router, data={}, uid }) => {
     }
   };
 
-  const gotoAddWorkoutRoute = () => router.navigate(routeNameAddWorkoutToSpecificDay, {dayUid: uid}, {reload: true});
+  const gotoAddExerciseRoute = () => router.navigate(routeNameAddExerciseToSpecificDay, {dayUid: uid}, {reload: true});
 
   const rootClassNames = classnames({'day--border': !uid});
 
@@ -54,19 +54,19 @@ const Day = ({ router, data={}, uid }) => {
           </Col>
         </Row>
 
-        {!isEmpty(uid) && !addWorkoutViewVisible &&
+        {!isEmpty(uid) && !addExerciseViewVisible &&
         <Row className="mb-4">
           <Col xs={12}>
             {/*<Button color="success" block onClick={gotoAddWorkoutRoute}>Add workout</Button>*/}
-            <Button color="success" block onClick={() => setAddWorkoutViewVisible(true)}>Add workout</Button>
+            <Button color="success" block onClick={() => setAddExerciseViewVisible(true)}>Add exercise</Button>
           </Col>
         </Row>}
 
         {/*{addWorkoutViewVisible && <AddOneWorkoutTableRow dayUid={uid} setAddWorkoutViewVisible={setAddWorkoutViewVisible}/>}*/}
-        {addWorkoutViewVisible && <AddWorkoutForm dayUid={uid} setAddWorkoutViewVisible={setAddWorkoutViewVisible}/>}
+        {addExerciseViewVisible && <AddExerciseForm dayUid={uid} setAddExerciseViewVisible={setAddExerciseViewVisible}/>}
 
         <Row>
-          {currentData.workouts.map(({uid}) => <Workout key={uid} workoutUid={uid}/>)}
+          {currentData.exercises.map(({uid}) => <Exercise key={uid} exerciseUid={uid}/>)}
         </Row>
       </Collapse>
 

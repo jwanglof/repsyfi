@@ -15,7 +15,7 @@ export const getFormattedDate = (timestamp, dateFormat = dateFormatWithTime) => 
 };
 
 export const getTitle = (title, startTimestamp) => {
-  // Default title is the date the workout was added
+  // Default title is the date the exercise was added
   if (isEmpty(title)) {
     return getFormattedDate(startTimestamp || 0, dateFormat);
   }
@@ -27,8 +27,8 @@ export const buildInitialFirebaseDayData = data => ({
   location: data.location,
   muscleGroups: data.muscleGroups,
   title: data.title,
-  // These variables will be populated during the workout
-  workouts: [],
-  // These variables will be populated when the workout is done
+  // These variables will be populated during the exercise
+  exercises: [],
+  // These variables will be populated when the exercise is done
   endTimestamp: null,
 });

@@ -4,8 +4,8 @@ import getUnixTime from "date-fns/getUnixTime";
 import take from 'lodash/take';
 import {addNewDay} from './DayService';
 
-export const fkWorkoutOne = "999eeee";
-export const fkWorkoutTwo = "111fffff";
+export const fkExerciseOne = "999eeee";
+export const fkExerciseTwo = "111fffff";
 export const fkDayOne = "1eeee1";
 export const fkDayTwo = "2rrr2";
 
@@ -28,18 +28,18 @@ export const getTwoSet = () => {
   };
 };
 
-export const getWorkoutOne = () => {
+export const getExerciseOne = () => {
   return {
-    uid: fkWorkoutOne,
+    uid: fkExerciseOne,
     exerciseName: "Benchpress",
     sets: [getOneSet(), getTwoSet()],
     feeling: true,
   };
 };
 
-export const getWorkoutTwo = () => {
+export const getExerciseTwo = () => {
   return {
-    uid: fkWorkoutTwo,
+    uid: fkExerciseTwo,
     exerciseName: "D-B Curl",
     sets: [getOneSet(), getTwoSet()],
     feeling: false,
@@ -55,7 +55,7 @@ export const getDayOne = () => {
     muscleGroups: 'Abs, biceps',
     title: null,
     notes: take(gangstaLoremIpsumString, 20),
-    workouts: [getWorkoutOne(), getWorkoutTwo()],
+    exercises: [getExerciseOne(), getExerciseTwo()],
   };
 };
 

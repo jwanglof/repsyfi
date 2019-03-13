@@ -5,9 +5,9 @@ import FieldFormGroup from '../shared/formik/FieldFormGroup';
 import isEmpty from 'lodash/isEmpty';
 import {Form, Formik} from 'formik';
 import YesNoField from '../shared/formik/YesNoField';
-import {addNewWorkout} from './WorkoutService';
+import {addNewExercise} from './ExerciseService';
 
-const AddWorkoutForm = ({ initialValues, dayUid, setAddWorkoutViewVisible }) => {
+const AddExerciseForm = ({ initialValues, dayUid, setAddExerciseViewVisible }) => {
   const [roles, setRoles] = useState([]);
   const [error, setError] = useState('');
   const [submitErrorMessage, setSubmitErrorMessage] = useState(null);
@@ -25,10 +25,10 @@ const AddWorkoutForm = ({ initialValues, dayUid, setAddWorkoutViewVisible }) => 
   const onSubmit = async (values, actions) => {
     setSubmitErrorMessage(null);
     try {
-      console.log('Try to add workout to day!', values, dayUid);
-      const uid = await addNewWorkout(values, dayUid);
-      console.log('workout uid:', uid);
-      setAddWorkoutViewVisible(false);
+      console.log('Try to add exercise to day!', values, dayUid);
+      const uid = await addNewExercise(values, dayUid);
+      console.log('Exercise uid:', uid);
+      setAddExerciseViewVisible(false);
     } catch (e) {
       setSubmitErrorMessage(e.data.message);
     }
@@ -56,8 +56,8 @@ const AddWorkoutForm = ({ initialValues, dayUid, setAddWorkoutViewVisible }) => 
                 <Col xs={12}>
                   <FormGroup>
                     <ButtonGroup className="d-flex">
-                      <Button type="submit" color="success" className="w-100">Save workout</Button>
-                      <Button color="danger" className="w-100" onClick={() => setAddWorkoutViewVisible(false)}>Discard workout</Button>
+                      <Button type="submit" color="success" className="w-100">Save exercise</Button>
+                      <Button color="danger" className="w-100" onClick={() => setAddExerciseViewVisible(false)}>Discard exercise</Button>
                     </ButtonGroup>
                   </FormGroup>
                 </Col>
@@ -70,10 +70,10 @@ const AddWorkoutForm = ({ initialValues, dayUid, setAddWorkoutViewVisible }) => 
   );
 };
 
-AddWorkoutForm.propTypes = {
+AddExerciseForm.propTypes = {
   initialValues: PropTypes.object,
   dayUid: PropTypes.string.isRequired,
-  setAddWorkoutViewVisible: PropTypes.func.isRequired,
+  setAddExerciseViewVisible: PropTypes.func.isRequired,
 };
 
-export default AddWorkoutForm;
+export default AddExerciseForm;

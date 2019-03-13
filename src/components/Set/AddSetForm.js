@@ -5,7 +5,7 @@ import FieldFormGroup from '../shared/formik/FieldFormGroup';
 import isEmpty from 'lodash/isEmpty';
 import {Form, Formik} from 'formik';
 
-const AddSetForm = ({ initialValues, dayUid: workoutUid }) => {
+const AddSetForm = ({ initialValues, exerciseUid }) => {
   const [roles, setRoles] = useState([]);
   const [error, setError] = useState('');
   const [submitErrorMessage, setSubmitErrorMessage] = useState('');
@@ -19,7 +19,7 @@ const AddSetForm = ({ initialValues, dayUid: workoutUid }) => {
   const onSubmit = async (values, actions) => {
     setSubmitErrorMessage('');
     try {
-      console.log('Try to add set to workout!', values, workoutUid);
+      console.log('Try to add set to exercise!', values, exerciseUid);
     } catch (e) {
       setSubmitErrorMessage(e.data.message);
     }
@@ -56,7 +56,7 @@ const AddSetForm = ({ initialValues, dayUid: workoutUid }) => {
 
 AddSetForm.propTypes = {
   initialValues: PropTypes.object,
-  workoutUid: PropTypes.string.isRequired
+  exerciseUid: PropTypes.string.isRequired
 };
 
 export default AddSetForm;

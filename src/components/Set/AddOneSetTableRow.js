@@ -5,7 +5,7 @@ import isEmpty from 'lodash/isEmpty';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {addNewSet} from './SetService';
 
-const AddOneSetTableRow = ({ dayUid, workoutUid, index, setAddSetViewVisible, initialData={} }) => {
+const AddOneSetTableRow = ({ dayUid, exerciseUid, index, setAddSetViewVisible, initialData={} }) => {
   const [error, setError] = useState(null);
   const [submitErrorMessage, setSubmitErrorMessage] = useState(null);
 
@@ -18,8 +18,8 @@ const AddOneSetTableRow = ({ dayUid, workoutUid, index, setAddSetViewVisible, in
     return <ErrorAlert errorText={submitErrorMessage} componentName="AddOneSetTableRow"/>;
   }
 
-  if (!workoutUid || !dayUid) {
-    return <ErrorAlert errorText="Need both a workout UID and a day UID to add a set!" componentName="AddOneSetTableRow"/>;
+  if (!exerciseUid || !dayUid) {
+    return <ErrorAlert errorText="Need both a exercise UID and a day UID to add a set!" componentName="AddOneSetTableRow"/>;
   }
 
   const onSubmit = async () => {
@@ -32,13 +32,13 @@ const AddOneSetTableRow = ({ dayUid, workoutUid, index, setAddSetViewVisible, in
     }
 
     try {
-      console.log('Try to add set to workout!', amountInKgValue, repsValue, workoutUid);
+      console.log('Try to add set to exercise!', amountInKgValue, repsValue, exerciseUid);
       const data = {
         index,
         amountInKg: amountInKgValue,
         reps: repsValue
       };
-      const uid = await addNewSet(data, dayUid, workoutUid);
+      const uid = await addNewSet(data, dayUid, exerciseUid);
       console.log('set uid:', uid);
       setAddSetViewVisible(false);
     } catch (e) {
@@ -75,7 +75,7 @@ AddOneSetTableRow.propTypes = {
   index: PropTypes.number,
   initialData: PropTypes.object,
   setAddSetViewVisible: PropTypes.func.isRequired,
-  workoutUid: PropTypes.string.isRequired,
+  exerciseUid: PropTypes.string.isRequired,
   dayUid: PropTypes.string.isRequired,
 };
 
