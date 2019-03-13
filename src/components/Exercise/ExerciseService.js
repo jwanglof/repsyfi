@@ -1,7 +1,8 @@
 import {allDays} from '../Day/DayMockData';
 import forEach from 'lodash/forEach';
-import find from 'lodash/find';
-import isEmpty from 'lodash/isEmpty';
+import fb from 'config/firebase';
+import cuid from 'cuid';
+import firebase from 'firebase/app';
 
 export const getSpecificExercise = async (exerciseUid) => {
   let exercise = {};
@@ -17,14 +18,13 @@ export const getSpecificExercise = async (exerciseUid) => {
 };
 
 export const addNewExercise = async (exerciseData, dayUid) => {
-  const uid = exerciseData.uid ? exerciseData.uid : Math.floor(Math.random() * 150).toString();
-  console.log("addNewExercise", allDays, exerciseData, dayUid, uid);
-  const day = find(allDays, d => d.uid === dayUid);
-  if (isEmpty(day)) {
-    throw "NOOOO! NO DAY!";
-  }
-  exerciseData.uid = uid;
+  exerciseData.uid = cuid();
   exerciseData.sets = [];
-  day.exercises.push(exerciseData);
-  return await uid;
+  await fb.firestore()
+    .collection("days")
+    .doc(dayUid)
+    .update({
+      exercises: firebase.firestore.FieldValue.arrayUnion(exerciseData)
+    });
+  return await exerciseData.uid;
 };

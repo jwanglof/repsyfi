@@ -27,9 +27,10 @@ const AddExerciseForm = ({ initialValues, dayUid, setAddExerciseViewVisible }) =
     try {
       console.log('Try to add exercise to day!', values, dayUid);
       const uid = await addNewExercise(values, dayUid);
-      console.log('Exercise uid:', uid);
+      console.log('Exercise unique uid:', uid);
       setAddExerciseViewVisible(false);
     } catch (e) {
+      console.log(34444, e);
       setSubmitErrorMessage(e.data.message);
     }
     actions.setSubmitting(false);

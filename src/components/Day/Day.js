@@ -3,15 +3,15 @@ import './Day.scss';
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Button, Col, Collapse, Row} from 'reactstrap';
-import Exercise from '../Exercise/Exercise';
-import {getFormattedDate, getTitle} from './DayUtils';
 import {Link, withRoute} from 'react-router5'
-import {fkDayOne, getSpecificDay} from './DayMockData';
 import isEmpty from 'lodash/isEmpty';
-import Loading from '../shared/Loading';
 import classnames from 'classnames';
-import {routeNameAddExerciseToSpecificDay} from '../../routes';
-import AddExerciseForm from '../Exercise/AddExerciseForm';
+import {routeNameAddExerciseToSpecificDay, routeNameSpecificDay} from 'routes';
+import AddExerciseForm from 'components/Exercise/AddExerciseForm';
+import Loading from 'components/shared/Loading';
+import Exercise from 'components/Exercise/Exercise';
+import {getFormattedDate, getTitle} from 'components/Day/DayUtils';
+import {getSpecificDayFromUid} from 'components/Day/DayService';
 
 // TODO Add real-time elapsed timer!
 const Day = ({ router, data={}, uid }) => {
@@ -21,7 +21,7 @@ const Day = ({ router, data={}, uid }) => {
 
   useEffect(() => {
     if (!isEmpty(uid)) {
-      setCurrentData(getSpecificDay(uid));
+      getSpecificDayFromUid(uid).then(setCurrentData);
     }
   }, []);
 
@@ -35,7 +35,7 @@ const Day = ({ router, data={}, uid }) => {
     }
   };
 
-  const gotoAddExerciseRoute = () => router.navigate(routeNameAddExerciseToSpecificDay, {dayUid: uid}, {reload: true});
+  // const gotoAddExerciseRoute = () => router.navigate(routeNameAddExerciseToSpecificDay, {dayUid: uid}, {reload: true});
 
   const rootClassNames = classnames({'day--border': !uid});
 
@@ -43,7 +43,7 @@ const Day = ({ router, data={}, uid }) => {
     <div className={rootClassNames} onClick={toggle}>
       {isEmpty(uid) && <Row className="text-center">
         <Col xs={12}>
-          <Link routeName="specific-day" routeParams={{ uid: fkDayOne }}>Open link</Link>
+          <Link routeName={routeNameSpecificDay} routeParams={{ uid: data.uid }}>Open link</Link>
         </Col>
       </Row>}
 

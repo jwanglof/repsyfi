@@ -2,15 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {Col, Row} from 'reactstrap';
 import Loading from '../shared/Loading';
 import Day from './Day';
-import {getDays} from './DayMockData';
+import {getAllDays} from './DayService';
 
 const AllDays = () => {
   const [allDays, setAllDays] = useState([]);
 
   useEffect(() => {
-    // setTimeout(() => {
-      setAllDays(getDays());
-    // }, 1500);
+    getAllDays().then(setAllDays);
   }, []);
 
   if (!allDays.length) {

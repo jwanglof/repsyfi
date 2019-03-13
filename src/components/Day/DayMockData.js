@@ -1,8 +1,4 @@
-import subDays from 'date-fns/subDays';
-import addHours from 'date-fns/addHours';
-import getUnixTime from "date-fns/getUnixTime";
 import take from 'lodash/take';
-import {addNewDay} from './DayService';
 
 export const fkExerciseOne = "999eeee";
 export const fkExerciseTwo = "111fffff";
@@ -76,16 +72,16 @@ function pickRandom() {
   return possible[Math.floor(Math.random() * possible.length)];
 }
 
-for(let i = 1, len = 4; i <= len; i++) {
-  const thisDay = {...getDayOne()};
-  const startDate = subDays(new Date(), i);
-  const endDate = addHours(startDate, 1);
-  const nullTitle = 5 > Math.floor(Math.random() * 10) + 1;
-
-  thisDay.startTimestamp = getUnixTime(startDate);
-  thisDay.endTimestamp = getUnixTime(endDate);
-  thisDay.uid = Array.from({ length: stringLength }, pickRandom).join('');
-  thisDay.title =  nullTitle ? null : take(gangstaLoremIpsumString, Math.floor(Math.random() * 7) + 1).join(" ");
-
-  addNewDay(thisDay);
-}
+// for(let i = 1, len = 4; i <= len; i++) {
+//   const thisDay = {...getDayOne()};
+//   const startDate = subDays(new Date(), i);
+//   const endDate = addHours(startDate, 1);
+//   const nullTitle = 5 > Math.floor(Math.random() * 10) + 1;
+//
+//   thisDay.startTimestamp = getUnixTime(startDate);
+//   thisDay.endTimestamp = getUnixTime(endDate);
+//   thisDay.uid = Array.from({ length: stringLength }, pickRandom).join('');
+//   thisDay.title =  nullTitle ? null : take(gangstaLoremIpsumString, Math.floor(Math.random() * 7) + 1).join(" ");
+//
+//   addNewDay(thisDay);
+// }
