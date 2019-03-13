@@ -6,3 +6,11 @@
 .day--border:hover {
   cursor: pointer;
 }
+
+.day--notes {
+  font-style: italic;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}

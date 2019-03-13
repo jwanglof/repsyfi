@@ -1,56 +1,67 @@
-import React, {useState, useEffect, Fragment} from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-import {CardBody, CardText, CardTitle, Col, Row, Table} from 'reactstrap';
+import {Button, ButtonGroup, Col, FormGroup, Row} from 'reactstrap';
 import FieldFormGroup from '../shared/formik/FieldFormGroup';
 import isEmpty from 'lodash/isEmpty';
-import {Form} from 'formik';
+import {Form, Formik} from 'formik';
+import YesNoField from '../shared/formik/YesNoField';
+import {addNewWorkout} from './WorkoutService';
 
-const AddWorkoutForm = ({ initialValues }) => {
+const AddWorkoutForm = ({ initialValues, dayUid, setAddWorkoutViewVisible }) => {
   const [roles, setRoles] = useState([]);
   const [error, setError] = useState('');
-  const [submitErrorMessage, setSubmitErrorMessage] = useState('');
+  const [submitErrorMessage, setSubmitErrorMessage] = useState(null);
 
   const validate = (values) => {
     let errors = {};
+
+    if (isEmpty(values.exerciseName)) {
+      errors.exerciseName = "exerciseName can't be empty"
+    }
 
     return errors;
   };
 
   const onSubmit = async (values, actions) => {
-    setSubmitErrorMessage('');
+    setSubmitErrorMessage(null);
     try {
-      console.log('Try to save!');
+      console.log('Try to add workout to day!', values, dayUid);
+      const uid = await addNewWorkout(values, dayUid);
+      console.log('workout uid:', uid);
+      setAddWorkoutViewVisible(false);
     } catch (e) {
       setSubmitErrorMessage(e.data.message);
     }
     actions.setSubmitting(false);
   };
 
+  const values = {
+    exerciseName: '',
+    feeling: true
+  };
+
   return (
     <Row>
       <Col xs={12}>
         <Formik
-          initialValues={initialValues}
+          initialValues={initialValues ? initialValues : values}
           onSubmit={onSubmit}
           validate={validate}
           render={({ errors, status, touched, isSubmitting }) => (
             <Form>
-              <FieldFormGroup label="email" type="email"/>
-              <FieldFormGroup label="firstname"/>
-              <FieldFormGroup label="lastname"/>
-              <FieldFormGroup label="current_town"/>
-              <FieldFormGroup label="home_town"/>
-              <FieldFormGroup label="uid" disabled/>
-              <FieldFormGroup label="activation_code" disabled/>
+              <FieldFormGroup label="exerciseName"/>
+              <YesNoField label="feeling"/>
 
-              <FormGroup row>
+              <Row>
                 <Col xs={12}>
-                  You don't need to save anything, all your changes are automatically synced!
+                  <FormGroup>
+                    <ButtonGroup className="d-flex">
+                      <Button type="submit" color="success" className="w-100">Save workout</Button>
+                      <Button color="danger" className="w-100" onClick={() => setAddWorkoutViewVisible(false)}>Discard workout</Button>
+                    </ButtonGroup>
+                  </FormGroup>
                 </Col>
-                <Col sm={12}>
-                  <Button type="submit" disabled={isSubmitting || !isEmpty(errors)} block>Delete (!!)</Button>
-                </Col>
-              </FormGroup>
+              </Row>
             </Form>
           )}
         />
@@ -60,7 +71,9 @@ const AddWorkoutForm = ({ initialValues }) => {
 };
 
 AddWorkoutForm.propTypes = {
-  initialValues: PropTypes.object.isRequired
+  initialValues: PropTypes.object,
+  dayUid: PropTypes.string.isRequired,
+  setAddWorkoutViewVisible: PropTypes.func.isRequired,
 };
 
 export default AddWorkoutForm;

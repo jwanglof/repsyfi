@@ -2,7 +2,7 @@ import React from 'react';
 import {Alert, Col, FormGroup, Input, Label} from 'reactstrap';
 import {ErrorMessage, Field} from 'formik';
 import capitalize from 'lodash/capitalize';
-import {colSmSize, labelSmSize} from '../../utils/formik-utils';
+import {colSmSize, labelSmSize} from './formik-utils';
 import PropTypes from 'prop-types';
 
 const FieldFormGroup = ({label, type="text", ...inputProps}) => {

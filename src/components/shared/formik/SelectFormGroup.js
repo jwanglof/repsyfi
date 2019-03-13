@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Alert, Col, FormGroup, Label} from 'reactstrap';
-import {colSmSize, labelSmSize} from '../../utils/formik-utils';
+import {colSmSize, labelSmSize} from './formik-utils';
 import {Select} from 'react-formik-ui';
 import {ErrorMessage} from 'formik';
 import capitalize from 'lodash/capitalize';

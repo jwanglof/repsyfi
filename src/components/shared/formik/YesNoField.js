@@ -5,7 +5,7 @@ import capitalize from 'lodash/capitalize';
 import PropTypes from 'prop-types';
 
 import {Toggle} from 'react-formik-ui'
-import {colSmSize, labelSmSize} from '../../utils/formik-utils';
+import {colSmSize, labelSmSize} from './formik-utils';
 
 const YesNoField = ({label, ...inputProps}) => {
   const disabled = !!inputProps.disabled;

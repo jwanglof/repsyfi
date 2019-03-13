@@ -1,7 +1,7 @@
 import React from 'react';
 import {Col, FormGroup, Input, Label} from 'reactstrap';
 import {Field} from 'formik';
-import {colSmSize, labelSmSize} from '../../utils/formik-utils';
+import {colSmSize, labelSmSize} from './formik-utils';
 import capitalize from 'lodash/capitalize';
 
 const AvailableToFormGroup = () => {
