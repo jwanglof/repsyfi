@@ -4,22 +4,29 @@ import {Button, ButtonGroup, Input} from 'reactstrap';
 import isEmpty from 'lodash/isEmpty';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {addNewSet} from './SetService';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {Link} from 'react-router5';
 
-const AddOneSetTableRow = ({ dayUid, exerciseUid, index, setAddSetViewVisible, initialData={} }) => {
+const AddOneSetTableRow = ({ exerciseUid, index, setAddSetViewVisible, setLastSetUid, initialData={} }) => {
   const [error, setError] = useState(null);
   const [submitErrorMessage, setSubmitErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // TODO Replace these with Formik!!!
   // TODO When Formik is introduced, add validation rules as well!
   const [amountInKgValue, setAmountInKgValue] = useState(initialData.amountInKg || "");
   const [repsValue, setRepsValue] = useState(initialData.reps || "");
 
-  if (submitErrorMessage !== null) {
-    return <ErrorAlert errorText={submitErrorMessage} componentName="AddOneSetTableRow"/>;
+  if (loading) {
+    return <tr><td colSpan={3}><FontAwesomeIcon icon="spinner" spin/></td></tr>;
   }
 
-  if (!exerciseUid || !dayUid) {
-    return <ErrorAlert errorText="Need both a exercise UID and a day UID to add a set!" componentName="AddOneSetTableRow"/>;
+  if (submitErrorMessage !== null) {
+    return <tr><td colSpan={3}><ErrorAlert errorText={submitErrorMessage} componentName="AddOneSetTableRow"/></td></tr>;
+  }
+
+  if (!exerciseUid) {
+    return <tr><td colSpan={3}><ErrorAlert errorText="Need a exercise UID to add a set!" componentName="AddOneSetTableRow"/></td></tr>;
   }
 
   const onSubmit = async () => {
@@ -32,14 +39,18 @@ const AddOneSetTableRow = ({ dayUid, exerciseUid, index, setAddSetViewVisible, i
     }
 
     try {
-      console.log('Try to add set to exercise!', amountInKgValue, repsValue, exerciseUid);
       const data = {
         index,
         amountInKg: amountInKgValue,
         reps: repsValue
       };
-      const uid = await addNewSet(data, dayUid, exerciseUid);
-      console.log('set uid:', uid);
+      console.log('BASSS');
+      setLoading(true);
+      const uid = await addNewSet(data, exerciseUid);
+      setLoading(false);
+      // Set the new last UID for the exercise
+      setLastSetUid(uid);
+      // Hide this form
       setAddSetViewVisible(false);
     } catch (e) {
       console.error(e);
@@ -76,7 +87,7 @@ AddOneSetTableRow.propTypes = {
   initialData: PropTypes.object,
   setAddSetViewVisible: PropTypes.func.isRequired,
   exerciseUid: PropTypes.string.isRequired,
-  dayUid: PropTypes.string.isRequired,
+  setLastSetUid: PropTypes.func.isRequired
 };
 
 export default AddOneSetTableRow;

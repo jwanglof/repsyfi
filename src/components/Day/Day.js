@@ -35,6 +35,8 @@ const Day = ({ router, data={}, uid }) => {
     }
   };
 
+
+  console.log(1122, currentData);
   // const gotoAddExerciseRoute = () => router.navigate(routeNameAddExerciseToSpecificDay, {dayUid: uid}, {reload: true});
 
   const rootClassNames = classnames({'day--border': !uid});
@@ -66,7 +68,7 @@ const Day = ({ router, data={}, uid }) => {
         {addExerciseViewVisible && <AddExerciseForm dayUid={uid} setAddExerciseViewVisible={setAddExerciseViewVisible}/>}
 
         <Row>
-          {currentData.exercises.map(({uid}) => <Exercise key={uid} exerciseUid={uid}/>)}
+          {currentData.exercises.map(exerciseUid => <Exercise key={exerciseUid} exerciseUid={exerciseUid}/>)}
         </Row>
       </Collapse>
 

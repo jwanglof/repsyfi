@@ -1,16 +1,32 @@
-import find from 'lodash/find';
-import toString from 'lodash/toString';
 import isEmpty from 'lodash/isEmpty';
-import {allDays} from '../Day/DayMockData';
+import fb, {FIRESTORE_COLLECTION_EXERCISES, FIRESTORE_COLLECTION_SETS} from 'config/firebase';
+import firebase from 'firebase';
 
-export const addNewSet = async (setData, dayUid, exerciseUid) => {
-  const uid = toString(setData.uid ? setData.uid : Math.floor(Math.random() * 150) + 1);
-  const day = find(allDays, d => d.uid === dayUid);
-  const exercise = find(day.exercises, w => w.uid === exerciseUid);
-  if (isEmpty(exercise)) {
-    throw "NOOOO";
-  }
-  setData.uid = uid;
-  exercise.sets.push(setData);
-  return await uid;
+export const addNewSet = async (setData, exerciseUid) => {
+  const setDocRef = await fb.firestore().collection(FIRESTORE_COLLECTION_SETS).add(setData);
+  const createdSetUid = setDocRef.id;
+  await addSetToExerciseArray(createdSetUid, exerciseUid);
+  return createdSetUid;
+};
+
+export const getSpecificSet = async setUid => {
+  return await fb.firestore()
+    .collection("sets")
+    .doc(setUid)
+    .get()
+    .then(querySnapshot => {
+      console.log(888, setUid, querySnapshot.data());
+      if (!isEmpty(querySnapshot.data())) {
+        return querySnapshot.data();
+      } else {
+        throw "Set data was empty!";
+      }
+    });
+};
+
+const addSetToExerciseArray = async (setUid, exerciseUid) => {
+  return await fb.firestore()
+    .collection(FIRESTORE_COLLECTION_EXERCISES)
+    .doc(exerciseUid)
+    .update({sets: firebase.firestore.FieldValue.arrayUnion(setUid)});
 };

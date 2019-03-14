@@ -11,4 +11,9 @@ var config = {
   messagingSenderId: "475543210600"
 };
 
+// Collection names
+export const FIRESTORE_COLLECTION_EXERCISES = "exercises";
+export const FIRESTORE_COLLECTION_DAYS = "days";
+export const FIRESTORE_COLLECTION_SETS = "sets";
+
 export default firebase.initializeApp(config);
