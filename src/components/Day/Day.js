@@ -6,18 +6,24 @@ import {Button, Col, Collapse, Row} from 'reactstrap';
 import {Link, withRoute} from 'react-router5'
 import isEmpty from 'lodash/isEmpty';
 import classnames from 'classnames';
-import {routeNameAddExerciseToSpecificDay, routeNameSpecificDay} from 'routes';
+import {routeNameRoot, routeNameSpecificDay} from 'routes';
 import AddExerciseForm from 'components/Exercise/AddExerciseForm';
 import Loading from 'components/shared/Loading';
 import Exercise from 'components/Exercise/Exercise';
 import {getFormattedDate, getTitle} from 'components/Day/DayUtils';
 import {getSpecificDayFromUid} from 'components/Day/DayService';
+import firebase, {FIRESTORE_COLLECTION_DAYS} from '../../config/firebase';
+import ButtonGroup from 'reactstrap/es/ButtonGroup';
+import {deleteDay, endDayNow} from './DayService';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
 
 // TODO Add real-time elapsed timer!
 const Day = ({ router, data={}, uid }) => {
   const [collapseIsOpen, setCollapseIsOpen] = useState(!!uid);
   const [currentData, setCurrentData] = useState(data);
   const [addExerciseViewVisible, setAddExerciseViewVisible] = useState(false);
+  const [deleteErrorData, setDeleteErrorData] = useState(null);
+  const [updateErrorData, setUpdateErrorData] = useState(null);
 
   useEffect(() => {
     if (!isEmpty(uid)) {
@@ -25,8 +31,32 @@ const Day = ({ router, data={}, uid }) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (!isEmpty(uid)) {
+      // TODO Need to verify that a user can't send any UID in here, somehow... That should be specified in the rules!
+      const unsub = firebase.firestore()
+        .collection(FIRESTORE_COLLECTION_DAYS)
+        // .where("ownerUid", "==", uid)
+        .doc(uid)
+        .onSnapshot({includeMetadataChanges: true}, doc => {
+          console.log('new doc!!', doc.data());
+          setCurrentData(doc.data());
+        }, err => {
+          console.error('error:', err);
+        });
+
+      return () => {
+        unsub();
+      };
+    }
+  }, []);
+
   if (isEmpty(currentData)) {
     return <Loading componentName="Day"/>;
+  }
+
+  if (deleteErrorData !== null || updateErrorData !== null) {
+    return <ErrorAlert errorText={deleteErrorData || updateErrorData} componentName="Day" uid={uid}/>
   }
 
   const toggle = () => {
@@ -35,8 +65,23 @@ const Day = ({ router, data={}, uid }) => {
     }
   };
 
+  const dayEnd = async () => {
+    try {
+      await endDayNow(uid);
+    } catch (e) {
+      setUpdateErrorData(e);
+    }
+  };
 
-  console.log(1122, currentData);
+  const dayDelete = async () => {
+    try {
+      await deleteDay(uid);
+      router.navigate(routeNameRoot, {}, {reload: true});
+    } catch (e) {
+      setDeleteErrorData(e);
+    }
+  };
+
   // const gotoAddExerciseRoute = () => router.navigate(routeNameAddExerciseToSpecificDay, {dayUid: uid}, {reload: true});
 
   const rootClassNames = classnames({'day--border': !uid});
@@ -50,16 +95,9 @@ const Day = ({ router, data={}, uid }) => {
       </Row>}
 
       <Collapse isOpen={collapseIsOpen}>
-        <Row className="mt-2">
-          <Col xs={12} className="text-center">
-            <h1>Day {uid && `(${uid})`}</h1>
-          </Col>
-        </Row>
-
         {!isEmpty(uid) && !addExerciseViewVisible &&
-        <Row className="mb-4">
+        <Row className="mb-4 mt-2">
           <Col xs={12}>
-            {/*<Button color="success" block onClick={gotoAddWorkoutRoute}>Add workout</Button>*/}
             <Button color="success" block onClick={() => setAddExerciseViewVisible(true)}>Add exercise</Button>
           </Col>
         </Row>}
@@ -68,7 +106,7 @@ const Day = ({ router, data={}, uid }) => {
         {addExerciseViewVisible && <AddExerciseForm dayUid={uid} setAddExerciseViewVisible={setAddExerciseViewVisible}/>}
 
         <Row>
-          {currentData.exercises.map(exerciseUid => <Exercise key={exerciseUid} exerciseUid={exerciseUid}/>)}
+          {currentData.exercises.map(exerciseUid => <Exercise key={exerciseUid} exerciseUid={exerciseUid} singleDayView={!isEmpty(uid)}/>)}
         </Row>
       </Collapse>
 
@@ -85,6 +123,13 @@ const Day = ({ router, data={}, uid }) => {
           <div>Fr.o.m. {getFormattedDate(currentData.startTimestamp)}</div>
           <div>T.o.m. {getFormattedDate(currentData.endTimestamp)}</div>
         </Col>
+        {!isEmpty(uid) && <Col xs={12}>
+          <ButtonGroup className="w-100">
+            <Button color="info">Edit</Button>
+            <Button disabled={!!currentData.endTimestamp} onClick={dayEnd}>End day</Button>
+            <Button color="danger" onClick={dayDelete}>Delete</Button>
+          </ButtonGroup>
+        </Col>}
       </Row>
 
       {isEmpty(uid) && <Row className="text-center">

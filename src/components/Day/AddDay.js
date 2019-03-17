@@ -34,11 +34,11 @@ const AddDay = ({ router }) => {
       try {
         const startTimestamp = getUnixTime(parseISO(`${values.startDate}T${values.startTime}`));
         const dayData = buildInitialFirebaseDayData({...values, startTimestamp});
-        // TODO Replace with await!
         const newUid = await addNewDay(dayData);
         console.log('new uid:', newUid);
         router.navigate(routeNameSpecificDay, {uid: newUid}, {reload: true});
       } catch (e) {
+        console.log(e);
         setSubmitErrorMessage(e.data.message);
       }
       actions.setSubmitting(false);

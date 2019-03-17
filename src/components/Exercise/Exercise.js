@@ -13,7 +13,7 @@ import isString from 'lodash/isString';
 import ErrorAlert from 'components/ErrorAlert/ErrorAlert';
 import cloneDeep from 'lodash/cloneDeep';
 
-const Exercise = ({ router, exerciseUid }) => {
+const Exercise = ({ router, exerciseUid, singleDayView=false }) => {
   const lgSize = 6;
   const xsSize = 12;
 
@@ -92,7 +92,6 @@ const Exercise = ({ router, exerciseUid }) => {
           <tbody>
           {currentExerciseData.sets.map((setUid, i) => {
             if ((i + 1 ) === currentExerciseData.sets.length) {
-              console.log("LAST!");
               // Pass the setter for the last set to the last set
               return <OneSetTableRow key={setUid} setUid={setUid} disabled={addSetViewVisible} setLastSetData={setLastSetData}/>;
             }
@@ -101,11 +100,11 @@ const Exercise = ({ router, exerciseUid }) => {
           {addSetViewVisible && <AddOneSetTableRow exerciseUid={currentExerciseData.uid} index={currentExerciseData.sets.length + 1} setAddSetViewVisible={setAddSetViewVisible} initialData={getLastSetData()} setLastSetUid={setLastSetUid}/>}
           </tbody>
           <tfoot>
-          <tr>
+          {singleDayView && !addSetViewVisible && <tr>
             <td colSpan={3}>
-              {!addSetViewVisible && <Button color="success" block onClick={() => setAddSetViewVisible(!addSetViewVisible)}>Add set</Button>}
+              <Button color="success" block onClick={() => setAddSetViewVisible(!addSetViewVisible)}>Add set</Button>
             </td>
-          </tr>
+          </tr>}
           <tr>
             <td className="text-center text-muted exercise--edit-text" colSpan={3}>
               Click on a set for different actions
@@ -119,7 +118,8 @@ const Exercise = ({ router, exerciseUid }) => {
 };
 
 Exercise.propTypes = {
-  exerciseUid: PropTypes.string.isRequired
+  exerciseUid: PropTypes.string.isRequired,
+  singleDayView: PropTypes.bool
 };
 
 export default withRoute(Exercise);

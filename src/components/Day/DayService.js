@@ -1,46 +1,37 @@
-import toString from 'lodash/toString';
-import {allDays} from './DayMockData';
-import firebase from '../../config/firebase';
+import firebase, {FIRESTORE_COLLECTION_DAYS, getCurrentUsersUid} from '../../config/firebase';
 import subDays from 'date-fns/subDays';
 import getUnixTime from 'date-fns/getUnixTime';
+import {deleteExercise} from '../Exercise/ExerciseService';
 
 export const addNewDay = async dayData => {
-  const uid = toString(dayData.uid ? dayData.uid : Math.floor(Math.random() * 15) + 1);
-  allDays.push({
-    startTimestamp: dayData.startTimestamp,
-    endTimestamp: dayData.endTimestamp,
-    location: dayData.location,
-    muscleGroups: dayData.muscleGroups,
-    uid,
-    title: dayData.title,
-    exercises: []
-  });
-  return await uid;
+  dayData.ownerUid = await getCurrentUsersUid();
+  dayData.created = Math.ceil(Date.now() / 1000);
+  const dayDocRef = await firebase.firestore()
+    .collection(FIRESTORE_COLLECTION_DAYS)
+    .add(dayData);
+  return dayDocRef.id;
 };
 
 export const getAllDays = async () => {
-  const days = [];
   const sub10DaysTimestamp = getUnixTime(subDays(new Date(), 10));
+  const ownerUid = await getCurrentUsersUid();
   return firebase.firestore()
-    .collection("days")
+    .collection(FIRESTORE_COLLECTION_DAYS)
     .where("startTimestamp", ">=", sub10DaysTimestamp)
+    .where("ownerUid", "==", ownerUid)
     .get()
     .then(querySnapshot => {
+      const days = [];
       querySnapshot.forEach(a => {
-        console.log(555, a.data(), a.id);
         days.push({...a.data(), uid: a.id});
       });
-      console.log(1112, days);
       return days;
-    })
-    .catch(err => {
-      console.error(err);
     });
 };
 
 export const getSpecificDayFromUid = async uid => {
   return firebase.firestore()
-    .collection("days")
+    .collection(FIRESTORE_COLLECTION_DAYS)
     .doc(uid)
     .get()
     .then(querySnapshot => {
@@ -48,5 +39,26 @@ export const getSpecificDayFromUid = async uid => {
     })
     .catch(err => {
       console.error(err);
+    });
+};
+
+export const deleteDay = async dayUid => {
+  const dayData = await getSpecificDayFromUid(dayUid);
+  // Remove all exercises that exist on the day
+  if (dayData.exercises.length) {
+    await Promise.all(dayData.exercises.map(exerciseUid => deleteExercise(exerciseUid)));
+  }
+  return await firebase.firestore()
+    .collection(FIRESTORE_COLLECTION_DAYS)
+    .doc(dayUid)
+    .delete();
+};
+
+export const endDayNow = async dayUid => {
+  return await firebase.firestore()
+    .collection(FIRESTORE_COLLECTION_DAYS)
+    .doc(dayUid)
+    .update({
+      endTimestamp: Math.ceil(Date.now() / 1000)
     });
 };

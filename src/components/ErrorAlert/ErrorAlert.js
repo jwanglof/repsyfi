@@ -5,7 +5,9 @@ import {Alert} from 'reactstrap';
 const ErrorAlert = ({errorText, componentName=null, uid=null}) => (<Alert color="danger">{errorText} {componentName && `(from component: ${componentName})`} {uid && `(uid: ${uid})`}</Alert>);
 
 ErrorAlert.propTypes = {
-  errorText: PropTypes.string.isRequired
+  errorText: PropTypes.string.isRequired,
+  componentName: PropTypes.string,
+  uid: PropTypes.string
 };
 
 export default ErrorAlert;

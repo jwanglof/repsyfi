@@ -43,8 +43,6 @@ const OneSetTableRow = ({ setUid, disabled, setLastSetData }) => {
     return <tr><td colSpan={3}><Loading componentName="OneSet"/></td></tr>;
   }
 
-  console.log(45554, setUid, currentData);
-
   const classNames = classnames({
     "one-set--muted": disabled
   });

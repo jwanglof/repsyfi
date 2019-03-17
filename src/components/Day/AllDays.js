@@ -3,16 +3,22 @@ import {Col, Row} from 'reactstrap';
 import Loading from '../shared/Loading';
 import Day from './Day';
 import {getAllDays} from './DayService';
+import EmptyCollection from '../EmptyCollection/EmptyCollection';
+import {FIRESTORE_COLLECTION_DAYS} from '../../config/firebase';
 
 const AllDays = () => {
-  const [allDays, setAllDays] = useState([]);
+  const [allDays, setAllDays] = useState(null);
 
   useEffect(() => {
     getAllDays().then(setAllDays);
   }, []);
 
+  if (allDays === null) {
+    return <Loading componentName="AllDays"/>;
+  }
+
   if (!allDays.length) {
-    return <Loading componentName="days"/>;
+    return <EmptyCollection componentName="AllDays" collectionName={FIRESTORE_COLLECTION_DAYS}/>
   }
 
   return (
