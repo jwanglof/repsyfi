@@ -7,7 +7,6 @@ import {
   routeNameAddExerciseToSpecificDay,
   routeNameAddSetToSpecificExercise,
   routeNameAllDays,
-  routeNameAuthGoogleRedirect,
   routeNameSpecificDay
 } from './routes';
 import Day from './components/Day/Day';
@@ -87,7 +86,7 @@ const App = ({ route }) => {
         shownComponent = <AllDays/>;
         break;
       default:
-        shownComponent = <div>This is where you'll see your dashboard with some stats. Because everyone loves stats, right? 😉</div>;
+        shownComponent = <div>This is where you'll see your dashboard with some stats. Because everyone loves stats, right? <span role="img" aria-label="" aria-labelledby="">😉</span></div>;
     }
   }
 
@@ -102,3 +101,4 @@ const App = ({ route }) => {
 };
 
 export default routeNode('')(App);
+

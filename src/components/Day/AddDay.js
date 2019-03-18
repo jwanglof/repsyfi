@@ -17,7 +17,7 @@ import {routeNameSpecificDay} from '../../routes';
 
 const AddDay = ({ router }) => {
   // const [roles, setRoles] = useState([]);
-  const [error, setError] = useState('');
+  // const [error, setError] = useState('');
   const [submitErrorMessage, setSubmitErrorMessage] = useState(null);
 
   if (submitErrorMessage !== null) {

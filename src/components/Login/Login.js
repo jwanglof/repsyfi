@@ -1,10 +1,10 @@
 import React from 'react';
-import {Button, Col, Row} from 'reactstrap';
+import {Col, Row} from 'reactstrap';
 import firebase from '../../config/firebase';
 
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
-const Login = ({}) => {
+const Login = () => {
   firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
   const uiConfig = {
     signInFlow: 'redirect',

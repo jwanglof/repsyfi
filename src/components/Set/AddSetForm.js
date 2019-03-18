@@ -4,11 +4,16 @@ import {Button, Col, FormGroup, Row} from 'reactstrap';
 import FieldFormGroup from '../shared/formik/FieldFormGroup';
 import isEmpty from 'lodash/isEmpty';
 import {Form, Formik} from 'formik';
+import Error from '../shared/Error';
 
 const AddSetForm = ({ initialValues, exerciseUid }) => {
-  const [roles, setRoles] = useState([]);
-  const [error, setError] = useState('');
+  // const [roles, setRoles] = useState([]);
+  // const [error, setError] = useState('');
   const [submitErrorMessage, setSubmitErrorMessage] = useState('');
+
+  if (submitErrorMessage !== null) {
+    return <Error componentName="AddSetForm"/>;
+  }
 
   const validate = (values) => {
     let errors = {};
