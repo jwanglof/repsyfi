@@ -2,6 +2,10 @@
   "name": "silver-octo-goggles",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "10.10.0",
+    "npm": "6.8.0"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "1.2.15",
     "@fortawesome/free-solid-svg-icons": "5.7.2",
