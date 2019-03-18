@@ -2,20 +2,18 @@ import './Day.scss';
 
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {Button, Col, Collapse, Row} from 'reactstrap';
-import {Link, withRoute} from 'react-router5'
+import {Button, ButtonGroup, Col, Collapse, Row} from 'reactstrap';
+import {withRoute} from 'react-router5'
 import isEmpty from 'lodash/isEmpty';
 import classnames from 'classnames';
-import {routeNameRoot, routeNameSpecificDay} from 'routes';
-import AddExerciseForm from 'components/Exercise/AddExerciseForm';
-import Loading from 'components/shared/Loading';
-import Exercise from 'components/Exercise/Exercise';
-import {getFormattedDate, getTitle} from 'components/Day/DayUtils';
-import {getSpecificDayFromUid} from 'components/Day/DayService';
+import {deleteDay, endDayNow, getSpecificDayFromUid} from './DayService';
 import firebase, {FIRESTORE_COLLECTION_DAYS} from '../../config/firebase';
-import ButtonGroup from 'reactstrap/es/ButtonGroup';
-import {deleteDay, endDayNow} from './DayService';
+import Loading from '../shared/Loading';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
+import {routeNameRoot, routeNameSpecificDay} from '../../routes';
+import {getFormattedDate, getTitle} from './DayUtils';
+import AddExerciseForm from '../Exercise/AddExerciseForm';
+import Exercise from '../Exercise/Exercise';
 
 // TODO Add real-time elapsed timer!
 const Day = ({ router, data={}, uid }) => {
@@ -82,6 +80,10 @@ const Day = ({ router, data={}, uid }) => {
     }
   };
 
+  const openDetailedView = () => {
+    router.navigate(routeNameSpecificDay, { uid: currentData.uid }, {reload: true});
+  };
+
   // const gotoAddExerciseRoute = () => router.navigate(routeNameAddExerciseToSpecificDay, {dayUid: uid}, {reload: true});
 
   const rootClassNames = classnames({'day--border': !uid});
@@ -90,7 +92,8 @@ const Day = ({ router, data={}, uid }) => {
     <div className={rootClassNames} onClick={toggle}>
       {isEmpty(uid) && <Row className="text-center">
         <Col xs={12}>
-          <Link routeName={routeNameSpecificDay} routeParams={{ uid: data.uid }}>Open link</Link>
+          {/*<Link routeName={routeNameSpecificDay} routeParams={{ uid: currentData.uid }}>Open detailed view</Link>*/}
+          <Button block size="sm" onClick={openDetailedView}>Open detailed view</Button>
         </Col>
       </Row>}
 

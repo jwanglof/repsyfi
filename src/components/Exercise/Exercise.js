@@ -1,6 +1,6 @@
 import './Exercise.scss';
 
-import React, {useEffect, useState, createContext} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Card, CardHeader, Col, Table} from 'reactstrap';
 import OneSetTableRow from '../Set/OneSetTableRow';
 import {withRoute} from 'react-router5';
@@ -22,8 +22,6 @@ const Exercise = ({ router, exerciseUid, singleDayView=false }) => {
   const [fetchDataError, setFetchDataError] = useState(null);
   const [lastSetData, setLastSetData] = useState({});
   const [lastSetUid, setLastSetUid] = useState(null);
-
-  const dayUid = router.getState().params.uid;
 
   useEffect(() => {
     const fetchExerciseData = async () => {
@@ -81,7 +79,7 @@ const Exercise = ({ router, exerciseUid, singleDayView=false }) => {
         <CardHeader className="text-center pt-0 pb-0">
           <h1 className="exercise--title">{currentExerciseData.exerciseName}</h1>
         </CardHeader>
-        <Table striped hover size="sm" className="mb-0">
+        <Table striped hover={singleDayView} size="sm" className="mb-0">
           <thead>
           <tr>
             <th style={{width: "10%"}}>#</th>

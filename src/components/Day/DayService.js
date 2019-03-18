@@ -1,6 +1,6 @@
-import firebase, {FIRESTORE_COLLECTION_DAYS, getCurrentUsersUid} from '../../config/firebase';
 import subDays from 'date-fns/subDays';
 import getUnixTime from 'date-fns/getUnixTime';
+import firebase, {FIRESTORE_COLLECTION_DAYS, getCurrentUsersUid} from '../../config/firebase';
 import {deleteExercise} from '../Exercise/ExerciseService';
 
 export const addNewDay = async dayData => {
