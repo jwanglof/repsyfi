@@ -12,8 +12,11 @@ import Loading from '../shared/Loading';
 import isString from 'lodash/isString';
 import cloneDeep from 'lodash/cloneDeep';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
+import {useTranslation} from 'react-i18next';
 
 const Exercise = ({ router, exerciseUid, singleDayView=false }) => {
+  const { t } = useTranslation();
+
   const lgSize = 6;
   const xsSize = 12;
 
@@ -72,7 +75,6 @@ const Exercise = ({ router, exerciseUid, singleDayView=false }) => {
     };
   };
 
-
   return (
     <Col lg={lgSize} xs={xsSize}>
       <Card>
@@ -83,8 +85,8 @@ const Exercise = ({ router, exerciseUid, singleDayView=false }) => {
           <thead>
           <tr>
             <th style={{width: "10%"}}>#</th>
-            <th style={{width: "45%"}}>Amount (KG)</th>
-            <th style={{width: "45%"}}>Repetitions</th>
+            <th style={{width: "45%"}}>{t("Amount in KG")}</th>
+            <th style={{width: "45%"}}>{t("Repetitions")}</th>
           </tr>
           </thead>
           <tbody>
@@ -100,12 +102,12 @@ const Exercise = ({ router, exerciseUid, singleDayView=false }) => {
           <tfoot>
           {singleDayView && !addSetViewVisible && <tr>
             <td colSpan={3}>
-              <Button color="success" block onClick={() => setAddSetViewVisible(!addSetViewVisible)}>Add set</Button>
+              <Button color="success" block onClick={() => setAddSetViewVisible(!addSetViewVisible)}>{t("Add set")}</Button>
             </td>
           </tr>}
           <tr>
             <td className="text-center text-muted exercise--edit-text" colSpan={3}>
-              Click on a set for different actions
+              {t("Click on a set for different actions")}
             </td>
           </tr>
           </tfoot>

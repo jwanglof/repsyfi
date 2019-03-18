@@ -5,8 +5,11 @@ import Day from './Day';
 import {getAllDays} from './DayService';
 import EmptyCollection from '../EmptyCollection/EmptyCollection';
 import {FIRESTORE_COLLECTION_DAYS} from '../../config/firebase';
+import {useTranslation} from 'react-i18next';
 
 const AllDays = () => {
+  const { t } = useTranslation();
+
   const [allDays, setAllDays] = useState(null);
 
   useEffect(() => {
@@ -24,7 +27,7 @@ const AllDays = () => {
   return (
     <Row>
       <Col xs={12}>
-        <h1>All days</h1>
+        <h1>{t('All days')}</h1>
       </Col>
       <Col xs={12}>
         {allDays.map(d => <Day key={d.uid} data={d}/>)}

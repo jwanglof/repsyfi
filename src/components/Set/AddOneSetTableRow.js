@@ -4,10 +4,12 @@ import {Button, ButtonGroup, Input} from 'reactstrap';
 import isEmpty from 'lodash/isEmpty';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {addNewSet} from './SetService';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {Link} from 'react-router5';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {useTranslation} from 'react-i18next';
 
 const AddOneSetTableRow = ({ exerciseUid, index, setAddSetViewVisible, setLastSetUid, initialData={} }) => {
+  const { t } = useTranslation();
+
   const [error, setError] = useState(null);
   const [submitErrorMessage, setSubmitErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -64,17 +66,17 @@ const AddOneSetTableRow = ({ exerciseUid, index, setAddSetViewVisible, setLastSe
       <tr>
         <th className="align-middle" scope="row">{index || initialData.index}</th>
         <td>
-          <Input type="number" name="amountInKg" id="amountInKg" placeholder="Amount in KG" value={amountInKgValue} onChange={({target: {value}}) => setAmountInKgValue(value)}/>
+          <Input type="number" name="amountInKg" id="amountInKg" placeholder={t("Amount in KG")} value={amountInKgValue} onChange={({target: {value}}) => setAmountInKgValue(value)}/>
         </td>
         <td>
-          <Input type="number" name="reps" id="reps" placeholder="Repetitions" value={repsValue} onChange={({target: {value}}) => setRepsValue(value)}/>
+          <Input type="number" name="reps" id="reps" placeholder={t("Repetitions")} value={repsValue} onChange={({target: {value}}) => setRepsValue(value)}/>
         </td>
       </tr>
       <tr>
         <td colSpan={3}>
           <ButtonGroup className="d-flex">
-            <Button type="submit" color="success" className="w-100" onClick={onSubmit}>Save set</Button>
-            <Button color="danger" className="w-100" onClick={() => setAddSetViewVisible(false)}>Discard set</Button>
+            <Button type="submit" color="success" className="w-100" onClick={onSubmit}>{t("Save set")}</Button>
+            <Button color="danger" className="w-100" onClick={() => setAddSetViewVisible(false)}>{t("Discard set")}</Button>
           </ButtonGroup>
         </td>
       </tr>

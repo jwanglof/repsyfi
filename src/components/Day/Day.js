@@ -14,9 +14,12 @@ import {routeNameRoot, routeNameSpecificDay} from '../../routes';
 import {getFormattedDate, getTitle} from './DayUtils';
 import AddExerciseForm from '../Exercise/AddExerciseForm';
 import Exercise from '../Exercise/Exercise';
+import {useTranslation} from 'react-i18next';
 
 // TODO Add real-time elapsed timer!
 const Day = ({ router, data={}, uid }) => {
+  const { t } = useTranslation();
+
   const [collapseIsOpen, setCollapseIsOpen] = useState(!!uid);
   const [currentData, setCurrentData] = useState(data);
   const [addExerciseViewVisible, setAddExerciseViewVisible] = useState(false);
@@ -93,7 +96,7 @@ const Day = ({ router, data={}, uid }) => {
       {isEmpty(uid) && <Row className="text-center">
         <Col xs={12}>
           {/*<Link routeName={routeNameSpecificDay} routeParams={{ uid: currentData.uid }}>Open detailed view</Link>*/}
-          <Button block size="sm" onClick={openDetailedView}>Open detailed view</Button>
+          <Button block size="sm" onClick={openDetailedView}>{t("Open detailed view")}</Button>
         </Col>
       </Row>}
 
@@ -101,7 +104,7 @@ const Day = ({ router, data={}, uid }) => {
         {!isEmpty(uid) && !addExerciseViewVisible &&
         <Row className="mb-4 mt-2">
           <Col xs={12}>
-            <Button color="success" block onClick={() => setAddExerciseViewVisible(true)}>Add exercise</Button>
+            <Button color="success" block onClick={() => setAddExerciseViewVisible(true)}>{t("Add exercise")}</Button>
           </Col>
         </Row>}
 
@@ -115,29 +118,29 @@ const Day = ({ router, data={}, uid }) => {
 
       <Row onClick={toggle}>
         <Col className="text-lg-right text-center" lg={3} xs={12}>
-          <div>Location: {currentData.location}</div>
-          <div>Muscle groups: {currentData.muscleGroups}</div>
+          <div>{t("Location")}: {currentData.location}</div>
+          <div>{t("Muscle groups")}: {currentData.muscleGroups}</div>
         </Col>
         <Col className="text-center" lg={6} xs={12}>
           <h2 className="mb-0">{getTitle(currentData.title || null, currentData.startTimestamp)}</h2>
           <div className="day--notes">{currentData.notes}</div>
         </Col>
         <Col className="text-lg-left text-center" lg={3} xs={12}>
-          <div>Fr.o.m. {getFormattedDate(currentData.startTimestamp)}</div>
-          <div>T.o.m. {getFormattedDate(currentData.endTimestamp)}</div>
+          <div>{t("Start time")} {getFormattedDate(currentData.startTimestamp)}</div>
+          <div>{t("End time")} {getFormattedDate(currentData.endTimestamp)}</div>
         </Col>
         {!isEmpty(uid) && <Col xs={12}>
           <ButtonGroup className="w-100">
-            <Button color="info">Edit</Button>
-            <Button disabled={!!currentData.endTimestamp} onClick={dayEnd}>End day</Button>
-            <Button color="danger" onClick={dayDelete}>Delete</Button>
+            <Button color="info">{t("Edit")}</Button>
+            <Button disabled={!!currentData.endTimestamp} onClick={dayEnd}>{t("End day")}</Button>
+            <Button color="danger" onClick={dayDelete}>{t("Delete")}</Button>
           </ButtonGroup>
         </Col>}
       </Row>
 
       {isEmpty(uid) && <Row className="text-center">
         <Col xs={12}>
-          Click to {collapseIsOpen ? 'collapse': 'expand'}
+          {t("Click to")} {collapseIsOpen ? t("collapse"): t("expand")}
         </Col>
       </Row>}
     </div>

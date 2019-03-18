@@ -4,8 +4,11 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {withRoute} from 'react-router5';
 import firebase from '../../config/firebase';
 import {Button} from 'reactstrap';
+import {useTranslation} from 'react-i18next';
 
 const Logout = ({ router }) => {
+  const { t } = useTranslation();
+
   const signOut = () => {
     firebase.auth().signOut().then(function() {
       // Sign-out successful.
@@ -19,7 +22,7 @@ const Logout = ({ router }) => {
 
   return <Button block onClick={signOut}>
     <FontAwesomeIcon icon="sign-out-alt"/>
-    <span className="ml-1">Sign out</span>
+    <span className="ml-1">{t("Sign out")}</span>
   </Button>;
 };
 

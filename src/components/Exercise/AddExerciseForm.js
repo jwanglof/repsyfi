@@ -6,11 +6,17 @@ import isEmpty from 'lodash/isEmpty';
 import {Form, Formik} from 'formik';
 import YesNoField from '../shared/formik/YesNoField';
 import {addNewExercise} from './ExerciseService';
+import {useTranslation} from 'react-i18next';
+import Error from '../shared/Error';
 
 const AddExerciseForm = ({ initialValues, dayUid, setAddExerciseViewVisible }) => {
-  const [roles, setRoles] = useState([]);
-  const [error, setError] = useState('');
+  const { t } = useTranslation();
+
   const [submitErrorMessage, setSubmitErrorMessage] = useState(null);
+
+  if (submitErrorMessage !== null) {
+    return <Error componentName="AddExerciseForm"/>;
+  }
 
   const validate = (values) => {
     let errors = {};
@@ -48,7 +54,8 @@ const AddExerciseForm = ({ initialValues, dayUid, setAddExerciseViewVisible }) =
           initialValues={initialValues ? initialValues : values}
           onSubmit={onSubmit}
           validate={validate}
-          render={({ errors, status, touched, isSubmitting }) => (
+          // render={({ errors, status, touched, isSubmitting }) => (
+          render={() => (
             <Form>
               <FieldFormGroup label="exerciseName"/>
               <YesNoField label="feeling"/>
@@ -57,8 +64,8 @@ const AddExerciseForm = ({ initialValues, dayUid, setAddExerciseViewVisible }) =
                 <Col xs={12}>
                   <FormGroup>
                     <ButtonGroup className="d-flex">
-                      <Button type="submit" color="success" className="w-100">Save exercise</Button>
-                      <Button color="danger" className="w-100" onClick={() => setAddExerciseViewVisible(false)}>Discard exercise</Button>
+                      <Button type="submit" color="success" className="w-100">{t("Save exercise")}</Button>
+                      <Button color="danger" className="w-100" onClick={() => setAddExerciseViewVisible(false)}>{t("Discard exercise")}</Button>
                     </ButtonGroup>
                   </FormGroup>
                 </Col>
