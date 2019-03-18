@@ -1,5 +1,5 @@
 import isEmpty from 'lodash/isEmpty';
-import firebase, {FIRESTORE_COLLECTION_DAYS, FIRESTORE_COLLECTION_EXERCISES, getCurrentUsersUid} from 'config/firebase';
+import firebase, {FIRESTORE_COLLECTION_DAYS, FIRESTORE_COLLECTION_EXERCISES, getCurrentUsersUid} from '../../config/firebase';
 import {deleteSet} from '../Set/SetService';
 
 export const getSpecificExercise = async exerciseUid => {

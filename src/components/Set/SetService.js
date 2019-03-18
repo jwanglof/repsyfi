@@ -3,7 +3,7 @@ import firebase, {
   FIRESTORE_COLLECTION_EXERCISES,
   FIRESTORE_COLLECTION_SETS,
   getCurrentUsersUid
-} from 'config/firebase';
+} from '../../config/firebase';
 
 export const addNewSet = async (setData, exerciseUid) => {
   setData.ownerUid = await getCurrentUsersUid();

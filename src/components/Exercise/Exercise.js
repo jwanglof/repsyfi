@@ -10,8 +10,8 @@ import {getSpecificExercise} from './ExerciseService';
 import isEmpty from 'lodash/isEmpty';
 import Loading from '../shared/Loading';
 import isString from 'lodash/isString';
-import ErrorAlert from 'components/ErrorAlert/ErrorAlert';
 import cloneDeep from 'lodash/cloneDeep';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
 
 const Exercise = ({ router, exerciseUid, singleDayView=false }) => {
   const lgSize = 6;

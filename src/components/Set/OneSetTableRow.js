@@ -3,13 +3,11 @@ import "./OneSet.scss";
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import {getSpecificExercise} from 'components/Exercise/ExerciseService';
 import isString from 'lodash/isString';
-import {getSpecificSet} from 'components/Set/SetService';
-import {Col} from 'reactstrap';
-import ErrorAlert from 'components/ErrorAlert/ErrorAlert';
 import isEmpty from 'lodash/isEmpty';
-import Loading from 'components/shared/Loading';
+import {getSpecificSet} from './SetService';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
+import Loading from '../shared/Loading';
 
 const OneSetTableRow = ({ setUid, disabled, setLastSetData }) => {
   const [currentData, setCurrentData] = useState({});
