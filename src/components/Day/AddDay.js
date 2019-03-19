@@ -47,27 +47,27 @@ const AddDay = ({ router }) => {
 
   const nowDate = format(new Date(), dateFormat);
 
-  // const initialValues = {
-  //   location: '',
-  //   muscleGroups: '',
-  //   title: nowDate,
-  //   startTime: format(new Date(), timeFormat),
-  //   startDate: nowDate,
-  // };
-  const preInitialValues = {
-    location: 'Kontoret',
-    muscleGroups: 'Abs, legs',
+  const initialValues = {
+    location: '',
+    muscleGroups: '',
     title: nowDate,
     startTime: format(new Date(), timeFormat),
     startDate: nowDate,
   };
+  // const preInitialValues = {
+  //   location: 'Kontoret',
+  //   muscleGroups: 'Abs, legs',
+  //   title: nowDate,
+  //   startTime: format(new Date(), timeFormat),
+  //   startDate: nowDate,
+  // };
 
   return (
     <Row>
       <Col xs={12}>
         <h1>Add day</h1>
         <Formik
-          initialValues={preInitialValues}
+          initialValues={initialValues}
           onSubmit={onSubmit}
           render={({ errors, status, touched, isSubmitting }) => (
             <Form>
