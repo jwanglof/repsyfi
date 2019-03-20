@@ -87,15 +87,12 @@ const Day = ({ router, data={}, uid }) => {
     router.navigate(routeNameSpecificDay, { uid: currentData.uid }, {reload: true});
   };
 
-  // const gotoAddExerciseRoute = () => router.navigate(routeNameAddExerciseToSpecificDay, {dayUid: uid}, {reload: true});
-
   const rootClassNames = classnames({'day--border': !uid});
 
   return (
     <div className={rootClassNames} onClick={toggle}>
       {isEmpty(uid) && <Row className="text-center">
         <Col xs={12}>
-          {/*<Link routeName={routeNameSpecificDay} routeParams={{ uid: currentData.uid }}>Open detailed view</Link>*/}
           <Button block size="sm" onClick={openDetailedView}>{t("Open detailed view")}</Button>
         </Col>
       </Row>}
@@ -108,7 +105,6 @@ const Day = ({ router, data={}, uid }) => {
           </Col>
         </Row>}
 
-        {/*{addWorkoutViewVisible && <AddOneWorkoutTableRow dayUid={uid} setAddWorkoutViewVisible={setAddWorkoutViewVisible}/>}*/}
         {addExerciseViewVisible && <AddExerciseForm dayUid={uid} setAddExerciseViewVisible={setAddExerciseViewVisible}/>}
 
         <Row>
@@ -131,9 +127,9 @@ const Day = ({ router, data={}, uid }) => {
         </Col>
         {!isEmpty(uid) && <Col xs={12}>
           <ButtonGroup className="w-100">
-            <Button color="info">{t("Edit")}</Button>
+            <Button color="info">{t("Edit day")}</Button>
             <Button disabled={!!currentData.endTimestamp} onClick={dayEnd}>{t("End day")}</Button>
-            <Button color="danger" onClick={dayDelete}>{t("Delete")}</Button>
+            <Button color="danger" onClick={dayDelete}>{t("Delete day")}</Button>
           </ButtonGroup>
         </Col>}
       </Row>

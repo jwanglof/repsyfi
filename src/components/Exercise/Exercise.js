@@ -17,7 +17,7 @@ import {useTranslation} from 'react-i18next';
 const Exercise = ({ router, exerciseUid, singleDayView=false }) => {
   const { t } = useTranslation();
 
-  const lgSize = 6;
+  const lgSize = 4;
   const xsSize = 12;
 
   const [addSetViewVisible, setAddSetViewVisible] = useState(false);
@@ -30,7 +30,6 @@ const Exercise = ({ router, exerciseUid, singleDayView=false }) => {
     const fetchExerciseData = async () => {
       try {
         const res = await getSpecificExercise(exerciseUid);
-        // TODO YOu are here! Fix so that we re-fetch the entire workout when a new set is added!
         // setLastSetUid(res.sets[res.sets.length - 1]);
         setCurrentExerciseData(res);
       } catch (e) {
