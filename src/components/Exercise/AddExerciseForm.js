@@ -29,6 +29,7 @@ const AddExerciseForm = ({ initialValues, dayUid, setAddExerciseViewVisible }) =
   };
 
   const onSubmit = async (values, actions) => {
+    actions.setSubmitting(true);
     setSubmitErrorMessage(null);
     try {
       console.log('Try to add exercise to day!', values, dayUid);
@@ -55,17 +56,17 @@ const AddExerciseForm = ({ initialValues, dayUid, setAddExerciseViewVisible }) =
           onSubmit={onSubmit}
           validate={validate}
           // render={({ errors, status, touched, isSubmitting }) => (
-          render={() => (
+          render={({ errors, isSubmitting }) => (
             <Form>
-              <FieldFormGroup label="exerciseName"/>
-              <YesNoField label="feeling"/>
+              <FieldFormGroup name="exerciseName" labelText={t("Exercise")}/>
+              <YesNoField name="feeling" labelText={t("Feeling")}/>
 
               <Row>
                 <Col xs={12}>
                   <FormGroup>
-                    <ButtonGroup className="d-flex">
-                      <Button type="submit" color="success" className="w-100">{t("Save exercise")}</Button>
-                      <Button color="danger" className="w-100" onClick={() => setAddExerciseViewVisible(false)}>{t("Discard exercise")}</Button>
+                    <ButtonGroup className="w-100">
+                      <Button type="submit" color="success" disabled={isSubmitting || !isEmpty(errors)}>{t("Save exercise")}</Button>
+                      <Button color="danger" onClick={() => setAddExerciseViewVisible(false)}>{t("Discard exercise")}</Button>
                     </ButtonGroup>
                   </FormGroup>
                 </Col>

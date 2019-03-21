@@ -7,16 +7,15 @@ import PropTypes from 'prop-types';
 import {Toggle} from 'react-formik-ui'
 import {colSmSize, labelSmSize} from './formik-utils';
 
-const YesNoField = ({label, ...inputProps}) => {
+const YesNoField = ({labelText, name, ...inputProps}) => {
   const disabled = !!inputProps.disabled;
-  const labelCapitalized = capitalize(label).replace('_', ' ');
 
   return (
     <FormGroup row>
-      <Label for={label} sm={labelSmSize}>{labelCapitalized}</Label>
+      <Label for={name} sm={labelSmSize}>{labelText}</Label>
       <Col sm={colSmSize}>
-        <Toggle className="mt-1" name={label} disabled={disabled}/>
-        <ErrorMessage name={label}>{msg => <Alert color="warning" className="pb-0 pt-0 pl-2 pr-2 mt-2">{msg}</Alert>}</ErrorMessage>
+        <Toggle className="mt-1" name={name} disabled={disabled}/>
+        <ErrorMessage name={name}>{msg => <Alert color="warning" className="pb-0 pt-0 pl-2 pr-2 mt-2">{msg}</Alert>}</ErrorMessage>
       </Col>
     </FormGroup>
   );
@@ -24,7 +23,8 @@ const YesNoField = ({label, ...inputProps}) => {
 
 YesNoField.propTypes = {
   disabled: PropTypes.bool,
-  label: PropTypes.string.isRequired,
+  labelText: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 };
 
 export default YesNoField;

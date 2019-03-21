@@ -19,11 +19,14 @@ const resources = {
       "Add set": "Add set",
       "Click on a set for different actions": "Click on a set for different actions (soon, anyway ;))",
       "Save exercise": "Save exercise",
+      "Feeling": "Feeling",
       "Discard exercise": "Discard exercise",
       "Open detailed view": "Open detailed view",
       "Add exercise": "Add exercise",
+      "Exercise": "Exercise",
       "Location": "Location",
       "Muscle groups": "Muscle groups",
+      "Title": "Title",
       "Start time": "Start time",
       "End time": "End time",
       "Edit day": "Edit day",
@@ -34,7 +37,9 @@ const resources = {
       "expand": "expand",
       "Amount must be 0 or higher": "Amount must be 0 or higher",
       "Repetitions must be higher than 1": "Repetitions must be higher than 1",
-      "Index must be higher than 1": "Index must be higher than 1"
+      "Index must be higher than 1": "Index must be higher than 1",
+      "Save new day": "Save new day",
+      "Start date": "Start date"
     }
   },
   sv: {
@@ -52,11 +57,14 @@ const resources = {
       "Add set": "Nytt set",
       "Click on a set for different actions": "Tryck på ett set för olika aktioner (snart, iaf ;))",
       "Save exercise": "Spara övning",
+      "Feeling": "Känsla",
       "Discard exercise": "Avbryt",
       "Open detailed view": "Öppna detaljvyn",
       "Add exercise": "Ny övning",
+      "Exercise": "Övning",
       "Location": "Plats",
       "Muscle groups": "Muskelgrupper",
+      "Title": "Titel",
       "Start time": "Starttid",
       "End time": "Sluttid",
       "Edit day": "Redigera dag",
@@ -67,7 +75,9 @@ const resources = {
       "expand": "öppna",
       "Amount must be 0 or higher": "Vikten måste vara 0 eller högre",
       "Repetitions must be higher than 1": "Repetitioner måste vara högre än 1",
-      "Index must be higher than 1": "Index måste vara högre än 1"
+      "Index must be higher than 1": "Index måste vara högre än 1",
+      "Save new day": "Lägg till ny dag",
+      "Start date": "Startdatum"
     }
   }
 };

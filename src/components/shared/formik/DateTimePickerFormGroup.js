@@ -1,28 +1,27 @@
 import React from 'react';
 import {Alert, Col, FormGroup, Input, Label} from 'reactstrap';
 import {ErrorMessage, Field} from 'formik';
-import capitalize from 'lodash/capitalize';
 import PropTypes from 'prop-types';
 import {colSmSize, labelSmSize} from './formik-utils';
 
-const DateTimePickerFormGroup = ({label, ...inputProps}) => {
-  const disabled = !!inputProps.disabled;
-  const labelCapitalized = capitalize(label).replace('_', ' ');
-
+const DateTimePickerFormGroup = ({labelText, name, ...inputProps}) => {
   return (
     <FormGroup row>
-      <Label for={label} sm={labelSmSize}>{labelCapitalized}</Label>
+      <Label for={name} sm={labelSmSize}>{labelText}</Label>
       <Col sm={colSmSize}>
-        <Input tag={Field} type="time" component="input" name={label} id={label} placeholder={labelCapitalized} disabled={disabled} />
-        <ErrorMessage name={label}>{msg => <Alert color="warning" className="pb-0 pt-0 pl-2 pr-2 mt-2">{msg}</Alert>}</ErrorMessage>
+        <Input tag={Field} type="time" component="input" name={name} id={name} placeholder={labelText} {...inputProps} />
+        <ErrorMessage name={name}>{msg => <Alert color="warning" className="pb-0 pt-0 pl-2 pr-2 mt-2">{msg}</Alert>}</ErrorMessage>
       </Col>
     </FormGroup>
   );
 };
 
 DateTimePickerFormGroup.propTypes = {
-  disabled: PropTypes.bool,
-  label: PropTypes.string.isRequired,
+  inputProps: PropTypes.shape({
+    disabled: PropTypes.bool
+  }),
+  labelText: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 };
 
 export default DateTimePickerFormGroup;

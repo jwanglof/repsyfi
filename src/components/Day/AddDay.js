@@ -14,8 +14,11 @@ import {buildInitialFirebaseDayData} from './DayUtils';
 import Error from '../shared/Error';
 import {withRoute} from 'react-router5';
 import {routeNameSpecificDay} from '../../routes';
+import {useTranslation} from 'react-i18next';
 
 const AddDay = ({ router }) => {
+  const { t } = useTranslation();
+
   // const [roles, setRoles] = useState([]);
   // const [error, setError] = useState('');
   const [submitErrorMessage, setSubmitErrorMessage] = useState(null);
@@ -65,23 +68,23 @@ const AddDay = ({ router }) => {
   return (
     <Row>
       <Col xs={12}>
-        <h1>Add day</h1>
+        <h1>{t("Add day")}</h1>
         <Formik
           initialValues={initialValues}
           onSubmit={onSubmit}
           render={({ errors, status, touched, isSubmitting }) => (
             <Form>
-              <FieldFormGroup label="location"/>
-              <FieldFormGroup label="muscleGroups"/>
-              <FieldFormGroup label="title"/>
+              <FieldFormGroup name="location" labelText={t("Location")}/>
+              <FieldFormGroup name="muscleGroups" labelText={t("Muscle groups")}/>
+              <FieldFormGroup name="title" labelText={t("Title")}/>
 
-              <DatepickerFormGroup label="startDate"/>
-              <DateTimePickerFormGroup label="startTime"/>
+              <DatepickerFormGroup name="startDate" labelText={t("Start date")}/>
+              <DateTimePickerFormGroup name="startTime" labelText={t("Start time")}/>
               {/*<DateTimePickerFormGroup label="endTime"/>*/}
 
               <FormGroup row>
                 <Col sm={12}>
-                  <Button type="submit" color="primary" disabled={isSubmitting || !isEmpty(errors)} block>Add</Button>
+                  <Button type="submit" color="primary" disabled={isSubmitting || !isEmpty(errors)} block>{t("Save new day")}</Button>
                 </Col>
               </FormGroup>
             </Form>

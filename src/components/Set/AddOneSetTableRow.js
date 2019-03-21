@@ -24,10 +24,10 @@ const AddOneSetTableRow = ({ exerciseUid, initialData, setAddSetViewVisible, set
   }
 
   const onSubmit = async (values, actions) => {
+    actions.setSubmitting(true);
     setSubmitErrorMessage(null);
 
     try {
-      actions.setSubmitting(true);
       const data = {
         index: values.index,
         amountInKg: values.amountInKg,
@@ -35,16 +35,15 @@ const AddOneSetTableRow = ({ exerciseUid, initialData, setAddSetViewVisible, set
       };
       const uid = await addNewSet(data, exerciseUid);
 
-      actions.setSubmitting(false);
       // Set the new last UID for the exercise
       setLastSetUid(uid);
       // Hide this form
       setAddSetViewVisible(false);
     } catch (e) {
-      actions.setSubmitting(false);
       console.error(e);
       // setSubmitErrorMessage(e.data.message);
     }
+    actions.setSubmitting(false);
   };
 
   const validate = values => {
@@ -88,9 +87,9 @@ const AddOneSetTableRow = ({ exerciseUid, initialData, setAddSetViewVisible, set
             <tr>
               <td colSpan={3}>
                 <Form>
-                  <ButtonGroup className="d-flex">
-                    <Button type="submit" color="primary" className="w-100" disabled={isSubmitting || !isEmpty(errors)}>{t("Save set")}</Button>
-                    <Button color="danger" className="w-100" onClick={() => setAddSetViewVisible(false)}>{t("Discard set")}</Button>
+                  <ButtonGroup className="w-100">
+                    <Button type="submit" color="primary" disabled={isSubmitting || !isEmpty(errors)}>{t("Save set")}</Button>
+                    <Button color="danger" onClick={() => setAddSetViewVisible(false)}>{t("Discard set")}</Button>
                   </ButtonGroup>
                 </Form>
               </td>
