@@ -12,7 +12,7 @@ export const addNewDay = async dayData => {
   return dayDocRef.id;
 };
 
-export const getAllDays = async () => {
+export const getAllDays10DaysBackInTime = async () => {
   const sub10DaysTimestamp = getUnixTime(subDays(new Date(), 10));
   const ownerUid = await getCurrentUsersUid();
   return firebase.firestore()
@@ -61,4 +61,11 @@ export const endDayNow = async dayUid => {
     .update({
       endTimestamp: Math.ceil(Date.now() / 1000)
     });
+};
+
+export const updateDay = async (dayUid, dayData) => {
+  return await firebase.firestore()
+    .collection(FIRESTORE_COLLECTION_DAYS)
+    .doc(dayUid)
+    .update(dayData);
 };

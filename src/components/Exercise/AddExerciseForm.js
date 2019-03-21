@@ -65,7 +65,7 @@ const AddExerciseForm = ({ initialValues, dayUid, setAddExerciseViewVisible }) =
                 <Col xs={12}>
                   <FormGroup>
                     <ButtonGroup className="w-100">
-                      <Button type="submit" color="success" disabled={isSubmitting || !isEmpty(errors)}>{t("Save exercise")}</Button>
+                      <Button type="submit" color="primary" disabled={isSubmitting || !isEmpty(errors)}>{t("Save exercise")}</Button>
                       <Button color="danger" onClick={() => setAddExerciseViewVisible(false)}>{t("Discard exercise")}</Button>
                     </ButtonGroup>
                   </FormGroup>

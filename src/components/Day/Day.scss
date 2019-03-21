@@ -1,9 +1,10 @@
-.day--border {
-  border: 1px solid black;
-  border-radius: 5px 5px 0 0;
+.day--separator {
+  border-bottom: 1px solid black;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
 }
 
-.day--border:hover {
+.day--separator:hover {
   cursor: pointer;
 }
 

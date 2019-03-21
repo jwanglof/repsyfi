@@ -15,7 +15,7 @@ const Footer = ({router}) => {
     <Col>
       <ButtonGroup className="w-100">
         <Button onClick={() => router.navigate(routeNameRoot, {}, {reload: true})}>{t("Home")}</Button>
-        <Button onClick={() => router.navigate(routeNameAddDay, {}, {reload: true})}>{t("Add day")}</Button>
+        <Button onClick={() => router.navigate(routeNameAddDay, {}, {reload: true})}>{t("Add new day")}</Button>
         <Button onClick={() => router.navigate(routeNameAllDays, {}, {reload: true})}>{t("All days")}</Button>
       </ButtonGroup>
     </Col>

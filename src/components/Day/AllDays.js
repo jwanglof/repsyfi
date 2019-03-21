@@ -2,18 +2,16 @@ import React, {useEffect, useState} from 'react';
 import {Col, Row} from 'reactstrap';
 import Loading from '../shared/Loading';
 import Day from './Day';
-import {getAllDays} from './DayService';
+import {getAllDays10DaysBackInTime} from './DayService';
 import EmptyCollection from '../EmptyCollection/EmptyCollection';
 import {FIRESTORE_COLLECTION_DAYS} from '../../config/firebase';
-import {useTranslation} from 'react-i18next';
+import orderBy from 'lodash/orderBy';
 
 const AllDays = () => {
-  const { t } = useTranslation();
-
   const [allDays, setAllDays] = useState(null);
 
   useEffect(() => {
-    getAllDays().then(setAllDays);
+    getAllDays10DaysBackInTime().then(res => setAllDays(orderBy(res, ['startTimestamp'], ['desc'])));
   }, []);
 
   if (allDays === null) {
@@ -26,9 +24,6 @@ const AllDays = () => {
 
   return (
     <Row>
-      <Col xs={12}>
-        <h1>{t('All days')}</h1>
-      </Col>
       <Col xs={12}>
         {allDays.map(d => <Day key={d.uid} data={d}/>)}
       </Col>

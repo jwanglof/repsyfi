@@ -2,17 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {routeNode} from 'react-router5'
 import './App.css';
 import AllDays from './components/Day/AllDays';
-import {
-  routeNameAddDay,
-  routeNameAddExerciseToSpecificDay,
-  routeNameAddSetToSpecificExercise,
-  routeNameAllDays,
-  routeNameSpecificDay
-} from './routes';
+import {routeNameAddDay, routeNameAllDays, routeNameSpecificDay} from './routes';
 import Day from './components/Day/Day';
 import AddDay from './components/Day/AddDay';
-import AddExerciseForm from './components/Exercise/AddExerciseForm';
-import AddSetForm from './components/Set/AddSetForm';
 import Login from './components/Login/Login';
 import firebase, {initializeFirebase} from './config/firebase';
 import Footer from './components/Footer/Footer';
@@ -75,12 +67,6 @@ const App = ({ route }) => {
         break;
       case routeNameAddDay:
         shownComponent = <AddDay/>;
-        break;
-      case routeNameAddExerciseToSpecificDay:
-        shownComponent = <AddExerciseForm dayUid={route.params.dayUid}/>;
-        break;
-      case routeNameAddSetToSpecificExercise:
-        shownComponent = <AddSetForm exerciseUid={route.params.exerciseUid}/>;
         break;
       case routeNameAllDays:
         shownComponent = <AllDays/>;

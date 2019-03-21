@@ -30,6 +30,13 @@ export const buildInitialFirebaseDayData = data => ({
   // These variables will be populated during the exercise
   exercises: [],
   // These variables will be populated when the exercise is done
-  endTimestamp: null,
-  ownerUid: 'herru'
+  endTimestamp: null
+});
+
+export const buildUpdatedFirebaseDayData = data => ({
+  startTimestamp: data.startTimestamp,
+  location: data.location,
+  muscleGroups: data.muscleGroups,
+  title: data.title,
+  endTimestamp: data.endTimestamp
 });

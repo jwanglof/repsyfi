@@ -10,7 +10,7 @@ import {deleteDay, endDayNow, getSpecificDayFromUid} from './DayService';
 import firebase, {FIRESTORE_COLLECTION_DAYS} from '../../config/firebase';
 import Loading from '../shared/Loading';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
-import {routeNameRoot, routeNameSpecificDay} from '../../routes';
+import {routeNameAddDay, routeNameRoot, routeNameSpecificDay} from '../../routes';
 import {getFormattedDate, getTitle} from './DayUtils';
 import AddExerciseForm from '../Exercise/AddExerciseForm';
 import Exercise from '../Exercise/Exercise';
@@ -26,12 +26,14 @@ const Day = ({ router, data={}, uid }) => {
   const [deleteErrorData, setDeleteErrorData] = useState(null);
   const [updateErrorData, setUpdateErrorData] = useState(null);
 
+  // Effect to set the specific day's initial data
   useEffect(() => {
     if (!isEmpty(uid)) {
       getSpecificDayFromUid(uid).then(setCurrentData);
     }
   }, []);
 
+  // Effect to subscribe on changes on this specific day
   useEffect(() => {
     if (!isEmpty(uid)) {
       // TODO Need to verify that a user can't send any UID in here, somehow... That should be specified in the rules!
@@ -41,16 +43,21 @@ const Day = ({ router, data={}, uid }) => {
         .doc(uid)
         .onSnapshot({includeMetadataChanges: true}, doc => {
           console.log('new doc!!', doc.data());
-          setCurrentData(doc.data());
+          if (!isEmpty(doc.data())) {
+            setCurrentData(doc.data());
+          }
         }, err => {
           console.error('error:', err);
         });
 
+      // Unsubscribe on un-mount
       return () => {
         unsub();
       };
     }
   }, []);
+
+  console.log(4444, currentData);
 
   if (isEmpty(currentData)) {
     return <Loading componentName="Day"/>;
@@ -83,11 +90,16 @@ const Day = ({ router, data={}, uid }) => {
     }
   };
 
+  const editDay = async () => {
+    console.log('Edit!', uid);
+    router.navigate(routeNameAddDay, {dayUid: uid}, {reload: true});
+  };
+
   const openDetailedView = () => {
     router.navigate(routeNameSpecificDay, { uid: currentData.uid }, {reload: true});
   };
 
-  const rootClassNames = classnames({'day--border': !uid});
+  const rootClassNames = classnames({'day--separator': !uid});
 
   return (
     <div className={rootClassNames} onClick={toggle}>
@@ -108,7 +120,7 @@ const Day = ({ router, data={}, uid }) => {
         {addExerciseViewVisible && <AddExerciseForm dayUid={uid} setAddExerciseViewVisible={setAddExerciseViewVisible}/>}
 
         <Row>
-          {currentData.exercises.map(exerciseUid => <Exercise key={exerciseUid} exerciseUid={exerciseUid} singleDayView={!isEmpty(uid)}/>)}
+          {currentData.exercises.length && currentData.exercises.map(exerciseUid => <Exercise key={exerciseUid} exerciseUid={exerciseUid} singleDayView={!isEmpty(uid)}/>)}
         </Row>
       </Collapse>
 
@@ -122,12 +134,12 @@ const Day = ({ router, data={}, uid }) => {
           <div className="day--notes">{currentData.notes}</div>
         </Col>
         <Col className="text-lg-left text-center" lg={3} xs={12}>
-          <div>{t("Start time")} {getFormattedDate(currentData.startTimestamp)}</div>
-          <div>{t("End time")} {getFormattedDate(currentData.endTimestamp)}</div>
+          <div>{t("Start time")}: {getFormattedDate(currentData.startTimestamp)}</div>
+          <div>{t("End time")}: {getFormattedDate(currentData.endTimestamp)}</div>
         </Col>
         {!isEmpty(uid) && <Col xs={12}>
           <ButtonGroup className="w-100">
-            <Button color="info">{t("Edit day")}</Button>
+            <Button color="info" onClick={editDay}>{t("Edit day")}</Button>
             <Button disabled={!!currentData.endTimestamp} onClick={dayEnd}>{t("End day")}</Button>
             <Button color="danger" onClick={dayDelete}>{t("Delete day")}</Button>
           </ButtonGroup>

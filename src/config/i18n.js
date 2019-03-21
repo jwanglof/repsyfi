@@ -8,7 +8,7 @@ const resources = {
     translation: {
       "All days": "All days",
       "Home": "Home",
-      "Add day": "Add day",
+      "Add new day": "Add new day",
       "SW": "SW",
       "EN": "EN",
       "Sign out": "Sign out",
@@ -39,14 +39,17 @@ const resources = {
       "Repetitions must be higher than 1": "Repetitions must be higher than 1",
       "Index must be higher than 1": "Index must be higher than 1",
       "Save new day": "Save new day",
-      "Start date": "Start date"
+      "Start date": "Start date",
+      "End date": "End date",
+      "must be set": "must be set",
+      "Update day": "Update day"
     }
   },
   sv: {
     translation: {
       "All days": "Alla dagar",
       "Home": "Hem",
-      "Add day": "Ny dag",
+      "Add new day": "Lägg till ny dag",
       "SW": "SV",
       "EN": "EN",
       "Sign out": "Logga ut",
@@ -71,13 +74,16 @@ const resources = {
       "End day": "Avsluta dag",
       "Delete day": "Ta bort dag",
       "Click to": "Klicka för att",
-      "collapse": "stänga",
-      "expand": "öppna",
+      "collapse": "fälla ihop",
+      "expand": "veckla ut",
       "Amount must be 0 or higher": "Vikten måste vara 0 eller högre",
       "Repetitions must be higher than 1": "Repetitioner måste vara högre än 1",
       "Index must be higher than 1": "Index måste vara högre än 1",
       "Save new day": "Lägg till ny dag",
-      "Start date": "Startdatum"
+      "Start date": "Startdatum",
+      "End date": "Slutdatum",
+      "must be set": "måste finnas",
+      "Update day": "Uppdatera dag"
     }
   }
 };
