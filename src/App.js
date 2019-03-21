@@ -4,7 +4,7 @@ import './App.css';
 import AllDays from './components/Day/AllDays';
 import {routeNameAddDay, routeNameAllDays, routeNameSpecificDay} from './routes';
 import Day from './components/Day/Day';
-import AddDay from './components/Day/AddDay';
+import AddDay from './components/Day/AddEditDay';
 import Login from './components/Login/Login';
 import firebase, {initializeFirebase} from './config/firebase';
 import Footer from './components/Footer/Footer';

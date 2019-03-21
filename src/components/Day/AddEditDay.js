@@ -18,7 +18,7 @@ import {routeNameSpecificDay} from '../../routes';
 import {useTranslation} from 'react-i18next';
 import Loading from '../shared/Loading';
 
-const AddDay = ({ router }) => {
+const AddEditDay = ({ router }) => {
   const { t } = useTranslation();
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState(null);
@@ -148,6 +148,6 @@ const AddDay = ({ router }) => {
   );
 };
 
-AddDay.propTypes = {};
+AddEditDay.propTypes = {};
 
-export default withRoute(AddDay);
+export default withRoute(AddEditDay);
