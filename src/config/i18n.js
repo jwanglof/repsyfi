@@ -32,6 +32,9 @@ const resources = {
       "Click to": "Click to",
       "collapse": "collapse",
       "expand": "expand",
+      "Amount must be 0 or higher": "Amount must be 0 or higher",
+      "Repetitions must be higher than 1": "Repetitions must be higher than 1",
+      "Index must be higher than 1": "Index must be higher than 1"
     }
   },
   sv: {
@@ -62,6 +65,9 @@ const resources = {
       "Click to": "Klicka för att",
       "collapse": "stänga",
       "expand": "öppna",
+      "Amount must be 0 or higher": "Vikten måste vara 0 eller högre",
+      "Repetitions must be higher than 1": "Repetitioner måste vara högre än 1",
+      "Index must be higher than 1": "Index måste vara högre än 1"
     }
   }
 };

@@ -30,7 +30,6 @@ const Exercise = ({ router, exerciseUid, singleDayView=false }) => {
     const fetchExerciseData = async () => {
       try {
         const res = await getSpecificExercise(exerciseUid);
-        // setLastSetUid(res.sets[res.sets.length - 1]);
         setCurrentExerciseData(res);
       } catch (e) {
         if (isString(e)) {
@@ -64,23 +63,25 @@ const Exercise = ({ router, exerciseUid, singleDayView=false }) => {
   const getLastSetData = () => {
     if (isEmpty(lastSetData)) {
       return {
+        index: 1,
         amountInKg: '',
         reps: ''
       }
     }
     return {
+      index: (lastSetData.index + 1),
       amountInKg: lastSetData.amountInKg,
       reps: lastSetData.reps
     };
   };
 
   return (
-    <Col lg={lgSize} xs={xsSize}>
+    <Col lg={lgSize} xs={xsSize} className="mb-2">
       <Card>
         <CardHeader className="text-center pt-0 pb-0">
           <h1 className="exercise--title">{currentExerciseData.exerciseName}</h1>
         </CardHeader>
-        <Table striped hover={singleDayView} size="sm" className="mb-0">
+        <Table striped hover={singleDayView && !addSetViewVisible} size="sm" className="mb-0">
           <thead>
           <tr>
             <th style={{width: "10%"}}>#</th>
@@ -96,7 +97,7 @@ const Exercise = ({ router, exerciseUid, singleDayView=false }) => {
             }
             return <OneSetTableRow key={setUid} setUid={setUid} disabled={addSetViewVisible}/>;
           })}
-          {addSetViewVisible && <AddOneSetTableRow exerciseUid={currentExerciseData.uid} index={currentExerciseData.sets.length + 1} setAddSetViewVisible={setAddSetViewVisible} initialData={getLastSetData()} setLastSetUid={setLastSetUid}/>}
+          {addSetViewVisible && <AddOneSetTableRow exerciseUid={currentExerciseData.uid} setAddSetViewVisible={setAddSetViewVisible} initialData={getLastSetData()} setLastSetUid={setLastSetUid}/>}
           </tbody>
           <tfoot>
           {singleDayView && !addSetViewVisible && <tr>
