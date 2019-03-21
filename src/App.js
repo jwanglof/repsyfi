@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {routeNode} from 'react-router5'
-import './App.css';
 import AllDays from './components/Day/AllDays';
 import {routeNameAddDay, routeNameAllDays, routeNameEditDay, routeNameSpecificDay} from './routes';
 import Day from './components/Day/Day';

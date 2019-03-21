@@ -13,7 +13,7 @@ import { faHome, faPlusCircle, faSpinner, faSignOutAlt } from '@fortawesome/free
 import './config/i18n';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './index.css';
+import './index.scss';
 
 const router = createRouter(routes, {
   defaultRoute: 'root'
