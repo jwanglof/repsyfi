@@ -10,7 +10,7 @@ import {deleteDay, endDayNow, getSpecificDayFromUid} from './DayService';
 import firebase, {FIRESTORE_COLLECTION_DAYS} from '../../config/firebase';
 import Loading from '../shared/Loading';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
-import {routeNameAddDay, routeNameRoot, routeNameSpecificDay} from '../../routes';
+import {routeNameAddDay, routeNameEditDay, routeNameRoot, routeNameSpecificDay} from '../../routes';
 import {getFormattedDate, getTitle} from './DayUtils';
 import AddExerciseForm from '../Exercise/AddExerciseForm';
 import Exercise from '../Exercise/Exercise';
@@ -90,14 +90,9 @@ const Day = ({ router, data={}, uid }) => {
     }
   };
 
-  const editDay = async () => {
-    console.log('Edit!', uid);
-    router.navigate(routeNameAddDay, {dayUid: uid}, {reload: true});
-  };
+  const editDay = () => router.navigate(routeNameEditDay, {dayUid: uid}, {reload: true});
 
-  const openDetailedView = () => {
-    router.navigate(routeNameSpecificDay, { uid: currentData.uid }, {reload: true});
-  };
+  const openDetailedView = () => router.navigate(routeNameSpecificDay, { uid: currentData.uid }, {reload: true});
 
   const rootClassNames = classnames({'day--separator': !uid});
 
