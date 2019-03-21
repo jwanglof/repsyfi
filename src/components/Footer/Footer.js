@@ -1,11 +1,10 @@
 import './Footer.scss';
 
 import React from 'react';
-import {Button, ButtonGroup, Col} from 'reactstrap';
+import {Button, ButtonGroup, Col, Row} from 'reactstrap';
 import {withRoute} from 'react-router5';
 import {routeNameAddDay, routeNameAllDays, routeNameRoot} from '../../routes';
 import Logout from '../Logout/Logout';
-import Row from 'reactstrap/es/Row';
 import {useTranslation} from 'react-i18next';
 
 const Footer = ({router}) => {

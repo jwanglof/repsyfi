@@ -7,6 +7,7 @@ import AddEditDay from './components/Day/AddEditDay';
 import Login from './components/Login/Login';
 import firebase, {initializeFirebase} from './config/firebase';
 import Footer from './components/Footer/Footer';
+import Header from './components/Header/Header';
 
 const App = ({ route }) => {
   const topRouteName = route.name.split('.')[0];
@@ -78,6 +79,7 @@ const App = ({ route }) => {
 
   return (
     <>
+      {userSignedIn && <Header/>}
       <div className="App">
         {shownComponent}
       </div>
