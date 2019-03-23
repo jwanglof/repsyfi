@@ -57,8 +57,6 @@ const Day = ({ router, data={}, uid }) => {
     }
   }, []);
 
-  console.log(4444, currentData);
-
   if (isEmpty(currentData)) {
     return <Loading componentName="Day"/>;
   }
@@ -121,7 +119,7 @@ const Day = ({ router, data={}, uid }) => {
 
       <Row onClick={toggle}>
         <Col className="text-lg-right text-center" lg={3} xs={12}>
-          <div>{t("Location")}: {currentData.location}</div>
+          <div>{t("Workout location")}: {currentData.location}</div>
           <div>{t("Muscle groups")}: {currentData.muscleGroups}</div>
         </Col>
         <Col className="text-center" lg={6} xs={12}>

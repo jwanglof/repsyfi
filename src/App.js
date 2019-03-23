@@ -79,6 +79,7 @@ const App = ({ route }) => {
 
   return (
     <>
+      {/*{userSignedIn && <Header/>}*/}
       <div className="App">
         {shownComponent}
       </div>

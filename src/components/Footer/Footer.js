@@ -10,7 +10,7 @@ import {useTranslation} from 'react-i18next';
 const Footer = ({router}) => {
   const { t, i18n } = useTranslation();
 
-  return (<Row className="footer container text-muted">
+  return (<footer><Row className="footer container text-muted">
     <Col>
       <ButtonGroup className="w-100">
         <Button onClick={() => router.navigate(routeNameRoot, {}, {reload: true})}>{t("Home")}</Button>
@@ -27,7 +27,7 @@ const Footer = ({router}) => {
     <Col xs={12} lg={2}>
       <Logout/>
     </Col>
-  </Row>);
+  </Row></footer>);
 };
 
 export default withRoute(Footer);

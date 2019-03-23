@@ -17,6 +17,7 @@ import {withRoute} from 'react-router5';
 import {routeNameSpecificDay} from '../../routes';
 import {useTranslation} from 'react-i18next';
 import Loading from '../shared/Loading';
+import isDate from 'lodash/isDate';
 
 const AddEditDay = ({ router }) => {
   const { t } = useTranslation();
@@ -66,10 +67,20 @@ const AddEditDay = ({ router }) => {
     return <Error componentName="AddDay"/>;
   }
 
+  // Format a date object to a specific format
+  const getFormattedDate = startDate => {
+    let d = startDate;
+    if (isDate(startDate)) {
+      d = format(startDate, dateFormat);
+    }
+    return d;
+  };
+
   const onSubmit = async (values, actions) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(null);
     try {
+      values.startDate = getFormattedDate(values.startDate);
       const startTimestamp = getUnixTime(parseISO(`${values.startDate}T${values.startTime}`));
       const dayData = buildInitialFirebaseDayData({...values, startTimestamp});
       const newUid = await addNewDay(dayData);
@@ -84,11 +95,15 @@ const AddEditDay = ({ router }) => {
   const onUpdate = async (values, actions) => {
     actions.setSubmitting(true);
     try {
+      values.startDate = getFormattedDate(values.startDate);
       const startTimestamp = getUnixTime(parseISO(`${values.startDate}T${values.startTime}`));
+
       let endTimestamp = null;
       if (values.endTime && values.endDate) {
+        values.endDate = getFormattedDate(values.endDate);
         endTimestamp = getUnixTime(parseISO(`${values.endDate}T${values.endTime}`));
       }
+
       const dayData = buildUpdatedFirebaseDayData({...values, startTimestamp, endTimestamp});
       await updateDay(dayUid, dayData);
       router.navigate(routeNameSpecificDay, {uid: dayUid}, {reload: true});
@@ -123,7 +138,7 @@ const AddEditDay = ({ router }) => {
           validate={validate}
           render={({ errors, status, touched, isSubmitting }) => (
             <Form>
-              <FieldFormGroup name="location" labelText={t("Location")}/>
+              <FieldFormGroup name="location" labelText={t("Workout location")}/>
               <FieldFormGroup name="muscleGroups" labelText={t("Muscle groups")}/>
               <FieldFormGroup name="title" labelText={t("Title")}/>
 

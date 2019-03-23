@@ -7,11 +7,11 @@ import {Col, Row} from 'reactstrap';
 const Header = () => {
   const { t } = useTranslation();
 
-  return (<Row className="header container text-muted">
+  return (<header><Row className="header container text-muted">
     <Col>
       Header
     </Col>
-  </Row>);
+  </Row></header>);
 };
 
 export default Header;
