@@ -42,7 +42,11 @@ const resources = {
       "Start date": "Start date",
       "End date": "End date",
       "must be set": "must be set",
-      "Update day": "Update day"
+      "Update day": "Update day",
+      "Save": "Save",
+      "Discard": "Discard",
+      "Title can't be empty": "Title can't be empty",
+      "Delete": "Delete",
     }
   },
   sv: {
@@ -83,7 +87,11 @@ const resources = {
       "Start date": "Startdatum",
       "End date": "Slutdatum",
       "must be set": "måste finnas",
-      "Update day": "Uppdatera dag"
+      "Update day": "Uppdatera dag",
+      "Save": "Spara",
+      "Discard": "Avbryt",
+      "Title can't be empty": "Titel kan inte vara tom",
+      "Delete": "Ta bort",
     }
   }
 };

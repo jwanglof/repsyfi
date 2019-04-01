@@ -1,7 +1,7 @@
 import './Exercise.scss';
 
 import React, {useEffect, useState} from 'react';
-import {Button, Card, CardHeader, Col, Table} from 'reactstrap';
+import {Button, Card, Col, Table} from 'reactstrap';
 import OneSetTableRow from '../Set/OneSetTableRow';
 import {withRoute} from 'react-router5';
 import AddOneSetTableRow from '../Set/AddOneSetTableRow';
@@ -13,8 +13,9 @@ import isString from 'lodash/isString';
 import cloneDeep from 'lodash/cloneDeep';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {useTranslation} from 'react-i18next';
+import ExerciseHeader from './ExerciseHeader';
 
-const Exercise = ({ router, exerciseUid, singleDayView=false }) => {
+const Exercise = ({ exerciseUid, singleDayView=false, dayUid=null }) => {
   const { t } = useTranslation();
 
   const lgSize = 4;
@@ -78,9 +79,7 @@ const Exercise = ({ router, exerciseUid, singleDayView=false }) => {
   return (
     <Col lg={lgSize} xs={xsSize} className="mb-2">
       <Card>
-        <CardHeader className="text-center pt-0 pb-0">
-          <h1 className="exercise--title">{currentExerciseData.exerciseName}</h1>
-        </CardHeader>
+        <ExerciseHeader exerciseData={currentExerciseData} dayUid={dayUid}/>
         <Table striped hover={singleDayView && !addSetViewVisible} size="sm" className="mb-0">
           <thead>
           <tr>
@@ -119,7 +118,8 @@ const Exercise = ({ router, exerciseUid, singleDayView=false }) => {
 
 Exercise.propTypes = {
   exerciseUid: PropTypes.string.isRequired,
-  singleDayView: PropTypes.bool
+  singleDayView: PropTypes.bool,
+  dayUid: PropTypes.string
 };
 
 export default withRoute(Exercise);

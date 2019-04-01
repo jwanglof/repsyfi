@@ -48,6 +48,8 @@ const AddExerciseForm = ({ initialValues, dayUid, setAddExerciseViewVisible }) =
     feeling: true
   };
 
+  // TODO Add treadmill as exercise form here!
+
   return (
     <Row>
       <Col xs={12}>

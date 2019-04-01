@@ -13,7 +13,7 @@ export const addNewDay = async dayData => {
 };
 
 export const getAllDays10DaysBackInTime = async () => {
-  const sub10DaysTimestamp = getUnixTime(subDays(new Date(), 10));
+  const sub10DaysTimestamp = getUnixTime(subDays(new Date(), 100));
   const ownerUid = await getCurrentUsersUid();
   return firebase.firestore()
     .collection(FIRESTORE_COLLECTION_DAYS)

@@ -9,7 +9,7 @@ import browserPlugin from 'router5-plugin-browser';
 import loggerPlugin from 'router5-plugin-logger';
 import createRouter from 'router5';
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faHome, faPlusCircle, faSpinner, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
+import { faHome, faPlusCircle, faSpinner, faSignOutAlt, faExternalLinkAlt, faEdit } from '@fortawesome/free-solid-svg-icons'
 import './config/i18n';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -25,7 +25,7 @@ router.usePlugin(
   })
 );
 
-library.add(faHome, faPlusCircle, faSpinner, faSignOutAlt);
+library.add(faHome, faPlusCircle, faSpinner, faSignOutAlt, faExternalLinkAlt, faEdit);
 
 router.start(() => {
   ReactDOM.render((

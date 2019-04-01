@@ -1,6 +1,7 @@
 import isEmpty from 'lodash/isEmpty';
 import firebase, {FIRESTORE_COLLECTION_DAYS, FIRESTORE_COLLECTION_EXERCISES, getCurrentUsersUid} from '../../config/firebase';
 import {deleteSet} from '../Set/SetService';
+import {getSpecificDayFromUid, updateDay} from '../Day/DayService';
 
 export const getSpecificExercise = async exerciseUid => {
   const querySnapshot = await firebase.firestore()
@@ -35,6 +36,18 @@ const addExerciseToDayArray = async (exerciseUid, dayUid) => {
     .update({exercises: firebase.firestore.FieldValue.arrayUnion(exerciseUid)});
 };
 
+export const deleteExerciseAndRemoveFromDay = async (exerciseUid, dayUid=null) => {
+  // Delete the exercise from the day it belonged to
+  if (dayUid !== null) {
+    const dayData = await getSpecificDayFromUid(dayUid);
+    const exerciseIndexInDay = dayData.exercises.indexOf(exerciseUid);
+    dayData.exercises.splice(exerciseIndexInDay, 1);
+    const dayExerciseData = {exercises: dayData.exercises};
+    await updateDay(dayUid, dayExerciseData);
+  }
+  return await deleteExercise(exerciseUid);
+};
+
 export const deleteExercise = async exerciseUid => {
   const exerciseData = await getSpecificExercise(exerciseUid);
   // Remove all sets that exist on the exercise
@@ -45,4 +58,11 @@ export const deleteExercise = async exerciseUid => {
     .collection(FIRESTORE_COLLECTION_EXERCISES)
     .doc(exerciseUid)
     .delete();
+};
+
+export const updateExercise = async (exerciseUid, exerciseData) => {
+  return await firebase.firestore()
+    .collection(FIRESTORE_COLLECTION_EXERCISES)
+    .doc(exerciseUid)
+    .update(exerciseData);
 };

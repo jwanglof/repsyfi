@@ -10,7 +10,7 @@ import {deleteDay, endDayNow, getSpecificDayFromUid} from './DayService';
 import firebase, {FIRESTORE_COLLECTION_DAYS} from '../../config/firebase';
 import Loading from '../shared/Loading';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
-import {routeNameAddDay, routeNameEditDay, routeNameRoot, routeNameSpecificDay} from '../../routes';
+import {routeNameEditDay, routeNameRoot, routeNameSpecificDay} from '../../routes';
 import {getFormattedDate, getTitle} from './DayUtils';
 import AddExerciseForm from '../Exercise/AddExerciseForm';
 import Exercise from '../Exercise/Exercise';
@@ -42,7 +42,6 @@ const Day = ({ router, data={}, uid }) => {
         // .where("ownerUid", "==", uid)
         .doc(uid)
         .onSnapshot({includeMetadataChanges: true}, doc => {
-          console.log('new doc!!', doc.data());
           if (!isEmpty(doc.data())) {
             setCurrentData(doc.data());
           }
@@ -113,7 +112,7 @@ const Day = ({ router, data={}, uid }) => {
         {addExerciseViewVisible && <AddExerciseForm dayUid={uid} setAddExerciseViewVisible={setAddExerciseViewVisible}/>}
 
         <Row>
-          {currentData.exercises.length && currentData.exercises.map(exerciseUid => <Exercise key={exerciseUid} exerciseUid={exerciseUid} singleDayView={!isEmpty(uid)}/>)}
+          {currentData.exercises.length && currentData.exercises.map(exerciseUid => <Exercise key={exerciseUid} exerciseUid={exerciseUid} singleDayView={!isEmpty(uid)} dayUid={uid}/>)}
         </Row>
       </Collapse>
 
