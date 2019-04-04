@@ -16,7 +16,11 @@ const ExerciseHeader = ({exerciseData, dayUid}) => {
   const [submitErrorMessage, setSubmitErrorMessage] = useState(null);
 
   const toggleEditForm = () => {
-    setCollapsed(!collapsed);
+    // Only toggle if we have a day uid
+    // If we have a day uid then we're on a detailed view of an exercise
+    if (dayUid) {
+      setCollapsed(!collapsed);
+    }
   };
 
   const onSubmit = async (values, actions) => {
@@ -56,7 +60,7 @@ const ExerciseHeader = ({exerciseData, dayUid}) => {
 
   return (
     <CardHeader className="text-center pt-0 pb-0">
-      {collapsed && <h1 className="exercise--title" onClick={toggleEditForm}>{exerciseData.exerciseName} <FontAwesomeIcon icon="edit" size="xs"/></h1>}
+      {collapsed && <h1 className="exercise--title" onClick={toggleEditForm}>{exerciseData.exerciseName} {dayUid && <FontAwesomeIcon icon="edit" size="xs"/>}</h1>}
       {!collapsed &&
       <Formik
         initialValues={{exerciseName: exerciseData.exerciseName}}
@@ -85,7 +89,7 @@ const ExerciseHeader = ({exerciseData, dayUid}) => {
 
 ExerciseHeader.propTypes = {
   exerciseData: PropTypes.object.isRequired,
-  dayUid: PropTypes.string.isRequired
+  dayUid: PropTypes.string
 };
 
 export default ExerciseHeader;

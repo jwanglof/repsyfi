@@ -2,12 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {routeNode} from 'react-router5'
 import AllDays from './components/Day/AllDays';
 import {routeNameAddDay, routeNameAllDays, routeNameEditDay, routeNameSpecificDay} from './routes';
-import Day from './components/Day/Day';
+import TSDay from './components/Day/TSDay';
 import AddEditDay from './components/Day/AddEditDay';
 import Login from './components/Login/Login';
 import firebase, {initializeFirebase} from './config/firebase';
 import Footer from './components/Footer/Footer';
-import Header from './components/Header/Header';
 
 const App = ({ route }) => {
   const topRouteName = route.name.split('.')[0];
@@ -63,7 +62,9 @@ const App = ({ route }) => {
   } else {
     switch (topRouteName) {
       case routeNameSpecificDay:
-        shownComponent = <Day uid={route.params.uid}/>;
+        console.log(111, routeNameSpecificDay);
+        // shownComponent = <Day uid={route.params.uid}/>;
+        shownComponent = <TSDay dayUid={route.params.uid}/>;
         break;
       case routeNameAddDay:
       case routeNameEditDay:

@@ -3,11 +3,19 @@ import PropTypes from 'prop-types';
 import {Button, ButtonGroup, Col, FormGroup, Row} from 'reactstrap';
 import FieldFormGroup from '../shared/formik/FieldFormGroup';
 import isEmpty from 'lodash/isEmpty';
-import {Form, Formik} from 'formik';
-import YesNoField from '../shared/formik/YesNoField';
-import {addNewExercise} from './ExerciseService';
+import {Formik} from 'formik';
+import {
+  addExerciseAndGetUid,
+  addExerciseToDayArray,
+  addNewSetsRepsExerciseAndGetUid,
+  addNewTimeDistanceExerciseAndGetUid
+} from './ExerciseService';
 import {useTranslation} from 'react-i18next';
 import Error from '../shared/Error';
+import SelectFormGroup from '../shared/formik/SelectFormGroup';
+import {Form} from 'react-formik-ui';
+import {EXERCISE_TYPE_SETS_REPS, EXERCISE_TYPE_TIME_DISTANCE} from './ExerciseConstants';
+import {getCurrentUsersUid} from '../../config/firebase';
 
 const AddExerciseForm = ({ initialValues, dayUid, setAddExerciseViewVisible }) => {
   const { t } = useTranslation();
@@ -32,23 +40,47 @@ const AddExerciseForm = ({ initialValues, dayUid, setAddExerciseViewVisible }) =
     actions.setSubmitting(true);
     setSubmitErrorMessage(null);
     try {
-      console.log('Try to add exercise to day!', values, dayUid);
-      const uid = await addNewExercise(values, dayUid);
-      console.log('Exercise unique uid:', uid);
+      const ownerUid = await getCurrentUsersUid();
+
+      console.log('Try to add exercise to day!', values, dayUid, ownerUid);
+
+      let exerciseTypeUid;
+      switch (values.type) {
+        case EXERCISE_TYPE_SETS_REPS:
+          exerciseTypeUid = await addNewSetsRepsExerciseAndGetUid(ownerUid);
+          break;
+        case EXERCISE_TYPE_TIME_DISTANCE:
+          exerciseTypeUid = await addNewTimeDistanceExerciseAndGetUid(ownerUid);
+          break;
+      }
+      console.log('Exercise unique uid:', exerciseTypeUid);
+      const exerciseData = {
+        exerciseName: values.exerciseName,
+        feeling: values.feeling,
+        type: values.type,
+        typeUid: exerciseTypeUid
+      };
+      const exerciseUid = await addExerciseAndGetUid(exerciseData, ownerUid);
+      await addExerciseToDayArray(exerciseUid, dayUid);
       setAddExerciseViewVisible(false);
     } catch (e) {
       console.log(34444, e);
-      setSubmitErrorMessage(e.data.message);
+      setSubmitErrorMessage(e.message);
     }
     actions.setSubmitting(false);
   };
 
   const values = {
     exerciseName: '',
-    feeling: true
+    feeling: true,
+    type: EXERCISE_TYPE_SETS_REPS
   };
 
   // TODO Add treadmill as exercise form here!
+  const exerciseTypes = [
+    {value: EXERCISE_TYPE_SETS_REPS, label: 'Sets and reps'},
+    {value: EXERCISE_TYPE_TIME_DISTANCE, label: 'Time and distance'},
+  ];
 
   return (
     <Row>
@@ -59,9 +91,10 @@ const AddExerciseForm = ({ initialValues, dayUid, setAddExerciseViewVisible }) =
           validate={validate}
           // render={({ errors, status, touched, isSubmitting }) => (
           render={({ errors, isSubmitting }) => (
-            <Form>
+            <Form themed>
               <FieldFormGroup name="exerciseName" labelText={t("Exercise")}/>
-              <YesNoField name="feeling" labelText={t("Feeling")}/>
+              <SelectFormGroup name="type" labelText={t("Exercise type")} options={exerciseTypes}/>
+              {/*<YesNoField name="feeling" labelText={t("Feeling")}/>*/}
 
               <Row>
                 <Col xs={12}>

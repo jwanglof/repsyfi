@@ -31,5 +31,7 @@ export const getCurrentUsersUid = async () => {
 export const FIRESTORE_COLLECTION_EXERCISES = "exercises";
 export const FIRESTORE_COLLECTION_DAYS = "days";
 export const FIRESTORE_COLLECTION_SETS = "sets";
+export const FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS = "exercises-sets-reps";
+export const FIRESTORE_COLLECTION_EXERCISE_TYPE_TIME_DISTANCE = "exercises-time-distance";
 
 export default firebase;

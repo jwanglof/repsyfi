@@ -1,5 +1,10 @@
 import isEmpty from 'lodash/isEmpty';
-import firebase, {FIRESTORE_COLLECTION_DAYS, FIRESTORE_COLLECTION_EXERCISES, getCurrentUsersUid} from '../../config/firebase';
+import firebase, {
+  FIRESTORE_COLLECTION_DAYS,
+  FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS,
+  FIRESTORE_COLLECTION_EXERCISE_TYPE_TIME_DISTANCE,
+  FIRESTORE_COLLECTION_EXERCISES
+} from '../../config/firebase';
 import {deleteSet} from '../Set/SetService';
 import {getSpecificDayFromUid, updateDay} from '../Day/DayService';
 
@@ -17,19 +22,78 @@ export const getSpecificExercise = async exerciseUid => {
   }
 };
 
-export const addNewExercise = async (exerciseData, dayUid) => {
-  exerciseData.sets = [];
-  exerciseData.ownerUid = await getCurrentUsersUid();
+export const getSpecificTimeDistanceExercise = async exerciseUid => {
+  const querySnapshot = await firebase.firestore()
+    .collection(FIRESTORE_COLLECTION_EXERCISE_TYPE_TIME_DISTANCE)
+    .doc(exerciseUid)
+    .get();
+  if (!isEmpty(querySnapshot.data())) {
+    const exerciseData = querySnapshot.data();
+    exerciseData.uid = querySnapshot.id;
+    return exerciseData;
+  } else {
+    throw {message: "Exercise data was empty!"};
+  }
+};
+
+export const getSpecificSetsRepsExercise = async exerciseUid => {
+  const querySnapshot = await firebase.firestore()
+    .collection(FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS)
+    .doc(exerciseUid)
+    .get();
+  if (!isEmpty(querySnapshot.data())) {
+    const exerciseData = querySnapshot.data();
+    exerciseData.uid = querySnapshot.id;
+    return exerciseData;
+  } else {
+    throw {message: "Exercise data was empty!"};
+  }
+};
+
+// export const addNewSetsRepsExerciseAndGetUid = async (exerciseData, dayUid) => {
+export const addNewSetsRepsExerciseAndGetUid = async (ownerUid) => {
+  // exerciseData.sets = [];
+  const setsRepsData = {sets: [], ownerUid, created: Math.ceil(Date.now() / 1000)};
+  const exerciseSetsRepsDocRef = await firebase.firestore()
+    .collection(FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS)
+    .add(setsRepsData);
+  // await addExerciseToDayArray(createdExerciseUid, dayUid);
+  return exerciseSetsRepsDocRef.id;
+  // return 'lol';
+  // return await _addExercise(exerciseData, dayUid);
+};
+
+// export const addNewTimeDistanceExerciseAndGetUid = async (exerciseData, dayUid) => {
+export const addNewTimeDistanceExerciseAndGetUid = async (ownerUid) => {
+  const timeDistanceData = {};
+  timeDistanceData.totalTimeSeconds = 0;
+  timeDistanceData.totalDistanceMeter = 0;
+  timeDistanceData.totalWarmupSeconds = 0;
+  timeDistanceData.kcal = 0;
+  timeDistanceData.speedMin = 0;
+  timeDistanceData.speedMax = 0;
+  timeDistanceData.inclineMin = 0;
+  timeDistanceData.inclineMax = 0;
+  timeDistanceData.ownerUid = ownerUid;
+  console.log(timeDistanceData);
+  const exerciseSetsRepsDocRef = await firebase.firestore()
+    .collection(FIRESTORE_COLLECTION_EXERCISE_TYPE_TIME_DISTANCE)
+    .add(timeDistanceData);
+  // await addExerciseToDayArray(createdExerciseUid, dayUid);
+  return exerciseSetsRepsDocRef.id;
+  // return await _addExercise(exerciseData, dayUid);
+};
+
+export const addExerciseAndGetUid = async (exerciseData, ownerUid) => {
+  exerciseData.ownerUid = ownerUid;
   exerciseData.created = Math.ceil(Date.now() / 1000);
   const exerciseDocRef = await firebase.firestore()
     .collection(FIRESTORE_COLLECTION_EXERCISES)
     .add(exerciseData);
-  const createdExerciseUid = exerciseDocRef.id;
-  await addExerciseToDayArray(createdExerciseUid, dayUid);
-  return createdExerciseUid;
+  return exerciseDocRef.id;
 };
 
-const addExerciseToDayArray = async (exerciseUid, dayUid) => {
+export const addExerciseToDayArray = async (exerciseUid, dayUid) => {
   return await firebase.firestore()
     .collection(FIRESTORE_COLLECTION_DAYS)
     .doc(dayUid)

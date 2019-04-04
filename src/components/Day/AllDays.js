@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Col, Row} from 'reactstrap';
 import Loading from '../shared/Loading';
-import Day from './Day';
+import Day from './TSDay';
 import {getAllDays10DaysBackInTime} from './DayService';
 import EmptyCollection from '../EmptyCollection/EmptyCollection';
 import {FIRESTORE_COLLECTION_DAYS} from '../../config/firebase';

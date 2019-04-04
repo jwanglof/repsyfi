@@ -6,11 +6,11 @@ import PropTypes from 'prop-types';
 import {Datepicker} from 'react-formik-ui'
 import {colSmSize, dateFormat, labelSmSize} from './formik-utils';
 
-const DatepickerFormGroup = ({labelText, name, disabled=false}) => (
+const DatepickerFormGroup = ({labelText, name, disabled=false, dateFormat=dateFormat, showTimeSelect=false}) => (
   <FormGroup row>
     <Label for={name} sm={labelSmSize}>{labelText}</Label>
     <Col sm={colSmSize}>
-      <Datepicker className="mt-1" name={name} disabled={disabled} dateFormat={dateFormat}/>
+      <Datepicker className="mt-1" name={name} disabled={disabled} dateFormat={dateFormat} showTimeSelect={showTimeSelect} minDate={new Date()}/>
       <ErrorMessage name={name}>{msg => <Alert color="warning" className="pb-0 pt-0 pl-2 pr-2 mt-2">{msg}</Alert>}</ErrorMessage>
     </Col>
   </FormGroup>

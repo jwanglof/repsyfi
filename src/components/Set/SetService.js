@@ -1,19 +1,17 @@
 import isEmpty from 'lodash/isEmpty';
 import firebase, {
-  FIRESTORE_COLLECTION_EXERCISES,
+  FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS,
   FIRESTORE_COLLECTION_SETS,
   getCurrentUsersUid
 } from '../../config/firebase';
 
-export const addNewSet = async (setData, exerciseUid) => {
+export const addNewSetAndGetUid = async setData => {
   setData.ownerUid = await getCurrentUsersUid();
   setData.created = Math.ceil(Date.now() / 1000);
   const setDocRef = await firebase.firestore()
     .collection(FIRESTORE_COLLECTION_SETS)
     .add(setData);
-  const createdSetUid = setDocRef.id;
-  await addSetToExerciseArray(createdSetUid, exerciseUid);
-  return createdSetUid;
+  return setDocRef.id;
 };
 
 export const getSpecificSet = async setUid => {
@@ -30,9 +28,9 @@ export const getSpecificSet = async setUid => {
     });
 };
 
-const addSetToExerciseArray = async (setUid, exerciseUid) => {
+export const addSetToSetsRepsExerciseArray = async (setUid, exerciseUid) => {
   return await firebase.firestore()
-    .collection(FIRESTORE_COLLECTION_EXERCISES)
+    .collection(FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS)
     .doc(exerciseUid)
     .update({sets: firebase.firestore.FieldValue.arrayUnion(setUid)});
 };

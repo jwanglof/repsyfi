@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {Button, ButtonGroup} from 'reactstrap';
 import isEmpty from 'lodash/isEmpty';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
-import {addNewSet} from './SetService';
+import {addNewSetAndGetUid, addSetToSetsRepsExerciseArray} from './SetService';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {useTranslation} from 'react-i18next';
 import {Form, Formik} from 'formik';
@@ -33,7 +33,8 @@ const AddOneSetTableRow = ({ exerciseUid, initialData, setAddSetViewVisible, set
         amountInKg: values.amountInKg,
         reps: values.reps
       };
-      const uid = await addNewSet(data, exerciseUid);
+      const uid = await addNewSetAndGetUid(data);
+      await addSetToSetsRepsExerciseArray(uid, exerciseUid);
 
       // Set the new last UID for the exercise
       setLastSetUid(uid);
@@ -75,15 +76,16 @@ const AddOneSetTableRow = ({ exerciseUid, initialData, setAddSetViewVisible, set
       render={({errors, isSubmitting}) => (
         <>
           {isSubmitting && <tr><td colSpan={3} className="text-center"><FontAwesomeIcon icon="spinner" spin/></td></tr>}
-          {!isSubmitting && <><tr>
-            <th className="align-middle" scope="row">{initialData.index}</th>
-            <td>
-              <FormikField name="amountInKg" labelText={t("Amount in KG")} type="number" labelHidden={true} min="0"/>
-            </td>
-            <td>
-              <FormikField name="reps" labelText={t("Repetitions")} type="number" labelHidden={true} min="0"/>
-            </td>
-          </tr>
+          {!isSubmitting && <>
+            <tr>
+              <th className="align-middle" scope="row">{initialData.index}</th>
+              <td>
+                <FormikField name="amountInKg" labelText={t("Amount in KG")} type="number" labelHidden={true} min="0"/>
+              </td>
+              <td>
+                <FormikField name="reps" labelText={t("Repetitions")} type="number" labelHidden={true} min="0"/>
+              </td>
+            </tr>
             <tr>
               <td colSpan={3}>
                 <Form>
@@ -93,7 +95,8 @@ const AddOneSetTableRow = ({ exerciseUid, initialData, setAddSetViewVisible, set
                   </ButtonGroup>
                 </Form>
               </td>
-            </tr></>}
+            </tr>
+          </>}
         </>
       )}
     />
