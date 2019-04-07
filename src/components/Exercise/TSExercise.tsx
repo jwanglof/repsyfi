@@ -1,19 +1,17 @@
+import './Exercise.scss';
+
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {getExercise} from './TSExerciseService';
 import {IExerciseModel} from '../../models/IExerciseModel';
 import {Card, CardFooter, Col} from 'reactstrap';
-import ErrorAlert from '../ErrorAlert/ErrorAlert';
-import Loading from '../shared/Loading';
 import TSErrorAlert from '../ErrorAlert/TSErrorAlert';
 import TSLoadingAlert from '../LoadingAlert/TSLoadingAlert';
-import ExerciseHeader from './ExerciseHeader';
 import {EXERCISE_TYPE_SETS_REPS, EXERCISE_TYPE_TIME_DISTANCE} from './ExerciseConstants';
-import ExerciseSetsReps from './ExerciseTypes/ExerciseSetsReps';
-import ExerciseTimeDistance from './ExerciseTypes/ExerciseTimeDistance';
 import TSExerciseHeader from './TSExerciseHeader';
 import TSExerciseHeaderView from './TSExerciseHeaderView';
 import TSExerciseSetsReps from './ExerciseTypes/TSExerciseSetsReps';
+import TSExerciseTimeDistance from './ExerciseTypes/TSExerciseTimeDistance';
 
 const TSExercise: FunctionComponent<TSExerciseProps> = ({ exerciseUid, singleDayView=false, dayUid=null }) => {
   const { t } = useTranslation();
@@ -51,7 +49,7 @@ const TSExercise: FunctionComponent<TSExerciseProps> = ({ exerciseUid, singleDay
         {!dayUid && <TSExerciseHeaderView exerciseData={currentExerciseData}/>}
 
         {currentExerciseData.type === EXERCISE_TYPE_SETS_REPS && <TSExerciseSetsReps exerciseUid={currentExerciseData.typeUid} singleDayView={singleDayView}/>}
-        {currentExerciseData.type === EXERCISE_TYPE_TIME_DISTANCE && <ExerciseTimeDistance exerciseUid={currentExerciseData.typeUid} singleDayView={singleDayView}/>}
+        {currentExerciseData.type === EXERCISE_TYPE_TIME_DISTANCE && <TSExerciseTimeDistance exerciseUid={currentExerciseData.typeUid} singleDayView={singleDayView}/>}
         <CardFooter className="text-muted exercise--card-footer">
           {t("Click on a set for different actions")}
         </CardFooter>

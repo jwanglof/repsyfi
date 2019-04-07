@@ -9,8 +9,13 @@ import {isEmpty} from 'lodash';
 import {IExerciseHeaderModel, IExerciseModel, IExerciseModelWithoutUid} from '../../models/IExerciseModel';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {ISetsRepsModel, ISetsRepsModelWithoutUid} from '../../models/ISetsRepsModel';
-import {ITimeDistanceModelWithoutUid} from '../../models/ITimeDistanceModel';
-import {getExerciseErrorObject, getNowTimestamp} from '../../config/FirebaseUtils';
+import {ITimeDistanceModel, ITimeDistanceModelWithoutUid} from '../../models/ITimeDistanceModel';
+import {
+  getExerciseErrorObject,
+  getNowTimestamp,
+  getSetsRepsExerciseErrorObject,
+  getTimeDistanceExerciseErrorObject
+} from '../../config/FirebaseUtils';
 
 export const getExercise = async (exerciseUid: string): Promise<IExerciseModel> => {
   const querySnapshot = await firebase.firestore()
@@ -83,7 +88,32 @@ export const getSetsRepsExercise = async (exerciseUid: string): Promise<ISetsRep
       createdTimestamp: exerciseData.createdTimestamp
     };
   } else {
-    throw getExerciseErrorObject(exerciseUid);
+    throw getSetsRepsExerciseErrorObject(exerciseUid);
+  }
+};
+
+export const getTimeDistanceExercise = async (exerciseUid: string): Promise<ITimeDistanceModel> => {
+  const querySnapshot = await firebase.firestore()
+    .collection(FIRESTORE_COLLECTION_EXERCISE_TYPE_TIME_DISTANCE)
+    .doc(exerciseUid)
+    .get();
+  if (!isEmpty(querySnapshot.data())) {
+    const exerciseData = querySnapshot.data()!;
+    return {
+      totalTimeSeconds: exerciseData.totalTimeSeconds,
+      totalDistanceMeter: exerciseData.totalDistanceMeter,
+      totalWarmupSeconds: exerciseData.totalWarmupSeconds,
+      totalKcal: exerciseData.totalKcal,
+      speedMin: exerciseData.speedMin,
+      speedMax: exerciseData.speedMax,
+      inclineMin: exerciseData.inclineMin,
+      inclineMax: exerciseData.inclineMax,
+      uid: querySnapshot.id,
+      ownerUid: exerciseData.ownerUid,
+      createdTimestamp: exerciseData.createdTimestamp
+    };
+  } else {
+    throw getTimeDistanceExerciseErrorObject(exerciseUid);
   }
 };
 

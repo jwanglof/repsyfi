@@ -1,3 +1,5 @@
+import './Day.scss';
+
 import React, {FunctionComponent, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {withRoute} from 'react-router5';

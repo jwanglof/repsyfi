@@ -1,3 +1,5 @@
+import './Day.scss';
+
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import {FIRESTORE_COLLECTION_DAYS} from '../../config/firebase';
 import TSLoadingAlert from '../LoadingAlert/TSLoadingAlert';

@@ -5,8 +5,8 @@ import {updateExercise} from './TSExerciseService';
 import {Form, Formik, FormikActions} from 'formik';
 import {Button, ButtonGroup, CardHeader} from 'reactstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import FormikField from '../shared/formik/FormikField';
+import TSErrorAlert from '../ErrorAlert/TSErrorAlert';
 
 const TSExerciseHeader: FunctionComponent<TSExerciseHeaderProps> = ({exerciseData, dayUid}) => {
   const { t } = useTranslation();
@@ -49,7 +49,7 @@ const TSExerciseHeader: FunctionComponent<TSExerciseHeaderProps> = ({exerciseDat
         validate={validate}
         render={({errors, isSubmitting}) => (
           <>
-            {submitErrorMessage && <ErrorAlert errorText={submitErrorMessage} componentName="ExerciseHeader"/>}
+            {submitErrorMessage && <TSErrorAlert errorText={submitErrorMessage} componentName="ExerciseHeader"/>}
             {isSubmitting && <FontAwesomeIcon icon="spinner" spin/>}
             {!isSubmitting && <>
               <Form>

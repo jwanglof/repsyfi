@@ -1,3 +1,5 @@
+import "./OneSet.scss";
+
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import {getSet} from './TSSetService';
 import {ISetModel} from '../../models/ISetModel';

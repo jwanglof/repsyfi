@@ -1,10 +1,9 @@
 import React, {FunctionComponent, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import TSErrorAlert from '../ErrorAlert/TSErrorAlert';
 import {addNewSetAndGetUid, addSetToSetsRepsExerciseArray} from './TSSetService';
 import {ISetBasicModel} from '../../models/ISetModel';
-import {Formik, FormikActions, FormikValues} from 'formik';
+import {Formik, FormikActions} from 'formik';
 import {getCurrentUsersUid} from '../../config/FirebaseUtils';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import FormikField from '../shared/formik/FormikField';
