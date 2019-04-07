@@ -28,6 +28,7 @@ export const getCurrentUsersUid = async () => {
 };
 
 // Collection names
+// TODO Move to FirebaseUtils.ts
 export const FIRESTORE_COLLECTION_EXERCISES = "exercises";
 export const FIRESTORE_COLLECTION_DAYS = "days";
 export const FIRESTORE_COLLECTION_SETS = "sets";

@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {routeNode} from 'react-router5'
-import AllDays from './components/Day/AllDays';
 import {routeNameAddDay, routeNameAllDays, routeNameEditDay, routeNameSpecificDay} from './routes';
-import TSDay from './components/Day/TSDay';
-import AddEditDay from './components/Day/AddEditDay';
+import TSDay from './components/Day/TSDayDetailedView';
 import Login from './components/Login/Login';
 import firebase, {initializeFirebase} from './config/firebase';
 import Footer from './components/Footer/Footer';
+import TSAddEditDay from './components/Day/TSAddEditDay';
+import TSAllDays from './components/Day/TSAllDays';
 
 const App = ({ route }) => {
   const topRouteName = route.name.split('.')[0];
@@ -30,7 +30,7 @@ const App = ({ route }) => {
         console.log('Logged in???');
         setSignInStatusLoading(false);
 
-        if (user) { // KeDpGnOg4zdzq3jIoJVUOjywwEB3
+        if (user) {
           setUserSignedIn(true);
           // User is signed in.
           console.log('User logged in!', user);
@@ -62,16 +62,14 @@ const App = ({ route }) => {
   } else {
     switch (topRouteName) {
       case routeNameSpecificDay:
-        console.log(111, routeNameSpecificDay);
-        // shownComponent = <Day uid={route.params.uid}/>;
         shownComponent = <TSDay dayUid={route.params.uid}/>;
         break;
       case routeNameAddDay:
       case routeNameEditDay:
-        shownComponent = <AddEditDay/>;
+        shownComponent = <TSAddEditDay/>;
         break;
       case routeNameAllDays:
-        shownComponent = <AllDays/>;
+        shownComponent = <TSAllDays/>;
         break;
       default:
         shownComponent = <div>This is where you'll see your dashboard with some stats. Because everyone loves stats, right? <span role="img" aria-label="" aria-labelledby="">😉</span></div>;

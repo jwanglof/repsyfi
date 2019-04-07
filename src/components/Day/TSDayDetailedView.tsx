@@ -7,21 +7,19 @@ import TSErrorAlert from '../ErrorAlert/TSErrorAlert';
 import {IDayModel} from '../../models/IDayModel';
 import {deleteDay, endDayNow, getDay} from './TSDayService';
 import TSLoadingAlert from '../LoadingAlert/TSLoadingAlert';
-import {routeNameEditDay, routeNameRoot, routeNameSpecificDay} from '../../routes';
-import classnames from 'classnames';
-import {Button, ButtonGroup, Col, Collapse, Row} from 'reactstrap';
+import {routeNameEditDay, routeNameRoot} from '../../routes';
+import {Button, ButtonGroup, Col, Row} from 'reactstrap';
 import {getFormattedDate, getTitle} from './DayUtils';
 import TSAddExerciseForm from '../Exercise/TSAddExerciseForm';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 
-const TSDay: FunctionComponent<TSDayProps> = ({router, dayUid}) => {
+const TSDayDetailedView: FunctionComponent<TSDayDetailedViewProps> = ({router, dayUid}) => {
   const { t } = useTranslation();
 
   if (isEmpty(dayUid)) {
     return <TSErrorAlert errorText="Must have the day's UID to proceed!"/>;
   }
 
-  const [collapseIsOpen, setCollapseIsOpen] = useState<boolean>(!!dayUid);
   const [currentData, setCurrentData] = useState<IDayModel | undefined>(undefined);
   const [deleteErrorData, setDeleteErrorData] = useState<string | undefined>(undefined);
   const [updateErrorData, setUpdateErrorData] = useState<string | undefined>(undefined);
@@ -46,12 +44,6 @@ const TSDay: FunctionComponent<TSDayProps> = ({router, dayUid}) => {
     return <TSErrorAlert errorText={deleteErrorData || updateErrorData} componentName="TSDay" uid={dayUid}/>
   }
 
-  const toggle = () => {
-    if (!dayUid) {
-      setCollapseIsOpen(!collapseIsOpen);
-    }
-  };
-
   const dayEnd = async () => {
     try {
       await endDayNow(dayUid);
@@ -71,37 +63,23 @@ const TSDay: FunctionComponent<TSDayProps> = ({router, dayUid}) => {
 
   const editDay = () => router.navigate(routeNameEditDay, {dayUid}, {reload: true});
 
-  const openDetailedView = () => router.navigate(routeNameSpecificDay, { uid: currentData.uid }, {reload: true});
-
-  const rootClassNames = classnames({'day--separator': !dayUid});
-
   const emptyInitialValues = {exerciseName: '', type: ExerciseTypesEnum.EXERCISE_TYPE_NOT_CHOSEN};
 
-  console.log(12121, currentData);
   return (
-    <div className={rootClassNames} onClick={toggle}>
-      {isEmpty(dayUid) && <Row className="text-center">
+    <>
+      {!addExerciseViewVisible && <Row className="mb-4 mt-2">
         <Col xs={12}>
-          <Button block size="sm" onClick={openDetailedView}>{t("Open detailed view")}</Button>
+          <Button color="success" block onClick={() => setAddExerciseViewVisible(true)}>{t("Add exercise")}</Button>
         </Col>
       </Row>}
 
-      <Collapse isOpen={collapseIsOpen}>
-        {!isEmpty(dayUid) && !addExerciseViewVisible &&
-        <Row className="mb-4 mt-2">
-          <Col xs={12}>
-            <Button color="success" block onClick={() => setAddExerciseViewVisible(true)}>{t("Add exercise")}</Button>
-          </Col>
-        </Row>}
+      {addExerciseViewVisible && <TSAddExerciseForm dayUid={dayUid} setAddExerciseViewVisible={setAddExerciseViewVisible} initialValues={emptyInitialValues}/>}
 
-        {addExerciseViewVisible && <TSAddExerciseForm dayUid={dayUid} setAddExerciseViewVisible={setAddExerciseViewVisible} initialValues={emptyInitialValues}/>}
+      {/*<Row>*/}
+      {/*  {currentData.exercises.length && currentData.exercises.map(exerciseUid => <Exercise key={exerciseUid} exerciseUid={exerciseUid} singleDayView={!isEmpty(dayUid)} dayUid={dayUid}/>)}*/}
+      {/*</Row>*/}
 
-        {/*<Row>*/}
-        {/*  {currentData.exercises.length && currentData.exercises.map(exerciseUid => <Exercise key={exerciseUid} exerciseUid={exerciseUid} singleDayView={!isEmpty(dayUid)} dayUid={dayUid}/>)}*/}
-        {/*</Row>*/}
-      </Collapse>
-
-      <Row onClick={toggle}>
+      <Row>
         <Col className="text-lg-right text-center" lg={3} xs={12}>
           <div>{t("Workout location")}: {currentData.location}</div>
           <div>{t("Muscle groups")}: {currentData.muscleGroups}</div>
@@ -114,27 +92,21 @@ const TSDay: FunctionComponent<TSDayProps> = ({router, dayUid}) => {
           <div>{t("Start time")}: {getFormattedDate(currentData.startTimestamp)}</div>
           <div>{t("End time")}: {getFormattedDate(currentData.endTimestamp)}</div>
         </Col>
-        {!isEmpty(dayUid) && <Col xs={12}>
+        <Col xs={12}>
           <ButtonGroup className="w-100">
             <Button color="info" onClick={editDay}>{t("Edit day")}</Button>
             <Button disabled={!!currentData.endTimestamp} onClick={dayEnd}>{t("End day")}</Button>
             <Button color="danger" onClick={dayDelete}>{t("Delete day")}</Button>
           </ButtonGroup>
-        </Col>}
-      </Row>
-
-      {isEmpty(dayUid) && <Row className="text-center">
-        <Col xs={12}>
-          {t("Click to")} {collapseIsOpen ? t("collapse"): t("expand")}
         </Col>
-      </Row>}
-    </div>
+      </Row>
+    </>
   );
 };
 
-interface TSDayProps {
+interface TSDayDetailedViewProps {
   router: Router,
   dayUid: string
 }
 
-export default withRoute(TSDay);
+export default withRoute(TSDayDetailedView);

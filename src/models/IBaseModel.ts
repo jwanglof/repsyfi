@@ -1,4 +1,4 @@
-export interface IBaseModel extends IBaseModelWithoutUid{
+export interface IBaseModel extends IBaseModelWithoutUid {
   uid: string
 }
 

@@ -6,7 +6,7 @@ import firebase, {
   FIRESTORE_COLLECTION_EXERCISES
 } from '../../config/firebase';
 import {isEmpty} from 'lodash';
-import {IExerciseModel, IExerciseModelWithoutUid} from '../../models/IExerciseModel';
+import {IExerciseHeaderModel, IExerciseModel, IExerciseModelWithoutUid} from '../../models/IExerciseModel';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {ISetsRepsModel, ISetsRepsModelWithoutUid} from '../../models/ISetsRepsModel';
 import {ITimeDistanceModelWithoutUid} from '../../models/ITimeDistanceModel';
@@ -123,6 +123,13 @@ export const addExerciseAndGetUid = async (exerciseData: IExerciseModelWithoutUi
     .collection(FIRESTORE_COLLECTION_EXERCISES)
     .add(exerciseData);
   return exerciseDocRef.id;
+};
+
+export const updateExercise = async(exerciseUid: string, exerciseHeaderData: IExerciseModelWithoutUid): Promise<void> => {
+  return await firebase.firestore()
+    .collection(FIRESTORE_COLLECTION_EXERCISES)
+    .doc(exerciseUid)
+    .update(exerciseHeaderData);
 };
 
 // TODO Move to the DayService?

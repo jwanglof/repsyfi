@@ -1,8 +1,10 @@
 import {IBaseModel, IBaseModelWithoutUid} from './IBaseModel';
 import {ExerciseTypesEnum} from '../enums/ExerciseTypesEnum';
 
-export interface IExerciseBasicModel {
-  exerciseName: string,
+export interface IExerciseHeaderModel {
+  exerciseName: string
+}
+export interface IExerciseBasicModel extends IExerciseHeaderModel {
   type: ExerciseTypesEnum,
   typeUid: string
 }
