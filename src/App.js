@@ -5,8 +5,9 @@ import TSDay from './components/Day/DayDetailedView';
 import Login from './components/Login/Login';
 import firebase, {initializeFirebase} from './config/firebase';
 import Footer from './components/Footer/Footer';
-import TSAddEditDay from './components/Day/AddEditDay';
+import TSAddEditDay from './components/Day/AddDay';
 import AllDays from './components/Day/AllDays';
+import EditDay from './components/Day/EditDay';
 
 const App = ({ route }) => {
   const topRouteName = route.name.split('.')[0];
@@ -65,8 +66,10 @@ const App = ({ route }) => {
         shownComponent = <TSDay dayUid={route.params.uid}/>;
         break;
       case routeNameAddDay:
-      case routeNameEditDay:
         shownComponent = <TSAddEditDay/>;
+        break;
+      case routeNameEditDay:
+        shownComponent = <EditDay dayUid={route.params.dayUid}/>;
         break;
       case routeNameAllDays:
         shownComponent = <AllDays/>;

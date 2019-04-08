@@ -2,11 +2,11 @@ import React, {FunctionComponent, useEffect, useState} from 'react';
 import {Router} from 'router5';
 import {withRoute} from 'react-router5';
 import {useTranslation} from 'react-i18next';
-import {addDay, getDay} from './DayService';
+import {addDay, getDay, updateDay} from './DayService';
 import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import {dateFormat, timeFormat} from '../shared/formik/formik-utils';
-import {IDayBasicModel} from '../../models/IDayModel';
+import {IDayBasicModel, IDayBasicUpdateModel, IDayUpdateModel} from '../../models/IDayModel';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {isDate} from 'lodash';
@@ -19,89 +19,45 @@ import {Button, ButtonGroup, Col, FormGroup, Row} from 'reactstrap';
 import FieldFormGroup from '../shared/formik/FieldFormGroup';
 import SelectFormGroup from '../shared/formik/SelectFormGroup';
 import {getExerciseTypes} from '../Exercise/ExerciseService';
+import DateTimePickerFormGroup from '../shared/formik/DateTimePickerFormGroup';
+import DatepickerFormGroup from '../shared/formik/DatepickerFormGroup';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 
-const AddEditDay: FunctionComponent<IAddEditDayProps> = ({router, setAddExerciseViewVisible, initialValues}) => {
+const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router, setAddExerciseViewVisible}) => {
   const { t } = useTranslation();
+  const nowDate = format(new Date(), dateFormat);
+  const initialData: IAddEditDayEditData = {
+    location: '',
+    muscleGroups: '',
+    title: nowDate,
+    startTimeFormatted: format(new Date(), timeFormat),
+    startDateFormatted: nowDate,
+  };
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
-  const [initialData, setInitialData] = useState<IAddEditDayEditData | undefined>(undefined);
-  const [updating, setUpdating] = useState<boolean>(false); // TODO Rename to editing?
-  const [dayUid, setDayUid] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    // Fetch day data if the user is editing
-    if (router.getState().params && router.getState().params.dayUid) {
-      const dayUid = router.getState().params.dayUid;
-      getDay(dayUid).then(res => {
-        const data: IAddEditDayEditData = {
-          ...res,
-          startTimeFormatted: format(fromUnixTime(res.startTimestamp), timeFormat),
-          startDateFormatted: format(fromUnixTime(res.startTimestamp), dateFormat)
-        };
-        // data.startTimeFormatted = format(fromUnixTime(res.startTimestamp), timeFormat);
-        // data.startDateFormatted = format(fromUnixTime(res.startTimestamp), dateFormat);
-        if (res.endTimestamp) {
-          data.endTimeFormatted = format(fromUnixTime(res.endTimestamp), timeFormat);
-          data.endDateFormatted = format(fromUnixTime(res.endTimestamp), dateFormat);
-        } else {
-          data.endTimeFormatted = format(new Date, timeFormat);
-          data.endDateFormatted = format(new Date, dateFormat);
-        }
-        setUpdating(true);
-        setDayUid(dayUid);
-        setInitialData(data);
-      });
-    } else {
-      const nowDate = format(new Date(), dateFormat);
-      const initialValues: IAddEditDayEditData = {
-        location: '',
-        muscleGroups: '',
-        title: nowDate,
-        startTimeFormatted: format(new Date(), timeFormat),
-        startDateFormatted: nowDate,
-      };
-      setInitialData(initialValues);
-    }
-  }, []);
-
-  if (!initialData) {
-    return <LoadingAlert componentName="AddEditDay"/>
-  }
 
   if (submitErrorMessage) {
     return <ErrorAlert componentName="AddEditDay" errorText={submitErrorMessage}/>;
   }
-
-  // Format a date object to a specific format
-  const getFormattedDate = (startDate: Date | string) => {
-    let d = startDate;
-    if (isDate(startDate)) {
-      d = format(startDate, dateFormat);
-    }
-    return d;
-  };
 
   const onSubmit = async (values: IAddEditDayEditData, actions: FormikActions<IAddEditDayEditData>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
     try {
       const ownerUid: string = await getCurrentUsersUid();
-      const startTimestamp = getUnixTime(parseISO(`${values.startDateFormatted}T${values.startTimeFormatted}`));
-      // const dayData = buildInitialFirebaseDayData({...values, startTimestamp});
       const data: IDayBasicModel = {
         notes: '',
         title: values.title,
         muscleGroups: values.muscleGroups,
         location: values.location,
         exercises: [],
-        startTimestamp
+        startTimestamp: getUnixTime(parseISO(`${values.startDateFormatted}T${values.startTimeFormatted}`))
       };
       const newUid = await addDay(data, ownerUid);
       router.navigate(routeNameSpecificDay, {uid: newUid}, {reload: true});
     } catch (e) {
-      console.error(e);
+      console.log(e);
       setSubmitErrorMessage(e.message);
     }
     actions.setSubmitting(false);
@@ -122,25 +78,24 @@ const AddEditDay: FunctionComponent<IAddEditDayProps> = ({router, setAddExercise
     <Row>
       <Col xs={12}>
         <Formik
-          initialValues={initialValues}
+          initialValues={initialData}
           onSubmit={onSubmit}
           validate={validate}
           // render={({ errors, status, touched, isSubmitting }) => (
           render={({ errors, isSubmitting }) => (
-            <Form themed>
-              <FieldFormGroup name="exerciseName" labelText={t("Exercise")}/>
-              <SelectFormGroup name="type" labelText={t("Exercise type")} options={getExerciseTypes()}/>
+            <Form>
+              <FieldFormGroup name="location" labelText={t("Workout location")}/>
+              <FieldFormGroup name="muscleGroups" labelText={t("Muscle groups")}/>
+              <FieldFormGroup name="title" labelText={t("Title")}/>
 
-              <Row>
-                <Col xs={12}>
-                  <FormGroup>
-                    <ButtonGroup className="w-100">
-                      <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t("Save exercise")}</Button>
-                      <Button color="danger" onClick={() => setAddExerciseViewVisible(false)}>{t("Discard exercise")}</Button>
-                    </ButtonGroup>
-                  </FormGroup>
+              <DatepickerFormGroup name="startDateFormatted" labelText={t("Start date")}/>
+              <DateTimePickerFormGroup name="startTimeFormatted" labelText={t("Start time")}/>
+
+              <FormGroup row>
+                <Col sm={12}>
+                  <Button type="submit" color="primary" disabled={isSubmitting || !errors} block>{t("Save new day")}</Button>
                 </Col>
-              </Row>
+              </FormGroup>
             </Form>
           )}
         />
@@ -149,10 +104,12 @@ const AddEditDay: FunctionComponent<IAddEditDayProps> = ({router, setAddExercise
   );
 };
 
-interface IAddEditDayProps {
-  router: Router,
-  initialValues: IAddEditDayEditData,
+interface IAddDayProps {
   setAddExerciseViewVisible: any
+}
+
+interface IAddDayRouter {
+  router: Router
 }
 
 // interface IAddEditDayEditData extends IDayModel {
@@ -164,7 +121,7 @@ interface IAddEditDayEditData {
   location: string,
   muscleGroups: string, // Will be split into an array with strings
   title: string,
-  // notes: string,
+  notes?: string,
   // exercises: Array<string>  // IExerciseModel
 }
 
@@ -178,4 +135,4 @@ interface IAddEditDayFormValidate {
   title?: string
 }
 
-export default withRoute(AddEditDay);
+export default withRoute(AddDay);

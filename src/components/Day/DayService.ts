@@ -1,10 +1,16 @@
-import {IDayBasicModel, IDayModel, IDayModelWithoutUid} from '../../models/IDayModel';
+import {
+  IDayBasicModel,
+  IDayBasicUpdateModel,
+  IDayModel,
+  IDayModelWithoutUid,
+  IDayUpdateModel
+} from '../../models/IDayModel';
 import firebase, {FIRESTORE_COLLECTION_DAYS, getCurrentUsersUid} from '../../config/firebase';
 import {deleteExercise} from '../Exercise/ExerciseService';
 import {isEmpty} from 'lodash';
 import {getDayErrorObject, getNowTimestamp} from '../../config/FirebaseUtils';
-import getUnixTime from "date-fns/getUnixTime";
-import subDays from "date-fns/subDays";
+import getUnixTime from 'date-fns/getUnixTime';
+import subDays from 'date-fns/subDays';
 
 export const getDay = async (dayUid: string): Promise<IDayModel> => {
   return firebase
@@ -100,4 +106,19 @@ export const getAllDays10DaysBackInTime = async (): Promise<Array<IDayModel>> =>
       });
       return days;
     });
+};
+
+export const updateDay = async (dayUid: string, dayData: IDayBasicUpdateModel) => {
+  const data: IDayUpdateModel = {
+    endTimestamp: dayData.endTimestamp,
+    location: dayData.location,
+    muscleGroups: dayData.muscleGroups,
+    startTimestamp: dayData.startTimestamp,
+    title: dayData.title,
+    updatedTimestamp: getNowTimestamp()
+  };
+  return await firebase.firestore()
+    .collection(FIRESTORE_COLLECTION_DAYS)
+    .doc(dayUid)
+    .update(data);
 };

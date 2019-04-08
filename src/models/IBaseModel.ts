@@ -6,3 +6,7 @@ export interface IBaseModelWithoutUid {
   ownerUid: string,
   createdTimestamp: number
 }
+
+export interface IBaseModelUpdating {
+  updatedTimestamp: number
+}
