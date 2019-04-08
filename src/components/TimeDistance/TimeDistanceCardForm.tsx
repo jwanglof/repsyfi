@@ -6,11 +6,11 @@ import {ErrorMessage, Field, Formik, FormikActions} from 'formik';
 import {Alert, Button, ButtonGroup, CardBody, Col, FormGroup, Input, Label} from 'reactstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {colSmSize, labelSmSize} from '../shared/formik/formik-utils';
-import DateTimePickerFormGroup from '../shared/formik/DateTimePickerFormGroup';
 import FieldFormGroup from '../shared/formik/FieldFormGroup';
 import {TSEditVisibleCtx} from './ExerciseTimeDistance';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
+import DateTimePickerFormGroup from '../shared/formik/DateTimePickerFormGroup';
 
 const TimeDistanceCardForm: FunctionComponent<ITimeDistanceCardFormProps> = ({currentExerciseData}) => {
   const { t } = useTranslation();

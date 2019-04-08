@@ -76,10 +76,10 @@ const AddOneSetTableRow: FunctionComponent<IAddOneSetTableRowProps> = ({ exercis
             <tr>
               <th className="align-middle" scope="row">{initialData.index}</th>
               <td>
-                <FormikField name="amountInKg" labelText={t("Amount in KG")} type="number" labelHidden={true} min="0"/>
+                <FormikField name="amountInKg" labelText={t("Amount in KG")} type="number" labelHidden={true} min={0}/>
               </td>
               <td>
-                <FormikField name="reps" labelText={t("Repetitions")} type="number" labelHidden={true} min="0"/>
+                <FormikField name="reps" labelText={t("Repetitions")} type="number" labelHidden={true} min={0}/>
               </td>
             </tr>
             <tr>

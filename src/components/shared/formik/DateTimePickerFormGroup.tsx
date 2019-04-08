@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {FunctionComponent} from 'react';
+import {IFormikProps} from './ts-formik-utils';
 import {Alert, Col, FormGroup, Input, Label} from 'reactstrap';
-import {ErrorMessage, Field} from 'formik';
-import PropTypes from 'prop-types';
 import {colSmSize, labelSmSize} from './formik-utils';
+import {ErrorMessage, Field} from 'formik';
 
-const DateTimePickerFormGroup = ({labelText, name, ...inputProps}) => {
+const DateTimePickerFormGroup: FunctionComponent<IFormikProps> = ({labelText, name, ...inputProps}) => {
   return (
     <FormGroup row>
       <Label for={name} sm={labelSmSize}>{labelText}</Label>
@@ -14,14 +14,6 @@ const DateTimePickerFormGroup = ({labelText, name, ...inputProps}) => {
       </Col>
     </FormGroup>
   );
-};
-
-DateTimePickerFormGroup.propTypes = {
-  inputProps: PropTypes.shape({
-    disabled: PropTypes.bool
-  }),
-  labelText: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
 };
 
 export default DateTimePickerFormGroup;
