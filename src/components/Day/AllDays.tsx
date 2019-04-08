@@ -15,7 +15,10 @@ const AllDays: FunctionComponent<IAllDaysProps> = () => {
   const [allDays, setAllDays] = useState<Array<IDayModel> | undefined>(undefined);
 
   useEffect(() => {
-    getAllDays10DaysBackInTime().then(res => setAllDays(orderBy(res, ['startTimestamp'], ['desc'])));
+    getAllDays10DaysBackInTime().then(res => {
+      console.log(12332, res);
+      setAllDays(orderBy(res, ['startTimestamp'], ['desc']));
+    });
   }, []);
 
   if (!allDays) {

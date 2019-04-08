@@ -2,7 +2,7 @@ import React, {FunctionComponent, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
-import {getCurrentUsersUid, getNowTimestamp} from '../../config/FirebaseUtils';
+import {getCurrentUsersUid} from '../../config/FirebaseUtils';
 import {Formik, FormikActions} from 'formik';
 import {isEmpty} from 'lodash';
 import {
@@ -12,7 +12,7 @@ import {
   addNewTimeDistanceExerciseAndGetUid,
   getExerciseTypes
 } from './ExerciseService';
-import {IExerciseModelWithoutUid} from '../../models/IExerciseModel';
+import {IExerciseBasicModel} from '../../models/IExerciseModel';
 import {Button, ButtonGroup, Col, FormGroup, Row} from 'reactstrap';
 import FieldFormGroup from '../shared/formik/FieldFormGroup';
 import SelectFormGroup from '../shared/formik/SelectFormGroup';
@@ -51,14 +51,12 @@ const AddExerciseForm: FunctionComponent<IAddExerciseFormProps> = ({dayUid, setA
         return;
       }
 
-      const exerciseData: IExerciseModelWithoutUid = {
+      const exerciseData: IExerciseBasicModel = {
         exerciseName: values.exerciseName,
         type: values.type,
-        typeUid: exerciseTypeUid,
-        ownerUid: ownerUid,
-        createdTimestamp: getNowTimestamp()
+        typeUid: exerciseTypeUid
       };
-      const exerciseUid = await addExerciseAndGetUid(exerciseData);
+      const exerciseUid = await addExerciseAndGetUid(exerciseData, ownerUid);
       await addExerciseToDayArray(exerciseUid, dayUid);
       setAddExerciseViewVisible(false);
     } catch (e) {

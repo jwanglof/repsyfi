@@ -1,24 +1,19 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
+import React, {FunctionComponent, useState} from 'react';
 import {Router} from 'router5';
 import {withRoute} from 'react-router5';
 import {useTranslation} from 'react-i18next';
-import {addDay, getDay, updateDay} from './DayService';
+import {addDay} from './DayService';
 import format from 'date-fns/format';
-import fromUnixTime from 'date-fns/fromUnixTime';
 import {dateFormat, timeFormat} from '../shared/formik/formik-utils';
-import {IDayBasicModel, IDayBasicUpdateModel, IDayUpdateModel} from '../../models/IDayModel';
-import LoadingAlert from '../LoadingAlert/LoadingAlert';
+import {IDayBasicModel} from '../../models/IDayModel';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
-import {isDate} from 'lodash';
 import getUnixTime from 'date-fns/getUnixTime';
 import parseISO from 'date-fns/parseISO';
 import {routeNameSpecificDay} from '../../routes';
 import {Formik, FormikActions} from 'formik';
 import {getCurrentUsersUid} from '../../config/FirebaseUtils';
-import {Button, ButtonGroup, Col, FormGroup, Row} from 'reactstrap';
+import {Button, Col, FormGroup, Row} from 'reactstrap';
 import FieldFormGroup from '../shared/formik/FieldFormGroup';
-import SelectFormGroup from '../shared/formik/SelectFormGroup';
-import {getExerciseTypes} from '../Exercise/ExerciseService';
 import DateTimePickerFormGroup from '../shared/formik/DateTimePickerFormGroup';
 import DatepickerFormGroup from '../shared/formik/DatepickerFormGroup';
 // @ts-ignore
@@ -27,12 +22,13 @@ import {Form} from 'react-formik-ui';
 const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router, setAddExerciseViewVisible}) => {
   const { t } = useTranslation();
   const nowDate = format(new Date(), dateFormat);
-  const initialData: IAddEditDayEditData = {
+  const initialData: IAddDayEditData = {
     location: '',
     muscleGroups: '',
     title: nowDate,
     startTimeFormatted: format(new Date(), timeFormat),
     startDateFormatted: nowDate,
+    notes: ''
   };
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
@@ -41,18 +37,18 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router, setAdd
     return <ErrorAlert componentName="AddEditDay" errorText={submitErrorMessage}/>;
   }
 
-  const onSubmit = async (values: IAddEditDayEditData, actions: FormikActions<IAddEditDayEditData>) => {
+  const onSubmit = async (values: IAddDayEditData, actions: FormikActions<IAddDayEditData>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
     try {
       const ownerUid: string = await getCurrentUsersUid();
       const data: IDayBasicModel = {
-        notes: '',
         title: values.title,
         muscleGroups: values.muscleGroups,
         location: values.location,
         exercises: [],
-        startTimestamp: getUnixTime(parseISO(`${values.startDateFormatted}T${values.startTimeFormatted}`))
+        startTimestamp: getUnixTime(parseISO(`${values.startDateFormatted}T${values.startTimeFormatted}`)),
+        notes: values.notes
       };
       const newUid = await addDay(data, ownerUid);
       router.navigate(routeNameSpecificDay, {uid: newUid}, {reload: true});
@@ -63,8 +59,8 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router, setAdd
     actions.setSubmitting(false);
   };
 
-  const validate = (values: IAddEditDayEditData): IAddEditDayFormValidate | {} => {
-    let errors: IAddEditDayFormValidate = {};
+  const validate = (values: IAddDayEditData): IAddDayFormValidate | {} => {
+    let errors: IAddDayFormValidate = {};
     if (values.startDateFormatted === '') {
       errors.startDateFormatted = `${t("Start date")} ${t("must be set")}`;
     }
@@ -87,6 +83,7 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router, setAdd
               <FieldFormGroup name="location" labelText={t("Workout location")}/>
               <FieldFormGroup name="muscleGroups" labelText={t("Muscle groups")}/>
               <FieldFormGroup name="title" labelText={t("Title")}/>
+              <FieldFormGroup name="notes" labelText={t("Notes")}/>
 
               <DatepickerFormGroup name="startDateFormatted" labelText={t("Start date")}/>
               <DateTimePickerFormGroup name="startTimeFormatted" labelText={t("Start time")}/>
@@ -112,27 +109,22 @@ interface IAddDayRouter {
   router: Router
 }
 
-// interface IAddEditDayEditData extends IDayModel {
-interface IAddEditDayEditData {
+interface IAddDayEditData {
   startTimeFormatted: string,
   startDateFormatted: string,
-  endTimeFormatted?: string,
-  endDateFormatted?: string,
   location: string,
-  muscleGroups: string, // Will be split into an array with strings
+  muscleGroups: string,
   title: string,
-  notes?: string,
-  // exercises: Array<string>  // IExerciseModel
+  notes: string
 }
 
-interface IAddEditDayFormValidate {
+interface IAddDayFormValidate {
   startTimeFormatted?: string,
   startDateFormatted?: string,
-  endTimeFormatted?: string,
-  endDateFormatted?: string,
   location?: string,
   muscleGroups?: string,
-  title?: string
+  title?: string,
+  notes?: string
 }
 
 export default withRoute(AddDay);

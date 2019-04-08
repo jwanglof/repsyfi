@@ -29,12 +29,12 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
   }
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
-  const [initialData, setInitialData] = useState<IAddEditDayEditData | undefined>(undefined);
+  const [initialData, setInitialData] = useState<IEditDayEditData | undefined>(undefined);
 
   useEffect(() => {
     // Fetch day data if the user is editing
     getDay(dayUid).then(res => {
-      const data: IAddEditDayEditData = {
+      const data: IEditDayEditData = {
         ...res,
         startTimeFormatted: format(fromUnixTime(res.startTimestamp), timeFormat),
         startDateFormatted: format(fromUnixTime(res.startTimestamp), dateFormat)
@@ -59,7 +59,7 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
     return <ErrorAlert componentName="EditDay" errorText={submitErrorMessage}/>;
   }
 
-  const onUpdate = async (values: IAddEditDayEditData, actions: FormikActions<IAddEditDayEditData>) => {
+  const onUpdate = async (values: IEditDayEditData, actions: FormikActions<IEditDayEditData>) => {
     actions.setSubmitting(true);
     try {
       const data: IDayBasicUpdateModel = {
@@ -81,8 +81,8 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
     actions.setSubmitting(false);
   };
 
-  const validate = (values: IAddEditDayEditData): IAddEditDayFormValidate | {} => {
-    let errors: IAddEditDayFormValidate = {};
+  const validate = (values: IEditDayEditData): IEditDayFormValidate | {} => {
+    let errors: IEditDayFormValidate = {};
     if (values.startDateFormatted === '') {
       errors.startDateFormatted = `${t("Start date")} ${t("must be set")}`;
     }
@@ -105,6 +105,7 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
               <FieldFormGroup name="location" labelText={t("Workout location")}/>
               <FieldFormGroup name="muscleGroups" labelText={t("Muscle groups")}/>
               <FieldFormGroup name="title" labelText={t("Title")}/>
+              <FieldFormGroup name="notes" labelText={t("Notes")}/>
 
               <DatepickerFormGroup name="startDateFormatted" labelText={t("Start date")}/>
               <DateTimePickerFormGroup name="startTimeFormatted" labelText={t("Start time")}/>
@@ -133,27 +134,26 @@ interface IEditDayRouter {
   router: Router
 }
 
-// interface IAddEditDayEditData extends IDayModel {
-interface IAddEditDayEditData {
+interface IEditDayEditData {
   startTimeFormatted: string,
   startDateFormatted: string,
   endTimeFormatted?: string,
   endDateFormatted?: string,
   location: string,
-  muscleGroups: string, // Will be split into an array with strings
+  muscleGroups: string,
   title: string,
   notes?: string,
-  // exercises: Array<string>  // IExerciseModel
 }
 
-interface IAddEditDayFormValidate {
+interface IEditDayFormValidate {
   startTimeFormatted?: string,
   startDateFormatted?: string,
   endTimeFormatted?: string,
   endDateFormatted?: string,
   location?: string,
   muscleGroups?: string,
-  title?: string
+  title?: string,
+  notes?: string,
 }
 
 export default withRoute(EditDay);

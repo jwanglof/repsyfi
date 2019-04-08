@@ -6,7 +6,7 @@ import firebase, {
   FIRESTORE_COLLECTION_EXERCISES
 } from '../../config/firebase';
 import {isEmpty} from 'lodash';
-import {IExerciseHeaderModel, IExerciseModel, IExerciseModelWithoutUid} from '../../models/IExerciseModel';
+import {IExerciseBasicModel, IExerciseModel, IExerciseModelWithoutUid} from '../../models/IExerciseModel';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {ISetsRepsModel, ISetsRepsModelWithoutUid} from '../../models/ISetsRepsModel';
 import {ITimeDistanceModel, ITimeDistanceModelWithoutUid} from '../../models/ITimeDistanceModel';
@@ -148,10 +148,17 @@ export const addNewTimeDistanceExerciseAndGetUid = async (ownerUid: string): Pro
   return exerciseSetsRepsDocRef.id;
 };
 
-export const addExerciseAndGetUid = async (exerciseData: IExerciseModelWithoutUid): Promise<string> => {
+export const addExerciseAndGetUid = async (exerciseData: IExerciseBasicModel, ownerUid: string): Promise<string> => {
+  const data: IExerciseModelWithoutUid = {
+    ownerUid,
+    createdTimestamp: getNowTimestamp(),
+    type: exerciseData.type,
+    typeUid: exerciseData.typeUid,
+    exerciseName: exerciseData.exerciseName
+  };
   const exerciseDocRef = await firebase.firestore()
     .collection(FIRESTORE_COLLECTION_EXERCISES)
-    .add(exerciseData);
+    .add(data);
   return exerciseDocRef.id;
 };
 
