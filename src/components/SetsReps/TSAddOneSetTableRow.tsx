@@ -103,7 +103,7 @@ interface ITSAddOneSetTableRowProps {
   exerciseUid: string,
   initialData: any,
   setAddSetViewVisible: any,
-  setLastSetUid: any
+  setLastSetUid?: any
 }
 
 interface ITSAddOneSetTableRowValidate {

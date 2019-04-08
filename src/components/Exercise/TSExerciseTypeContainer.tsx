@@ -10,8 +10,8 @@ import TSLoadingAlert from '../LoadingAlert/TSLoadingAlert';
 import {EXERCISE_TYPE_SETS_REPS, EXERCISE_TYPE_TIME_DISTANCE} from './ExerciseConstants';
 import TSExerciseHeader from './TSExerciseHeader';
 import TSExerciseHeaderView from './TSExerciseHeaderView';
-import TSExerciseSetsReps from './ExerciseTypes/TSExerciseSetsReps';
-import TSExerciseTimeDistance from './ExerciseTypes/TSExerciseTimeDistance';
+import TSExerciseSetsReps from '../SetsReps/TSExerciseSetsReps';
+import TSExerciseTimeDistance from '../TimeDistance/TSExerciseTimeDistance';
 
 const TSExerciseTypeContainer: FunctionComponent<TSExerciseTypeContainerProps> = ({ exerciseUid, singleDayView=false, dayUid=null }) => {
   const { t } = useTranslation();

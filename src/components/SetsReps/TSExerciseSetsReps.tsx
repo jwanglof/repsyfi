@@ -1,12 +1,13 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {getSetsRepsExercise} from '../TSExerciseService';
-import {ISetsRepsModel} from '../../../models/ISetsRepsModel';
+import {getSetsRepsExercise} from '../Exercise/TSExerciseService';
+import {ISetsRepsModel} from '../../models/ISetsRepsModel';
 import {Button, CardBody, Table} from 'reactstrap';
-import TSErrorAlert from '../../ErrorAlert/TSErrorAlert';
-import TSLoadingAlert from '../../LoadingAlert/TSLoadingAlert';
-import {ISetBasicModel} from '../../../models/ISetModel';
-import TSOneSetTableRow from '../../Set/TSOneSetTableRow';
+import TSErrorAlert from '../ErrorAlert/TSErrorAlert';
+import TSLoadingAlert from '../LoadingAlert/TSLoadingAlert';
+import {ISetBasicModel} from '../../models/ISetModel';
+import TSOneSetTableRow from './TSOneSetTableRow';
+import TSAddOneSetTableRow from './TSAddOneSetTableRow';
 
 const TSExerciseSetsReps: FunctionComponent<TSExerciseSetsRepsProps> = ({exerciseUid, singleDayView}) => {
   const { t } = useTranslation();
@@ -72,7 +73,8 @@ const TSExerciseSetsReps: FunctionComponent<TSExerciseSetsRepsProps> = ({exercis
           }
           return <TSOneSetTableRow key={setUid} setUid={setUid} disabled={addSetViewVisible}/>;
         })}
-        {/*{addSetViewVisible && <AddOneSetTableRow exerciseUid={currentExerciseData.uid} setAddSetViewVisible={setAddSetViewVisible} initialData={getLastSetData()} setLastSetUid={setLastSetUid}/>}*/}
+        {addSetViewVisible && <TSAddOneSetTableRow exerciseUid={currentExerciseData.uid} setAddSetViewVisible={setAddSetViewVisible} initialData={getLastSetData()}/>}
+        {/*{addSetViewVisible && <TSAddOneSetTableRow exerciseUid={currentExerciseData.uid} setAddSetViewVisible={setAddSetViewVisible} initialData={getLastSetData()} setLastSetUid={setLastSetUid}/>}*/}
         </tbody>
         <tfoot>
         {singleDayView && !addSetViewVisible && <tr>

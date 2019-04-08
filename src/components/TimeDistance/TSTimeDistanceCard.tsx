@@ -1,6 +1,6 @@
 import React, {FunctionComponent, useContext} from 'react';
 import {ITimeDistanceModel} from '../../models/ITimeDistanceModel';
-import {TSEditVisibleCtx} from '../Exercise/ExerciseTypes/TSExerciseTimeDistance';
+import {TSEditVisibleCtx} from './TSExerciseTimeDistance';
 import {Button, CardBody, Col, Row} from 'reactstrap';
 
 const TSTimeDistanceCard: FunctionComponent<TSTimeDistanceCardProps> = ({currentExerciseData}) => {

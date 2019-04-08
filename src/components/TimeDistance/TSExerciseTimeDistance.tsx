@@ -1,11 +1,11 @@
 import React, {createContext, FunctionComponent, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {getTimeDistanceExercise} from '../TSExerciseService';
-import TSErrorAlert from '../../ErrorAlert/TSErrorAlert';
-import TSLoadingAlert from '../../LoadingAlert/TSLoadingAlert';
-import {ITimeDistanceModel} from '../../../models/ITimeDistanceModel';
-import TSTimeDistanceCard from '../../TimeDistance/TSTimeDistanceCard';
-import TSTimeDistanceCardForm from '../../TimeDistance/TSTimeDistanceCardForm';
+import {getTimeDistanceExercise} from '../Exercise/TSExerciseService';
+import TSErrorAlert from '../ErrorAlert/TSErrorAlert';
+import TSLoadingAlert from '../LoadingAlert/TSLoadingAlert';
+import {ITimeDistanceModel} from '../../models/ITimeDistanceModel';
+import TSTimeDistanceCard from './TSTimeDistanceCard';
+import TSTimeDistanceCardForm from './TSTimeDistanceCardForm';
 
 export const TSEditVisibleCtx = createContext<any>([false, () => {}]);
 

@@ -8,7 +8,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {colSmSize, labelSmSize} from '../shared/formik/formik-utils';
 import DateTimePickerFormGroup from '../shared/formik/DateTimePickerFormGroup';
 import FieldFormGroup from '../shared/formik/FieldFormGroup';
-import {TSEditVisibleCtx} from '../Exercise/ExerciseTypes/TSExerciseTimeDistance';
+import {TSEditVisibleCtx} from './TSExerciseTimeDistance';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 
