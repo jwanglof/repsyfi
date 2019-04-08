@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {routeNode} from 'react-router5'
 import {routeNameAddDay, routeNameAllDays, routeNameEditDay, routeNameSpecificDay} from './routes';
-import TSDay from './components/Day/TSDayDetailedView';
+import TSDay from './components/Day/DayDetailedView';
 import Login from './components/Login/Login';
 import firebase, {initializeFirebase} from './config/firebase';
 import Footer from './components/Footer/Footer';
-import TSAddEditDay from './components/Day/TSAddEditDay';
-import TSAllDays from './components/Day/TSAllDays';
+import TSAddEditDay from './components/Day/AddEditDay';
+import AllDays from './components/Day/AllDays';
 
 const App = ({ route }) => {
   const topRouteName = route.name.split('.')[0];
@@ -69,7 +69,7 @@ const App = ({ route }) => {
         shownComponent = <TSAddEditDay/>;
         break;
       case routeNameAllDays:
-        shownComponent = <TSAllDays/>;
+        shownComponent = <AllDays/>;
         break;
       default:
         shownComponent = <div>This is where you'll see your dashboard with some stats. Because everyone loves stats, right? <span role="img" aria-label="" aria-labelledby="">😉</span></div>;

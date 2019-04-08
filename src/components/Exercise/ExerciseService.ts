@@ -1,4 +1,4 @@
-import {deleteSet} from '../SetsReps/TSSetService';
+import {deleteSet} from '../SetsReps/SetService';
 import firebase, {
   FIRESTORE_COLLECTION_DAYS,
   FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS,

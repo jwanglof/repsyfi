@@ -5,22 +5,22 @@ import {useTranslation} from 'react-i18next';
 import {withRoute} from 'react-router5';
 import {Router} from 'router5';
 import isEmpty from 'lodash/isEmpty';
-import TSErrorAlert from '../ErrorAlert/TSErrorAlert';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {IDayModel} from '../../models/IDayModel';
-import {deleteDay, endDayNow, getDay} from './TSDayService';
-import TSLoadingAlert from '../LoadingAlert/TSLoadingAlert';
+import {deleteDay, endDayNow, getDay} from './DayService';
+import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {routeNameEditDay, routeNameRoot} from '../../routes';
 import {Button, ButtonGroup, Col, Row} from 'reactstrap';
 import {getFormattedDate, getTitle} from './DayUtils';
-import TSAddExerciseForm from '../Exercise/TSAddExerciseForm';
+import AddExerciseForm from '../Exercise/AddExerciseForm';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
-import TSExerciseTypeContainer from '../Exercise/TSExerciseTypeContainer';
+import ExerciseTypeContainer from '../Exercise/ExerciseTypeContainer';
 
-const TSDayDetailedView: FunctionComponent<TSDayDetailedViewProps> = ({router, dayUid}) => {
+const DayDetailedView: FunctionComponent<IDayDetailedViewProps> = ({router, dayUid}) => {
   const { t } = useTranslation();
 
   if (isEmpty(dayUid)) {
-    return <TSErrorAlert errorText="Must have the day's UID to proceed!"/>;
+    return <ErrorAlert errorText="Must have the day's UID to proceed!"/>;
   }
 
   const [currentData, setCurrentData] = useState<IDayModel | undefined>(undefined);
@@ -41,11 +41,11 @@ const TSDayDetailedView: FunctionComponent<TSDayDetailedViewProps> = ({router, d
   }, []);
 
   if (!currentData) {
-    return <TSLoadingAlert componentName="Day"/>;
+    return <LoadingAlert componentName="DayDetailedView"/>;
   }
 
   if (deleteErrorData || updateErrorData) {
-    return <TSErrorAlert errorText={deleteErrorData || updateErrorData} componentName="TSDay" uid={dayUid}/>
+    return <ErrorAlert errorText={deleteErrorData || updateErrorData} componentName="DayDetailedView" uid={dayUid}/>
   }
 
   const dayEnd = async () => {
@@ -77,10 +77,10 @@ const TSDayDetailedView: FunctionComponent<TSDayDetailedViewProps> = ({router, d
         </Col>
       </Row>}
 
-      {addExerciseViewVisible && <TSAddExerciseForm dayUid={dayUid} setAddExerciseViewVisible={setAddExerciseViewVisible} initialValues={emptyInitialValues}/>}
+      {addExerciseViewVisible && <AddExerciseForm dayUid={dayUid} setAddExerciseViewVisible={setAddExerciseViewVisible} initialValues={emptyInitialValues}/>}
 
       <Row>
-        {currentData.exercises.length && currentData.exercises.map(exerciseUid => <TSExerciseTypeContainer key={exerciseUid} exerciseUid={exerciseUid} singleDayView={!isEmpty(dayUid)} dayUid={dayUid}/>)}
+        {currentData.exercises.length && currentData.exercises.map(exerciseUid => <ExerciseTypeContainer key={exerciseUid} exerciseUid={exerciseUid} singleDayView={!isEmpty(dayUid)} dayUid={dayUid}/>)}
       </Row>
 
       <Row>
@@ -108,9 +108,9 @@ const TSDayDetailedView: FunctionComponent<TSDayDetailedViewProps> = ({router, d
   );
 };
 
-interface TSDayDetailedViewProps {
+interface IDayDetailedViewProps {
   router: Router,
   dayUid: string
 }
 
-export default withRoute(TSDayDetailedView);
+export default withRoute(DayDetailedView);

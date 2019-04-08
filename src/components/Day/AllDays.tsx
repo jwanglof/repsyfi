@@ -2,16 +2,16 @@ import './Day.scss';
 
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import {FIRESTORE_COLLECTION_DAYS} from '../../config/firebase';
-import TSLoadingAlert from '../LoadingAlert/TSLoadingAlert';
-import TSEmptyCollection from '../EmptyCollection/TSEmptyCollection';
+import LoadingAlert from '../LoadingAlert/LoadingAlert';
+import EmptyCollection from '../EmptyCollection/EmptyCollection';
 import {orderBy} from "lodash";
-import {getAllDays10DaysBackInTime} from './TSDayService';
+import {getAllDays10DaysBackInTime} from './DayService';
 import {IDayModel} from '../../models/IDayModel';
 import {Col, Row} from 'reactstrap';
-import Day from './TSDayView';
-import TSDayView from './TSDayView';
+import Day from './DayView';
+import TSDayView from './DayView';
 
-const TSAllDays: FunctionComponent<TSAllDaysProps> = () => {
+const AllDays: FunctionComponent<IAllDaysProps> = () => {
   const [allDays, setAllDays] = useState<Array<IDayModel> | undefined>(undefined);
 
   useEffect(() => {
@@ -19,11 +19,11 @@ const TSAllDays: FunctionComponent<TSAllDaysProps> = () => {
   }, []);
 
   if (!allDays) {
-    return <TSLoadingAlert componentName="TSAllDays"/>;
+    return <LoadingAlert componentName="AllDays"/>;
   }
 
   if (!allDays.length) {
-    return <TSEmptyCollection componentName="TSAllDays" collectionName={FIRESTORE_COLLECTION_DAYS}/>
+    return <EmptyCollection componentName="AllDays" collectionName={FIRESTORE_COLLECTION_DAYS}/>
   }
 
   return (
@@ -35,6 +35,6 @@ const TSAllDays: FunctionComponent<TSAllDaysProps> = () => {
   );
 };
 
-interface TSAllDaysProps {}
+interface IAllDaysProps {}
 
-export default TSAllDays;
+export default AllDays;

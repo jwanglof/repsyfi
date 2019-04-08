@@ -4,24 +4,22 @@ import React, {FunctionComponent, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {withRoute} from 'react-router5';
 import {Router} from 'router5';
-import isEmpty from 'lodash/isEmpty';
-import TSErrorAlert from '../ErrorAlert/TSErrorAlert';
+import {isEmpty} from 'lodash';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {IDayModel} from '../../models/IDayModel';
 import {routeNameSpecificDay} from '../../routes';
 import {Button, Col, Collapse, Row} from 'reactstrap';
 import {getFormattedDate, getTitle} from './DayUtils';
-import TSExerciseTypeContainer from '../Exercise/TSExerciseTypeContainer';
+import ExerciseTypeContainer from '../Exercise/ExerciseTypeContainer';
 
-const TSDayView: FunctionComponent<TSDayViewProps & TSDayViewRouter> = ({router, data}) => {
+const DayView: FunctionComponent<IDayViewProps & IDayViewRouter> = ({router, data}) => {
   const { t } = useTranslation();
 
   if (isEmpty(data)) {
-    return <TSErrorAlert errorText="Must have data to show anything for the day!"/>;
+    return <ErrorAlert errorText="Must have data to show anything for the day!" componentName="DayView"/>;
   }
 
   const [collapseIsOpen, setCollapseIsOpen] = useState<boolean>(false);
-  const [currentData, setCurrentData] = useState<IDayModel | undefined>(undefined);
-
 
   const toggle = () => {
     setCollapseIsOpen(!collapseIsOpen);
@@ -39,7 +37,7 @@ const TSDayView: FunctionComponent<TSDayViewProps & TSDayViewRouter> = ({router,
 
       <Collapse isOpen={collapseIsOpen}>
         <Row>
-          {data.exercises.length && data.exercises.map(exerciseUid => <TSExerciseTypeContainer key={exerciseUid} dayUid={data.uid} exerciseUid={exerciseUid} singleDayView={false}/>)}
+          {data.exercises.length && data.exercises.map(exerciseUid => <ExerciseTypeContainer key={exerciseUid} dayUid={data.uid} exerciseUid={exerciseUid} singleDayView={false}/>)}
           {/*{currentData.exercises.length && currentData.exercises.map(exerciseUid => <Exercise key={exerciseUid} exerciseUid={exerciseUid} singleDayView={!isEmpty(dayUid)} dayUid={dayUid}/>)}*/}
         </Row>
       </Collapse>
@@ -68,12 +66,12 @@ const TSDayView: FunctionComponent<TSDayViewProps & TSDayViewRouter> = ({router,
   );
 };
 
-interface TSDayViewProps {
+interface IDayViewProps {
   data: IDayModel
 }
 
-interface TSDayViewRouter {
+interface IDayViewRouter {
   router: Router
 }
 
-export default withRoute(TSDayView);
+export default withRoute(DayView);

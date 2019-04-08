@@ -1,6 +1,6 @@
 import {IDayBasicModel, IDayModel, IDayModelWithoutUid} from '../../models/IDayModel';
 import firebase, {FIRESTORE_COLLECTION_DAYS, getCurrentUsersUid} from '../../config/firebase';
-import {deleteExercise} from '../Exercise/TSExerciseService';
+import {deleteExercise} from '../Exercise/ExerciseService';
 import {isEmpty} from 'lodash';
 import {getDayErrorObject, getNowTimestamp} from '../../config/FirebaseUtils';
 import getUnixTime from "date-fns/getUnixTime";

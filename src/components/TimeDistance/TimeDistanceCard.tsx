@@ -1,9 +1,9 @@
 import React, {FunctionComponent, useContext} from 'react';
 import {ITimeDistanceModel} from '../../models/ITimeDistanceModel';
-import {TSEditVisibleCtx} from './TSExerciseTimeDistance';
+import {TSEditVisibleCtx} from './ExerciseTimeDistance';
 import {Button, CardBody, Col, Row} from 'reactstrap';
 
-const TSTimeDistanceCard: FunctionComponent<TSTimeDistanceCardProps> = ({currentExerciseData}) => {
+const TimeDistanceCard: FunctionComponent<ITimeDistanceCardProps> = ({currentExerciseData}) => {
   const [editVisible, setEditVisible] = useContext<any>(TSEditVisibleCtx);
 
   return (
@@ -41,8 +41,8 @@ const TSTimeDistanceCard: FunctionComponent<TSTimeDistanceCardProps> = ({current
   );
 };
 
-interface TSTimeDistanceCardProps {
+interface ITimeDistanceCardProps {
   currentExerciseData: ITimeDistanceModel
 }
 
-export default TSTimeDistanceCard;
+export default TimeDistanceCard;

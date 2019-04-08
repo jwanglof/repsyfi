@@ -1,6 +1,6 @@
 import React, {FunctionComponent, useContext, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import TSErrorAlert from '../ErrorAlert/TSErrorAlert';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {ITimeDistanceBasicModel} from '../../models/ITimeDistanceModel';
 import {ErrorMessage, Field, Formik, FormikActions} from 'formik';
 import {Alert, Button, ButtonGroup, CardBody, Col, FormGroup, Input, Label} from 'reactstrap';
@@ -8,18 +8,18 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {colSmSize, labelSmSize} from '../shared/formik/formik-utils';
 import DateTimePickerFormGroup from '../shared/formik/DateTimePickerFormGroup';
 import FieldFormGroup from '../shared/formik/FieldFormGroup';
-import {TSEditVisibleCtx} from './TSExerciseTimeDistance';
+import {TSEditVisibleCtx} from './ExerciseTimeDistance';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 
-const TSTimeDistanceCardForm: FunctionComponent<TSTimeDistanceCardFormProps> = ({currentExerciseData}) => {
+const TimeDistanceCardForm: FunctionComponent<ITimeDistanceCardFormProps> = ({currentExerciseData}) => {
   const { t } = useTranslation();
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
   const [editVisible, setEditVisible] = useContext<any>(TSEditVisibleCtx);
 
   if (submitErrorMessage) {
-    return <TSErrorAlert errorText={submitErrorMessage} componentName="TSTimeDistanceCardForm"/>;
+    return <ErrorAlert errorText={submitErrorMessage} componentName="TSTimeDistanceCardForm"/>;
   }
 
   const onSubmit = async (values: ITimeDistanceBasicModel, actions: FormikActions<ITimeDistanceBasicModel>) => {
@@ -78,8 +78,8 @@ const TSTimeDistanceCardForm: FunctionComponent<TSTimeDistanceCardFormProps> = (
   );
 };
 
-interface TSTimeDistanceCardFormProps {
+interface ITimeDistanceCardFormProps {
   currentExerciseData: ITimeDistanceBasicModel
 }
 
-export default TSTimeDistanceCardForm;
+export default TimeDistanceCardForm;

@@ -1,15 +1,15 @@
 import React, {createContext, FunctionComponent, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {getTimeDistanceExercise} from '../Exercise/TSExerciseService';
-import TSErrorAlert from '../ErrorAlert/TSErrorAlert';
-import TSLoadingAlert from '../LoadingAlert/TSLoadingAlert';
+import {getTimeDistanceExercise} from '../Exercise/ExerciseService';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
+import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {ITimeDistanceModel} from '../../models/ITimeDistanceModel';
-import TSTimeDistanceCard from './TSTimeDistanceCard';
-import TSTimeDistanceCardForm from './TSTimeDistanceCardForm';
+import TimeDistanceCard from './TimeDistanceCard';
+import TimeDistanceCardForm from './TimeDistanceCardForm';
 
 export const TSEditVisibleCtx = createContext<any>([false, () => {}]);
 
-const TSExerciseTimeDistance: FunctionComponent<TSExerciseTimeDistanceProps> = ({exerciseUid, singleDayView}) => {
+const ExerciseTimeDistance: FunctionComponent<IExerciseTimeDistanceProps> = ({exerciseUid, singleDayView}) => {
 
   const { t } = useTranslation();
 
@@ -32,24 +32,24 @@ const TSExerciseTimeDistance: FunctionComponent<TSExerciseTimeDistanceProps> = (
   }, []);
 
   if (fetchDataError) {
-    return <TSErrorAlert errorText={fetchDataError} componentName="TSExerciseSetsReps"/>;
+    return <ErrorAlert errorText={fetchDataError} componentName="TSExerciseSetsReps"/>;
   }
 
   if (!currentExerciseData) {
-    return <TSLoadingAlert componentName="TSExerciseSetsReps"/>;
+    return <LoadingAlert componentName="TSExerciseSetsReps"/>;
   }
 
   return (
     <TSEditVisibleCtx.Provider value={[editVisible, setEditVisible]}>
-      {!editVisible && <TSTimeDistanceCard currentExerciseData={currentExerciseData}/>}
-      {editVisible && <TSTimeDistanceCardForm currentExerciseData={currentExerciseData}/>}
+      {!editVisible && <TimeDistanceCard currentExerciseData={currentExerciseData}/>}
+      {editVisible && <TimeDistanceCardForm currentExerciseData={currentExerciseData}/>}
     </TSEditVisibleCtx.Provider>
   );
 };
 
-interface TSExerciseTimeDistanceProps {
+interface IExerciseTimeDistanceProps {
   exerciseUid: string,
   singleDayView: boolean
 }
 
-export default TSExerciseTimeDistance;
+export default ExerciseTimeDistance;

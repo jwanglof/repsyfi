@@ -1,14 +1,14 @@
 import React, {FunctionComponent, useState} from 'react';
 import {IExerciseHeaderModel, IExerciseModel} from '../../models/IExerciseModel';
 import {useTranslation} from 'react-i18next';
-import {updateExercise} from './TSExerciseService';
+import {updateExercise} from './ExerciseService';
 import {Form, Formik, FormikActions} from 'formik';
 import {Button, ButtonGroup, CardHeader} from 'reactstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import FormikField from '../shared/formik/FormikField';
-import TSErrorAlert from '../ErrorAlert/TSErrorAlert';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
 
-const TSExerciseHeader: FunctionComponent<TSExerciseHeaderProps> = ({exerciseData, dayUid}) => {
+const ExerciseHeader: FunctionComponent<IExerciseHeaderProps> = ({exerciseData, dayUid}) => {
   const { t } = useTranslation();
 
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
@@ -31,8 +31,8 @@ const TSExerciseHeader: FunctionComponent<TSExerciseHeaderProps> = ({exerciseDat
     actions.setSubmitting(false);
   };
 
-  const validate = (values: TSExerciseHeaderValidate): TSExerciseHeaderValidate | {} => {
-    const errors: TSExerciseHeaderValidate = {};
+  const validate = (values: IExerciseHeaderValidate): IExerciseHeaderValidate | {} => {
+    const errors: IExerciseHeaderValidate = {};
     if (values.exerciseName === '') {
       errors.exerciseName = t("Title can't be empty");  // TODO Rename to exercise name!
     }
@@ -49,7 +49,7 @@ const TSExerciseHeader: FunctionComponent<TSExerciseHeaderProps> = ({exerciseDat
         validate={validate}
         render={({errors, isSubmitting}) => (
           <>
-            {submitErrorMessage && <TSErrorAlert errorText={submitErrorMessage} componentName="ExerciseHeader"/>}
+            {submitErrorMessage && <ErrorAlert errorText={submitErrorMessage} componentName="ExerciseHeader"/>}
             {isSubmitting && <FontAwesomeIcon icon="spinner" spin/>}
             {!isSubmitting && <>
               <Form>
@@ -79,13 +79,13 @@ const TSExerciseHeader: FunctionComponent<TSExerciseHeaderProps> = ({exerciseDat
   // };
 };
 
-interface TSExerciseHeaderValidate {
+interface IExerciseHeaderValidate {
   exerciseName?: string
 }
 
-interface TSExerciseHeaderProps {
+interface IExerciseHeaderProps {
   exerciseData: IExerciseModel,
   dayUid: string
 }
 
-export default TSExerciseHeader;
+export default ExerciseHeader;

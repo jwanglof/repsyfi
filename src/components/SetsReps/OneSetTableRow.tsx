@@ -1,13 +1,13 @@
 import "./OneSet.scss";
 
 import React, {FunctionComponent, useEffect, useState} from 'react';
-import {getSet} from './TSSetService';
+import {getSet} from './SetService';
 import {ISetModel} from '../../models/ISetModel';
-import TSErrorAlert from '../ErrorAlert/TSErrorAlert';
-import TSLoadingAlert from '../LoadingAlert/TSLoadingAlert';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
+import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import classnames from 'classnames';
 
-const TSOneSetTableRow: FunctionComponent<TSOneSetTableRowProps> = ({ setUid, disabled, setLastSetData }) => {
+const OneSetTableRow: FunctionComponent<IOneSetTableRowProps> = ({ setUid, disabled, setLastSetData }) => {
   const [currentData, setCurrentData] = useState<ISetModel | undefined>(undefined);
   const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
 
@@ -29,11 +29,11 @@ const TSOneSetTableRow: FunctionComponent<TSOneSetTableRowProps> = ({ setUid, di
   }, []);
 
   if (fetchDataError) {
-    return <tr><td colSpan={3}><TSErrorAlert errorText={fetchDataError} componentName="OneSet" uid={setUid}/></td></tr>;
+    return <tr><td colSpan={3}><ErrorAlert errorText={fetchDataError} componentName="OneSetTableRow" uid={setUid}/></td></tr>;
   }
 
   if (!currentData) {
-    return <tr><td colSpan={3}><TSLoadingAlert componentName="OneSet"/></td></tr>;
+    return <tr><td colSpan={3}><LoadingAlert componentName="OneSetTableRow"/></td></tr>;
   }
 
   const classNames = classnames({
@@ -51,10 +51,10 @@ const TSOneSetTableRow: FunctionComponent<TSOneSetTableRowProps> = ({ setUid, di
   );
 };
 
-interface TSOneSetTableRowProps {
+interface IOneSetTableRowProps {
   setUid: string,
   disabled: boolean,
   setLastSetData?: any
 }
 
-export default TSOneSetTableRow;
+export default OneSetTableRow;

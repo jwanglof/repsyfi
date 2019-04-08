@@ -2,13 +2,13 @@ import React, {FunctionComponent, useEffect, useState} from 'react';
 import {Router} from 'router5';
 import {withRoute} from 'react-router5';
 import {useTranslation} from 'react-i18next';
-import {addDay, getDay} from './TSDayService';
+import {addDay, getDay} from './DayService';
 import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import {dateFormat, timeFormat} from '../shared/formik/formik-utils';
 import {IDayBasicModel} from '../../models/IDayModel';
-import TSLoadingAlert from '../LoadingAlert/TSLoadingAlert';
-import TSErrorAlert from '../ErrorAlert/TSErrorAlert';
+import LoadingAlert from '../LoadingAlert/LoadingAlert';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {isDate} from 'lodash';
 import getUnixTime from 'date-fns/getUnixTime';
 import parseISO from 'date-fns/parseISO';
@@ -18,15 +18,15 @@ import {getCurrentUsersUid} from '../../config/FirebaseUtils';
 import {Button, ButtonGroup, Col, FormGroup, Row} from 'reactstrap';
 import FieldFormGroup from '../shared/formik/FieldFormGroup';
 import SelectFormGroup from '../shared/formik/SelectFormGroup';
-import {getExerciseTypes} from '../Exercise/TSExerciseService';
+import {getExerciseTypes} from '../Exercise/ExerciseService';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 
-const TSAddEditDay: FunctionComponent<TSAddEditDayProps> = ({router, setAddExerciseViewVisible, initialValues}) => {
+const AddEditDay: FunctionComponent<IAddEditDayProps> = ({router, setAddExerciseViewVisible, initialValues}) => {
   const { t } = useTranslation();
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
-  const [initialData, setInitialData] = useState<TSAddEditDayEditData | undefined>(undefined);
+  const [initialData, setInitialData] = useState<IAddEditDayEditData | undefined>(undefined);
   const [updating, setUpdating] = useState<boolean>(false); // TODO Rename to editing?
   const [dayUid, setDayUid] = useState<string | undefined>(undefined);
 
@@ -35,7 +35,7 @@ const TSAddEditDay: FunctionComponent<TSAddEditDayProps> = ({router, setAddExerc
     if (router.getState().params && router.getState().params.dayUid) {
       const dayUid = router.getState().params.dayUid;
       getDay(dayUid).then(res => {
-        const data: TSAddEditDayEditData = {
+        const data: IAddEditDayEditData = {
           ...res,
           startTimeFormatted: format(fromUnixTime(res.startTimestamp), timeFormat),
           startDateFormatted: format(fromUnixTime(res.startTimestamp), dateFormat)
@@ -55,7 +55,7 @@ const TSAddEditDay: FunctionComponent<TSAddEditDayProps> = ({router, setAddExerc
       });
     } else {
       const nowDate = format(new Date(), dateFormat);
-      const initialValues: TSAddEditDayEditData = {
+      const initialValues: IAddEditDayEditData = {
         location: '',
         muscleGroups: '',
         title: nowDate,
@@ -67,11 +67,11 @@ const TSAddEditDay: FunctionComponent<TSAddEditDayProps> = ({router, setAddExerc
   }, []);
 
   if (!initialData) {
-    return <TSLoadingAlert componentName="TSAddEditDay"/>
+    return <LoadingAlert componentName="AddEditDay"/>
   }
 
   if (submitErrorMessage) {
-    return <TSErrorAlert componentName="TSAddEditDay" errorText={submitErrorMessage}/>;
+    return <ErrorAlert componentName="AddEditDay" errorText={submitErrorMessage}/>;
   }
 
   // Format a date object to a specific format
@@ -83,7 +83,7 @@ const TSAddEditDay: FunctionComponent<TSAddEditDayProps> = ({router, setAddExerc
     return d;
   };
 
-  const onSubmit = async (values: TSAddEditDayEditData, actions: FormikActions<TSAddEditDayEditData>) => {
+  const onSubmit = async (values: IAddEditDayEditData, actions: FormikActions<IAddEditDayEditData>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
     try {
@@ -107,8 +107,8 @@ const TSAddEditDay: FunctionComponent<TSAddEditDayProps> = ({router, setAddExerc
     actions.setSubmitting(false);
   };
 
-  const validate = (values: TSAddEditDayEditData): TSAddEditDayFormValidate | {} => {
-    let errors: TSAddEditDayFormValidate = {};
+  const validate = (values: IAddEditDayEditData): IAddEditDayFormValidate | {} => {
+    let errors: IAddEditDayFormValidate = {};
     if (values.startDateFormatted === '') {
       errors.startDateFormatted = `${t("Start date")} ${t("must be set")}`;
     }
@@ -149,14 +149,14 @@ const TSAddEditDay: FunctionComponent<TSAddEditDayProps> = ({router, setAddExerc
   );
 };
 
-interface TSAddEditDayProps {
+interface IAddEditDayProps {
   router: Router,
-  initialValues: TSAddEditDayEditData,
+  initialValues: IAddEditDayEditData,
   setAddExerciseViewVisible: any
 }
 
-// interface TSAddEditDayEditData extends IDayModel {
-interface TSAddEditDayEditData {
+// interface IAddEditDayEditData extends IDayModel {
+interface IAddEditDayEditData {
   startTimeFormatted: string,
   startDateFormatted: string,
   endTimeFormatted?: string,
@@ -168,7 +168,7 @@ interface TSAddEditDayEditData {
   // exercises: Array<string>  // IExerciseModel
 }
 
-interface TSAddEditDayFormValidate {
+interface IAddEditDayFormValidate {
   startTimeFormatted?: string,
   startDateFormatted?: string,
   endTimeFormatted?: string,
@@ -178,4 +178,4 @@ interface TSAddEditDayFormValidate {
   title?: string
 }
 
-export default withRoute(TSAddEditDay);
+export default withRoute(AddEditDay);

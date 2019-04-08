@@ -1,15 +1,15 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {getSetsRepsExercise} from '../Exercise/TSExerciseService';
+import {getSetsRepsExercise} from '../Exercise/ExerciseService';
 import {ISetsRepsModel} from '../../models/ISetsRepsModel';
 import {Button, CardBody, Table} from 'reactstrap';
-import TSErrorAlert from '../ErrorAlert/TSErrorAlert';
-import TSLoadingAlert from '../LoadingAlert/TSLoadingAlert';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
+import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {ISetBasicModel} from '../../models/ISetModel';
-import TSOneSetTableRow from './TSOneSetTableRow';
-import TSAddOneSetTableRow from './TSAddOneSetTableRow';
+import OneSetTableRow from './OneSetTableRow';
+import AddOneSetTableRow from './AddOneSetTableRow';
 
-const TSExerciseSetsReps: FunctionComponent<TSExerciseSetsRepsProps> = ({exerciseUid, singleDayView}) => {
+const ExerciseSetsReps: FunctionComponent<IExerciseSetsRepsProps> = ({exerciseUid, singleDayView}) => {
   const { t } = useTranslation();
 
   const [currentExerciseData, setCurrentExerciseData] = useState<ISetsRepsModel | undefined>(undefined);
@@ -32,11 +32,11 @@ const TSExerciseSetsReps: FunctionComponent<TSExerciseSetsRepsProps> = ({exercis
   }, []);
 
   if (fetchDataError) {
-    return <TSErrorAlert errorText={fetchDataError} componentName="TSExerciseSetsReps"/>;
+    return <ErrorAlert errorText={fetchDataError} componentName="TSExerciseSetsReps"/>;
   }
 
   if (!currentExerciseData) {
-    return <TSLoadingAlert componentName="TSExerciseSetsReps"/>;
+    return <LoadingAlert componentName="TSExerciseSetsReps"/>;
   }
 
   // Return the last set's data so that it can be pre-filled to the new set
@@ -69,11 +69,11 @@ const TSExerciseSetsReps: FunctionComponent<TSExerciseSetsRepsProps> = ({exercis
         {currentExerciseData.sets.map((setUid, i) => {
           if ((i + 1 ) === currentExerciseData.sets.length) {
             // Pass the setter for the last set to the last set
-            return <TSOneSetTableRow key={setUid} setUid={setUid} disabled={addSetViewVisible} setLastSetData={setLastSetData}/>;
+            return <OneSetTableRow key={setUid} setUid={setUid} disabled={addSetViewVisible} setLastSetData={setLastSetData}/>;
           }
-          return <TSOneSetTableRow key={setUid} setUid={setUid} disabled={addSetViewVisible}/>;
+          return <OneSetTableRow key={setUid} setUid={setUid} disabled={addSetViewVisible}/>;
         })}
-        {addSetViewVisible && <TSAddOneSetTableRow exerciseUid={currentExerciseData.uid} setAddSetViewVisible={setAddSetViewVisible} initialData={getLastSetData()}/>}
+        {addSetViewVisible && <AddOneSetTableRow exerciseUid={currentExerciseData.uid} setAddSetViewVisible={setAddSetViewVisible} initialData={getLastSetData()}/>}
         {/*{addSetViewVisible && <TSAddOneSetTableRow exerciseUid={currentExerciseData.uid} setAddSetViewVisible={setAddSetViewVisible} initialData={getLastSetData()} setLastSetUid={setLastSetUid}/>}*/}
         </tbody>
         <tfoot>
@@ -88,9 +88,9 @@ const TSExerciseSetsReps: FunctionComponent<TSExerciseSetsRepsProps> = ({exercis
   );
 };
 
-interface TSExerciseSetsRepsProps {
+interface IExerciseSetsRepsProps {
   exerciseUid: string,
   singleDayView: boolean
 }
 
-export default TSExerciseSetsReps;
+export default ExerciseSetsReps;

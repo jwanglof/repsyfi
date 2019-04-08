@@ -1,7 +1,7 @@
 import React, {FunctionComponent, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import TSErrorAlert from '../ErrorAlert/TSErrorAlert';
-import {addNewSetAndGetUid, addSetToSetsRepsExerciseArray} from './TSSetService';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
+import {addNewSetAndGetUid, addSetToSetsRepsExerciseArray} from './SetService';
 import {ISetBasicModel} from '../../models/ISetModel';
 import {Formik, FormikActions} from 'formik';
 import {getCurrentUsersUid} from '../../config/FirebaseUtils';
@@ -12,17 +12,17 @@ import {Button, ButtonGroup} from 'reactstrap';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 
-const TSAddOneSetTableRow: FunctionComponent<ITSAddOneSetTableRowProps> = ({ exerciseUid, initialData, setAddSetViewVisible, setLastSetUid }) => {
+const AddOneSetTableRow: FunctionComponent<IAddOneSetTableRowProps> = ({ exerciseUid, initialData, setAddSetViewVisible, setLastSetUid }) => {
   const { t } = useTranslation();
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
 
   if (submitErrorMessage) {
-    return <tr><td colSpan={3}><TSErrorAlert errorText={submitErrorMessage} componentName="TSAddOneSetTableRow"/></td></tr>;
+    return <tr><td colSpan={3}><ErrorAlert errorText={submitErrorMessage} componentName="AddOneSetTableRow"/></td></tr>;
   }
 
   if (!exerciseUid) {
-    return <tr><td colSpan={3}><TSErrorAlert errorText="Need an exercise UID to add a set!" componentName="TSAddOneSetTableRow"/></td></tr>;
+    return <tr><td colSpan={3}><ErrorAlert errorText="Need an exercise UID to add a set!" componentName="AddOneSetTableRow"/></td></tr>;
   }
 
   const onSubmit = async (values: ISetBasicModel, actions: FormikActions<ISetBasicModel>) => {
@@ -50,8 +50,8 @@ const TSAddOneSetTableRow: FunctionComponent<ITSAddOneSetTableRowProps> = ({ exe
     actions.setSubmitting(false);
   };
 
-  const validate = (values: ITSAddOneSetTableRowValidate): ITSAddOneSetTableRowValidate | {} => {
-    const errors: ITSAddOneSetTableRowValidateErrors = {};
+  const validate = (values: IAddOneSetTableRowValidate): IAddOneSetTableRowValidate | {} => {
+    const errors: IAddOneSetTableRowValidateErrors = {};
     if (!values.amountInKg || values.amountInKg <= 0) {
       errors.amountInKg = t("Amount must exist, and be 0 or higher");
     }
@@ -99,20 +99,20 @@ const TSAddOneSetTableRow: FunctionComponent<ITSAddOneSetTableRowProps> = ({ exe
   );
 };
 
-interface ITSAddOneSetTableRowProps {
+interface IAddOneSetTableRowProps {
   exerciseUid: string,
   initialData: any,
   setAddSetViewVisible: any,
   setLastSetUid?: any
 }
 
-interface ITSAddOneSetTableRowValidate {
+interface IAddOneSetTableRowValidate {
   amountInKg?: number,
   reps?: number,
   index?: number
 }
 
-interface ITSAddOneSetTableRowValidateErrors {
+interface IAddOneSetTableRowValidateErrors {
   amountInKg?: string,
   reps?: string,
   index?: string
@@ -124,4 +124,4 @@ interface ITSAddOneSetTableRowValidateErrors {
 //   reps: values.reps
 // }
 
-export default TSAddOneSetTableRow;
+export default AddOneSetTableRow;

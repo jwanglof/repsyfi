@@ -1,7 +1,7 @@
 import React, {FunctionComponent, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
-import TSErrorAlert from '../ErrorAlert/TSErrorAlert';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {getCurrentUsersUid, getNowTimestamp} from '../../config/FirebaseUtils';
 import {Formik, FormikActions} from 'formik';
 import {isEmpty} from 'lodash';
@@ -11,7 +11,7 @@ import {
   addNewSetsRepsExerciseAndGetUid,
   addNewTimeDistanceExerciseAndGetUid,
   getExerciseTypes
-} from './TSExerciseService';
+} from './ExerciseService';
 import {IExerciseModelWithoutUid} from '../../models/IExerciseModel';
 import {Button, ButtonGroup, Col, FormGroup, Row} from 'reactstrap';
 import FieldFormGroup from '../shared/formik/FieldFormGroup';
@@ -19,24 +19,24 @@ import SelectFormGroup from '../shared/formik/SelectFormGroup';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 
-const TSAddExerciseForm: FunctionComponent<TSAddExerciseFormProps> = ({dayUid, setAddExerciseViewVisible, initialValues}) => {
+const AddExerciseForm: FunctionComponent<IAddExerciseFormProps> = ({dayUid, setAddExerciseViewVisible, initialValues}) => {
   const { t } = useTranslation();
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
 
   if (submitErrorMessage) {
-    return <TSErrorAlert errorText={submitErrorMessage} componentName="TSAddExerciseForm"/>;
+    return <ErrorAlert errorText={submitErrorMessage} componentName="AddExerciseForm"/>;
   }
 
-  const validate = (values: TSAddExerciseFormValidate): TSAddExerciseFormValidate | {} => {
-    const errors: TSAddExerciseFormValidate = {};
+  const validate = (values: IAddExerciseFormValidate): IAddExerciseFormValidate | {} => {
+    const errors: IAddExerciseFormValidate = {};
     if (isEmpty(values.exerciseName)) {
       errors.exerciseName = "Exercise name can't be empty"
     }
     return errors;
   };
 
-  const onSubmit = async (values: ITSAddExerciseForm, actions: FormikActions<TSAddExerciseFormSubmitValues>) => {
+  const onSubmit = async (values: IAddExerciseForm, actions: FormikActions<IAddExerciseFormSubmitValues>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
     try {
@@ -98,24 +98,24 @@ const TSAddExerciseForm: FunctionComponent<TSAddExerciseFormProps> = ({dayUid, s
   );
 };
 
-interface TSAddExerciseFormProps {
-  initialValues: ITSAddExerciseForm,
+interface IAddExerciseFormProps {
+  initialValues: IAddExerciseForm,
   dayUid: string,
   setAddExerciseViewVisible: any  // TODO Change to method?
 }
 
-interface ITSAddExerciseForm {
+interface IAddExerciseForm {
   exerciseName: string,
   type: ExerciseTypesEnum
 }
 
-interface TSAddExerciseFormValidate {
+interface IAddExerciseFormValidate {
   exerciseName?: string
 }
 
-interface TSAddExerciseFormSubmitValues {
+interface IAddExerciseFormSubmitValues {
   exerciseName: string,
   type: ExerciseTypesEnum
 }
 
-export default TSAddExerciseForm;
+export default AddExerciseForm;
