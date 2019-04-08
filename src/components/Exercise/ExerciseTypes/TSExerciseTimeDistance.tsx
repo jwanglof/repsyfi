@@ -4,8 +4,8 @@ import {getTimeDistanceExercise} from '../TSExerciseService';
 import TSErrorAlert from '../../ErrorAlert/TSErrorAlert';
 import TSLoadingAlert from '../../LoadingAlert/TSLoadingAlert';
 import {ITimeDistanceModel} from '../../../models/ITimeDistanceModel';
-import TimeDistanceCardForm from '../../TimeDistance/TimeDistanceCardForm';
 import TSTimeDistanceCard from '../../TimeDistance/TSTimeDistanceCard';
+import TSTimeDistanceCardForm from '../../TimeDistance/TSTimeDistanceCardForm';
 
 export const TSEditVisibleCtx = createContext<any>([false, () => {}]);
 
@@ -42,7 +42,7 @@ const TSExerciseTimeDistance: FunctionComponent<TSExerciseTimeDistanceProps> = (
   return (
     <TSEditVisibleCtx.Provider value={[editVisible, setEditVisible]}>
       {!editVisible && <TSTimeDistanceCard currentExerciseData={currentExerciseData}/>}
-      {editVisible && <TimeDistanceCardForm currentExerciseData={currentExerciseData}/>}
+      {editVisible && <TSTimeDistanceCardForm currentExerciseData={currentExerciseData}/>}
     </TSEditVisibleCtx.Provider>
   );
 };

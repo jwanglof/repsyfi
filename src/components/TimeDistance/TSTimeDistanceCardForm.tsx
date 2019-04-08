@@ -1,30 +1,30 @@
-import React, {useContext, useState} from 'react';
-import {Alert, Button, ButtonGroup, CardBody, Col, FormGroup, Input, Label} from 'reactstrap';
-import PropTypes from 'prop-types';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {ErrorMessage, Field, Formik} from 'formik';
-import {Form} from 'react-formik-ui';
-import isEmpty from 'lodash/isEmpty';
-import ErrorAlert from '../ErrorAlert/ErrorAlert';
+import React, {FunctionComponent, useContext, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {EditVisibleCtx} from '../Exercise/ExerciseTypes/ExerciseTimeDistance';
-import FieldFormGroup from '../shared/formik/FieldFormGroup';
-import DateTimePickerFormGroup from '../shared/formik/DateTimePickerFormGroup';
+import TSErrorAlert from '../ErrorAlert/TSErrorAlert';
+import {ITimeDistanceBasicModel} from '../../models/ITimeDistanceModel';
+import {ErrorMessage, Field, Formik, FormikActions} from 'formik';
+import {Alert, Button, ButtonGroup, CardBody, Col, FormGroup, Input, Label} from 'reactstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {colSmSize, labelSmSize} from '../shared/formik/formik-utils';
+import DateTimePickerFormGroup from '../shared/formik/DateTimePickerFormGroup';
+import FieldFormGroup from '../shared/formik/FieldFormGroup';
+import {TSEditVisibleCtx} from '../Exercise/ExerciseTypes/TSExerciseTimeDistance';
+// @ts-ignore
+import {Form} from 'react-formik-ui';
 
-const TimeDistanceCardForm = ({currentExerciseData}) => {
+const TSTimeDistanceCardForm: FunctionComponent<TSTimeDistanceCardFormProps> = ({currentExerciseData}) => {
   const { t } = useTranslation();
 
-  const [submitErrorMessage, setSubmitErrorMessage] = useState(null);
-  const [editVisible, setEditVisible] = useContext(EditVisibleCtx);
+  const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
+  const [editVisible, setEditVisible] = useContext<any>(TSEditVisibleCtx);
 
-  if (submitErrorMessage !== null) {
-    return <tr><td colSpan={3}><ErrorAlert errorText={submitErrorMessage} componentName="AddOneSetTableRow"/></td></tr>;
+  if (submitErrorMessage) {
+    return <TSErrorAlert errorText={submitErrorMessage} componentName="TSTimeDistanceCardForm"/>;
   }
 
-  const onSubmit = async (values, actions) => {
+  const onSubmit = async (values: ITimeDistanceBasicModel, actions: FormikActions<ITimeDistanceBasicModel>) => {
     actions.setSubmitting(true);
-    setSubmitErrorMessage(null);
+    setSubmitErrorMessage(undefined);
 
     try {
       console.log(values);
@@ -38,15 +38,6 @@ const TimeDistanceCardForm = ({currentExerciseData}) => {
     }
     actions.setSubmitting(false);
   };
-
-  // const validate = values => {
-  //   let errors = {};
-  //   console.log(123, values);
-  //   return errors;
-  // };
-
-  // TODO Implement the services and data-models in TS?
-  console.log(1112, currentExerciseData);
 
   return (
     <CardBody className="m-0 p-0">
@@ -76,7 +67,7 @@ const TimeDistanceCardForm = ({currentExerciseData}) => {
               <FieldFormGroup type="number" name="inclineMin" labelText={t("Incline min")}/>
               <FieldFormGroup type="number" name="inclineMax" labelText={t("Incline max")}/>
               <ButtonGroup className="w-100">
-                <Button type="submit" color="primary" disabled={isSubmitting || !isEmpty(errors)}>{t("Save")}</Button>
+                <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t("Save")}</Button>
                 <Button color="danger" onClick={() => setEditVisible(false)}>{t("Discard")}</Button>
               </ButtonGroup>
             </Form>}
@@ -87,8 +78,8 @@ const TimeDistanceCardForm = ({currentExerciseData}) => {
   );
 };
 
-TimeDistanceCardForm.propTypes = {
-  currentExerciseData: PropTypes.object.isRequired
-};
+interface TSTimeDistanceCardFormProps {
+  currentExerciseData: ITimeDistanceBasicModel
+}
 
-export default TimeDistanceCardForm;
+export default TSTimeDistanceCardForm;

@@ -55,7 +55,7 @@ const TSDayView: FunctionComponent<TSDayViewProps & TSDayViewRouter> = ({router,
         </Col>
         <Col className="text-lg-left text-center" lg={3} xs={12}>
           <div>{t("Start time")}: {getFormattedDate(data.startTimestamp)}</div>
-          <div>{t("End time")}: {getFormattedDate(data.endTimestamp)}</div>
+          <div>{t("End time")}: {data.endTimestamp && getFormattedDate(data.endTimestamp)}</div>
         </Col>
       </Row>
 

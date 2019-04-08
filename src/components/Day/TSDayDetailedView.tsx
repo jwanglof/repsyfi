@@ -92,7 +92,7 @@ const TSDayDetailedView: FunctionComponent<TSDayDetailedViewProps> = ({router, d
         </Col>
         <Col className="text-lg-left text-center" lg={3} xs={12}>
           <div>{t("Start time")}: {getFormattedDate(currentData.startTimestamp)}</div>
-          <div>{t("End time")}: {getFormattedDate(currentData.endTimestamp)}</div>
+          <div>{t("End time")}: {currentData.endTimestamp && getFormattedDate(currentData.endTimestamp)}</div>
         </Col>
         <Col xs={12}>
           <ButtonGroup className="w-100">
