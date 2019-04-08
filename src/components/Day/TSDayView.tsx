@@ -10,7 +10,7 @@ import {IDayModel} from '../../models/IDayModel';
 import {routeNameSpecificDay} from '../../routes';
 import {Button, Col, Collapse, Row} from 'reactstrap';
 import {getFormattedDate, getTitle} from './DayUtils';
-import TSExercise from '../Exercise/TSExercise';
+import TSExerciseTypeContainer from '../Exercise/TSExerciseTypeContainer';
 
 const TSDayView: FunctionComponent<TSDayViewProps & TSDayViewRouter> = ({router, data}) => {
   const { t } = useTranslation();
@@ -39,7 +39,7 @@ const TSDayView: FunctionComponent<TSDayViewProps & TSDayViewRouter> = ({router,
 
       <Collapse isOpen={collapseIsOpen}>
         <Row>
-          {data.exercises.length && data.exercises.map(exerciseUid => <TSExercise key={exerciseUid} dayUid={data.uid} exerciseUid={exerciseUid} singleDayView={false}/>)}
+          {data.exercises.length && data.exercises.map(exerciseUid => <TSExerciseTypeContainer key={exerciseUid} dayUid={data.uid} exerciseUid={exerciseUid} singleDayView={false}/>)}
           {/*{currentData.exercises.length && currentData.exercises.map(exerciseUid => <Exercise key={exerciseUid} exerciseUid={exerciseUid} singleDayView={!isEmpty(dayUid)} dayUid={dayUid}/>)}*/}
         </Row>
       </Collapse>

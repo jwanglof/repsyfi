@@ -13,7 +13,7 @@ import TSExerciseHeaderView from './TSExerciseHeaderView';
 import TSExerciseSetsReps from './ExerciseTypes/TSExerciseSetsReps';
 import TSExerciseTimeDistance from './ExerciseTypes/TSExerciseTimeDistance';
 
-const TSExercise: FunctionComponent<TSExerciseProps> = ({ exerciseUid, singleDayView=false, dayUid=null }) => {
+const TSExerciseTypeContainer: FunctionComponent<TSExerciseTypeContainerProps> = ({ exerciseUid, singleDayView=false, dayUid=null }) => {
   const { t } = useTranslation();
 
   const [currentExerciseData, setCurrentExerciseData] = useState<IExerciseModel | undefined>(undefined);
@@ -58,10 +58,10 @@ const TSExercise: FunctionComponent<TSExerciseProps> = ({ exerciseUid, singleDay
   );
 };
 
-interface TSExerciseProps {
+interface TSExerciseTypeContainerProps {
   exerciseUid: string,
   singleDayView: boolean,
   dayUid: string | undefined
 }
 
-export default TSExercise;
+export default TSExerciseTypeContainer;

@@ -14,6 +14,7 @@ import {Button, ButtonGroup, Col, Row} from 'reactstrap';
 import {getFormattedDate, getTitle} from './DayUtils';
 import TSAddExerciseForm from '../Exercise/TSAddExerciseForm';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
+import TSExerciseTypeContainer from '../Exercise/TSExerciseTypeContainer';
 
 const TSDayDetailedView: FunctionComponent<TSDayDetailedViewProps> = ({router, dayUid}) => {
   const { t } = useTranslation();
@@ -32,6 +33,7 @@ const TSDayDetailedView: FunctionComponent<TSDayDetailedViewProps> = ({router, d
       // Get the day's data
       const fetchDay = async () => {
         const data = await getDay(dayUid);
+        console.log('Day data:', data);
         setCurrentData(data);
       };
       fetchDay();
@@ -77,9 +79,9 @@ const TSDayDetailedView: FunctionComponent<TSDayDetailedViewProps> = ({router, d
 
       {addExerciseViewVisible && <TSAddExerciseForm dayUid={dayUid} setAddExerciseViewVisible={setAddExerciseViewVisible} initialValues={emptyInitialValues}/>}
 
-      {/*<Row>*/}
-      {/*  {currentData.exercises.length && currentData.exercises.map(exerciseUid => <Exercise key={exerciseUid} exerciseUid={exerciseUid} singleDayView={!isEmpty(dayUid)} dayUid={dayUid}/>)}*/}
-      {/*</Row>*/}
+      <Row>
+        {currentData.exercises.length && currentData.exercises.map(exerciseUid => <TSExerciseTypeContainer key={exerciseUid} exerciseUid={exerciseUid} singleDayView={!isEmpty(dayUid)} dayUid={dayUid}/>)}
+      </Row>
 
       <Row>
         <Col className="text-lg-right text-center" lg={3} xs={12}>
