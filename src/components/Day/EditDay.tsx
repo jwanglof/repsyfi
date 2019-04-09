@@ -14,7 +14,7 @@ import getUnixTime from 'date-fns/getUnixTime';
 import parseISO from 'date-fns/parseISO';
 import {routeNameSpecificDay} from '../../routes';
 import {Formik, FormikActions} from 'formik';
-import {Button, Col, FormGroup, Row} from 'reactstrap';
+import {Button, ButtonGroup, Col, FormGroup, Row} from 'reactstrap';
 import FieldFormGroup from '../shared/formik/FieldFormGroup';
 import DateTimePickerFormGroup from '../shared/formik/DateTimePickerFormGroup';
 import DatepickerFormGroup from '../shared/formik/DatepickerFormGroup';
@@ -92,6 +92,8 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
     return errors;
   };
 
+  const toggleEditForm = () => router.navigate(routeNameSpecificDay, {uid: dayUid}, {reload: true});
+
   return (
     <Row>
       <Col xs={12}>
@@ -115,7 +117,10 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
 
               <FormGroup row>
                 <Col sm={12}>
-                  <Button type="submit" color="primary" disabled={isSubmitting || !errors} block>{t("Update day")}</Button>
+                  <ButtonGroup className="w-100">
+                    <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t("Update day")}</Button>
+                    <Button color="danger" disabled={isSubmitting || !errors} onClick={toggleEditForm}>{t("Discard")}</Button>
+                  </ButtonGroup>
                 </Col>
               </FormGroup>
             </Form>
