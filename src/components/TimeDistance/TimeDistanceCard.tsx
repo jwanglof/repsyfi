@@ -3,7 +3,7 @@ import {ITimeDistanceModel} from '../../models/ITimeDistanceModel';
 import {TSEditVisibleCtx} from './ExerciseTimeDistance';
 import {Button, CardBody, Col, Row} from 'reactstrap';
 
-const TimeDistanceCard: FunctionComponent<ITimeDistanceCardProps> = ({currentExerciseData}) => {
+const TimeDistanceCard: FunctionComponent<ITimeDistanceCardProps> = ({currentExerciseData, singleDayView}) => {
   const [editVisible, setEditVisible] = useContext<any>(TSEditVisibleCtx);
 
   return (
@@ -32,17 +32,18 @@ const TimeDistanceCard: FunctionComponent<ITimeDistanceCardProps> = ({currentExe
         <Col xs={6}>{currentExerciseData.inclineMin}</Col>
         <Col xs={6}>{currentExerciseData.inclineMax}</Col>
       </Row>
-      <Row>
+      {singleDayView && <Row>
         <Col>
           <Button color="success" block onClick={() => setEditVisible(true)}>Edit</Button>
         </Col>
-      </Row>
+      </Row>}
     </CardBody>
   );
 };
 
 interface ITimeDistanceCardProps {
-  currentExerciseData: ITimeDistanceModel
+  currentExerciseData: ITimeDistanceModel,
+  singleDayView: boolean
 }
 
 export default TimeDistanceCard;

@@ -11,6 +11,7 @@ import {routeNameSpecificDay} from '../../routes';
 import {Button, Col, Collapse, Row} from 'reactstrap';
 import {getFormattedDate, getTitle} from './DayUtils';
 import ExerciseTypeContainer from '../Exercise/ExerciseTypeContainer';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 const DayView: FunctionComponent<IDayViewProps & IDayViewRouter> = ({router, data}) => {
   const { t } = useTranslation();
@@ -34,6 +35,8 @@ const DayView: FunctionComponent<IDayViewProps & IDayViewRouter> = ({router, dat
           <Button block size="sm" onClick={openDetailedView}>{t("Open detailed view")}</Button>
         </Col>
       </Row>
+
+      {collapseIsOpen && <Row className="text-center"><Col>{t("Open detailed view")} {t("to edit")}</Col></Row>}
 
       <Collapse isOpen={collapseIsOpen}>
         <Row>
@@ -60,6 +63,8 @@ const DayView: FunctionComponent<IDayViewProps & IDayViewRouter> = ({router, dat
       <Row className="text-center">
         <Col xs={12}>
           {t("Click to")} {collapseIsOpen ? t("collapse"): t("expand")}
+          <br/>
+          {collapseIsOpen ? <FontAwesomeIcon icon="caret-up" size="2x"/> : <FontAwesomeIcon icon="caret-down" size="2x"/>}
         </Col>
       </Row>
     </div>

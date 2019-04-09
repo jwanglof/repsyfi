@@ -19,7 +19,7 @@ import SelectFormGroup from '../shared/formik/SelectFormGroup';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 
-const AddExerciseForm: FunctionComponent<IAddExerciseFormProps> = ({dayUid, setAddExerciseViewVisible, initialValues}) => {
+const AddExerciseForm: FunctionComponent<IAddExerciseFormProps> = ({dayUid, setAddExerciseViewVisible}) => {
   const { t } = useTranslation();
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
@@ -39,6 +39,7 @@ const AddExerciseForm: FunctionComponent<IAddExerciseFormProps> = ({dayUid, setA
   const onSubmit = async (values: IAddExerciseForm, actions: FormikActions<IAddExerciseFormSubmitValues>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
+    console.log('values:', values);
     try {
       const ownerUid: string = await getCurrentUsersUid();
 
@@ -51,25 +52,31 @@ const AddExerciseForm: FunctionComponent<IAddExerciseFormProps> = ({dayUid, setA
         return;
       }
 
+      console.log('exerciseTypeUid:', exerciseTypeUid);
+
       const exerciseData: IExerciseBasicModel = {
         exerciseName: values.exerciseName,
         type: values.type,
         typeUid: exerciseTypeUid
       };
       const exerciseUid = await addExerciseAndGetUid(exerciseData, ownerUid);
+      console.log('exerciseUid:', exerciseUid, exerciseData);
       await addExerciseToDayArray(exerciseUid, dayUid);
       setAddExerciseViewVisible(false);
     } catch (e) {
+      console.error(e);
       setSubmitErrorMessage(e.message);
     }
     actions.setSubmitting(false);
   };
 
+  const emptyInitialValues: IAddExerciseForm = {exerciseName: '', type: ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS};
+
   return (
     <Row>
       <Col xs={12}>
         <Formik
-          initialValues={initialValues}
+          initialValues={emptyInitialValues}
           onSubmit={onSubmit}
           validate={validate}
           // render={({ errors, status, touched, isSubmitting }) => (
@@ -97,7 +104,7 @@ const AddExerciseForm: FunctionComponent<IAddExerciseFormProps> = ({dayUid, setA
 };
 
 interface IAddExerciseFormProps {
-  initialValues: IAddExerciseForm,
+  // initialValues: IAddExerciseForm,
   dayUid: string,
   setAddExerciseViewVisible: any  // TODO Change to method?
 }

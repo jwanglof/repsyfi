@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {routeNode} from 'react-router5'
 import {routeNameAddDay, routeNameAllDays, routeNameEditDay, routeNameSpecificDay} from './routes';
-import TSDay from './components/Day/DayDetailedView';
+import TSDay from './components/Day/DayViewDetailed';
 import Login from './components/Login/Login';
 import firebase, {initializeFirebase} from './config/firebase';
 import Footer from './components/Footer/Footer';

@@ -47,6 +47,7 @@ const resources = {
       "Discard": "Discard",
       "Title can't be empty": "Title can't be empty",
       "Delete": "Delete",
+      "to edit": "to edit"
     }
   },
   sv: {
@@ -92,6 +93,7 @@ const resources = {
       "Discard": "Avbryt",
       "Title can't be empty": "Titel kan inte vara tom",
       "Delete": "Ta bort",
+      "to edit": "för att redigera"
     }
   }
 };

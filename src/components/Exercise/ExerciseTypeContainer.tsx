@@ -49,9 +49,9 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({
 
         {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS && <ExerciseSetsReps exerciseUid={currentExerciseData.typeUid} singleDayView={singleDayView}/>}
         {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE && <ExerciseTimeDistance exerciseUid={currentExerciseData.typeUid} singleDayView={singleDayView}/>}
-        <CardFooter className="text-muted exercise--card-footer">
+        {singleDayView && <CardFooter className="text-muted exercise--card-footer">
           {t("Click on a set for different actions")}
-        </CardFooter>
+        </CardFooter>}
       </Card>
     </Col>
   );

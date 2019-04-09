@@ -181,6 +181,7 @@ export const addExerciseToDayArray = async (exerciseUid: string, dayUid: string)
 export const getExerciseTypes = (): Array<ExerciseTypesOptions> => ([
   {value: ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS, label: 'Sets and reps'},
   {value: ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE, label: 'Time and distance'},
+  // {value: ExerciseTypesEnum.EXERCISE_TYPE_NOT_CHOSEN, label: 'Other'},  // TODO Implement
 ]);
 
 interface ExerciseTypesOptions {

@@ -13,10 +13,9 @@ import {routeNameEditDay, routeNameRoot} from '../../routes';
 import {Button, ButtonGroup, Col, Row} from 'reactstrap';
 import {getFormattedDate, getTitle} from './DayUtils';
 import AddExerciseForm from '../Exercise/AddExerciseForm';
-import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import ExerciseTypeContainer from '../Exercise/ExerciseTypeContainer';
 
-const DayDetailedView: FunctionComponent<IDayDetailedViewProps> = ({router, dayUid}) => {
+const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayUid}) => {
   const { t } = useTranslation();
 
   if (isEmpty(dayUid)) {
@@ -67,8 +66,6 @@ const DayDetailedView: FunctionComponent<IDayDetailedViewProps> = ({router, dayU
 
   const editDay = () => router.navigate(routeNameEditDay, {dayUid}, {reload: true});
 
-  const emptyInitialValues = {exerciseName: '', type: ExerciseTypesEnum.EXERCISE_TYPE_NOT_CHOSEN};
-
   return (
     <>
       {!addExerciseViewVisible && <Row className="mb-4 mt-2">
@@ -77,7 +74,7 @@ const DayDetailedView: FunctionComponent<IDayDetailedViewProps> = ({router, dayU
         </Col>
       </Row>}
 
-      {addExerciseViewVisible && <AddExerciseForm dayUid={dayUid} setAddExerciseViewVisible={setAddExerciseViewVisible} initialValues={emptyInitialValues}/>}
+      {addExerciseViewVisible && <AddExerciseForm dayUid={dayUid} setAddExerciseViewVisible={setAddExerciseViewVisible}/>}
 
       <Row>
         {currentData.exercises.length && currentData.exercises.map(exerciseUid => <ExerciseTypeContainer key={exerciseUid} exerciseUid={exerciseUid} singleDayView={!isEmpty(dayUid)} dayUid={dayUid}/>)}
@@ -90,7 +87,7 @@ const DayDetailedView: FunctionComponent<IDayDetailedViewProps> = ({router, dayU
         </Col>
         <Col className="text-center" lg={6} xs={12}>
           <h2 className="mb-0">{getTitle(currentData.title || null, currentData.startTimestamp)}</h2>
-          <div className="day--notes">{currentData.notes}</div>
+          <div>{currentData.notes}</div>
         </Col>
         <Col className="text-lg-left text-center" lg={3} xs={12}>
           <div>{t("Start time")}: {getFormattedDate(currentData.startTimestamp)}</div>
@@ -108,9 +105,9 @@ const DayDetailedView: FunctionComponent<IDayDetailedViewProps> = ({router, dayU
   );
 };
 
-interface IDayDetailedViewProps {
+interface IDayViewDetailedProps {
   router: Router,
   dayUid: string
 }
 
-export default withRoute(DayDetailedView);
+export default withRoute(DayViewDetailed);

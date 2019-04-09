@@ -115,7 +115,8 @@ export const updateDay = async (dayUid: string, dayData: IDayBasicUpdateModel) =
     muscleGroups: dayData.muscleGroups,
     startTimestamp: dayData.startTimestamp,
     title: dayData.title,
-    updatedTimestamp: getNowTimestamp()
+    updatedTimestamp: getNowTimestamp(),
+    notes: dayData.notes
   };
   return await firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)

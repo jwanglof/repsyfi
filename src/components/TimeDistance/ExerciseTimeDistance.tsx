@@ -1,5 +1,4 @@
 import React, {createContext, FunctionComponent, useEffect, useState} from 'react';
-import {useTranslation} from 'react-i18next';
 import {getTimeDistanceExercise} from '../Exercise/ExerciseService';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
@@ -10,9 +9,6 @@ import TimeDistanceCardForm from './TimeDistanceCardForm';
 export const TSEditVisibleCtx = createContext<any>([false, () => {}]);
 
 const ExerciseTimeDistance: FunctionComponent<IExerciseTimeDistanceProps> = ({exerciseUid, singleDayView}) => {
-
-  const { t } = useTranslation();
-
   const [currentExerciseData, setCurrentExerciseData] = useState<ITimeDistanceModel | undefined>(undefined);
   const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
   const [editVisible, setEditVisible] = useState<boolean>(false);
@@ -41,7 +37,7 @@ const ExerciseTimeDistance: FunctionComponent<IExerciseTimeDistanceProps> = ({ex
 
   return (
     <TSEditVisibleCtx.Provider value={[editVisible, setEditVisible]}>
-      {!editVisible && <TimeDistanceCard currentExerciseData={currentExerciseData}/>}
+      {!editVisible && <TimeDistanceCard currentExerciseData={currentExerciseData} singleDayView={singleDayView}/>}
       {editVisible && <TimeDistanceCardForm currentExerciseData={currentExerciseData}/>}
     </TSEditVisibleCtx.Provider>
   );
