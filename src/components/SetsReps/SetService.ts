@@ -1,7 +1,8 @@
 import firebase from '../../config/firebase';
-import {isEmpty} from "lodash";
+import {isEmpty} from 'lodash';
 import {ISetBasicModel, ISetModel, ISetModelWithoutUid} from '../../models/ISetModel';
 import {FirebaseCollectionNames, getNowTimestamp, getSetErrorObject} from '../../config/FirebaseUtils';
+import {Versions} from '../../models/IBaseModel';
 
 export const deleteSet = async (setUid: string): Promise<void> => {
   return await firebase.firestore()
@@ -24,7 +25,8 @@ export const getSet = async (setUid: string): Promise<ISetModel> => {
           createdTimestamp: data.createdTimestamp,
           index: data.index,
           amountInKg: data.amountInKg,
-          reps: data.reps
+          reps: data.reps,
+          version: data.version
         };
       } else {
         throw getSetErrorObject(setUid);
@@ -38,7 +40,8 @@ export const addNewSetAndGetUid = async (setData: ISetBasicModel, ownerUid: stri
     amountInKg: setData.amountInKg,
     reps: setData.reps,
     ownerUid,
-    createdTimestamp: getNowTimestamp()
+    createdTimestamp: getNowTimestamp(),
+    version: Versions.v1
   };
   const setDocRef = await firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_SETS)

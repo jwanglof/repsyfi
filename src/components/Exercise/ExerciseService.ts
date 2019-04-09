@@ -6,12 +6,13 @@ import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {ISetsRepsModel, ISetsRepsModelWithoutUid} from '../../models/ISetsRepsModel';
 import {ITimeDistanceModel, ITimeDistanceModelWithoutUid} from '../../models/ITimeDistanceModel';
 import {
+  FirebaseCollectionNames,
   getExerciseErrorObject,
   getNowTimestamp,
   getSetsRepsExerciseErrorObject,
   getTimeDistanceExerciseErrorObject
 } from '../../config/FirebaseUtils';
-import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
+import {Versions} from '../../models/IBaseModel';
 
 export const getExercise = async (exerciseUid: string): Promise<IExerciseModel> => {
   const querySnapshot = await firebase.firestore()
@@ -27,7 +28,8 @@ export const getExercise = async (exerciseUid: string): Promise<IExerciseModel> 
       typeUid: exerciseData.typeUid,
       uid: querySnapshot.id,
       ownerUid: exerciseData.ownerUid,
-      createdTimestamp: exerciseData.createdTimestamp
+      createdTimestamp: exerciseData.createdTimestamp,
+      version: exerciseData.version
     };
   } else {
     throw getExerciseErrorObject(exerciseUid);
@@ -81,7 +83,8 @@ export const getSetsRepsExercise = async (exerciseUid: string): Promise<ISetsRep
       sets: exerciseData.sets,
       uid: querySnapshot.id,
       ownerUid: exerciseData.ownerUid,
-      createdTimestamp: exerciseData.createdTimestamp
+      createdTimestamp: exerciseData.createdTimestamp,
+      version: exerciseData.version
     };
   } else {
     throw getSetsRepsExerciseErrorObject(exerciseUid);
@@ -106,7 +109,8 @@ export const getTimeDistanceExercise = async (exerciseUid: string): Promise<ITim
       inclineMax: exerciseData.inclineMax,
       uid: querySnapshot.id,
       ownerUid: exerciseData.ownerUid,
-      createdTimestamp: exerciseData.createdTimestamp
+      createdTimestamp: exerciseData.createdTimestamp,
+      version: exerciseData.version
     };
   } else {
     throw getTimeDistanceExerciseErrorObject(exerciseUid);
@@ -117,7 +121,8 @@ export const addNewSetsRepsExerciseAndGetUid = async (ownerUid: string): Promise
   const setsRepsData: ISetsRepsModelWithoutUid = {
     sets: [],
     ownerUid,
-    createdTimestamp: getNowTimestamp()
+    createdTimestamp: getNowTimestamp(),
+    version: Versions.v1
   };
   const exerciseSetsRepsDocRef = await firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS)
@@ -136,7 +141,8 @@ export const addNewTimeDistanceExerciseAndGetUid = async (ownerUid: string): Pro
     inclineMin: 0,
     inclineMax: 0,
     ownerUid: ownerUid,
-    createdTimestamp: getNowTimestamp()
+    createdTimestamp: getNowTimestamp(),
+    version: Versions.v1
   };
   const exerciseSetsRepsDocRef = await firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_TIME_DISTANCE)
@@ -150,7 +156,8 @@ export const addExerciseAndGetUid = async (exerciseData: IExerciseBasicModel, ow
     createdTimestamp: getNowTimestamp(),
     type: exerciseData.type,
     typeUid: exerciseData.typeUid,
-    exerciseName: exerciseData.exerciseName
+    exerciseName: exerciseData.exerciseName,
+    version: Versions.v1
   };
   const exerciseDocRef = await firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISES)

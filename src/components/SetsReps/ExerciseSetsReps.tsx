@@ -56,7 +56,7 @@ const ExerciseSetsReps: FunctionComponent<IExerciseSetsRepsProps> = ({exerciseUi
   };
 
   return (
-    <CardBody className="mb-0">
+    <CardBody className="mb-0 p-0">
       <Table striped hover={singleDayView && !addSetViewVisible} size="sm" className="mb-0">
         <thead>
         <tr>
@@ -74,7 +74,6 @@ const ExerciseSetsReps: FunctionComponent<IExerciseSetsRepsProps> = ({exerciseUi
           return <OneSetTableRow key={setUid} setUid={setUid} disabled={addSetViewVisible}/>;
         })}
         {addSetViewVisible && <AddOneSetTableRow exerciseUid={currentExerciseData.uid} setAddSetViewVisible={setAddSetViewVisible} initialData={getLastSetData()}/>}
-        {/*{addSetViewVisible && <TSAddOneSetTableRow exerciseUid={currentExerciseData.uid} setAddSetViewVisible={setAddSetViewVisible} initialData={getLastSetData()} setLastSetUid={setLastSetUid}/>}*/}
         </tbody>
         <tfoot>
         {singleDayView && !addSetViewVisible && <tr>

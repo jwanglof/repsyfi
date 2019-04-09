@@ -4,9 +4,14 @@ export interface IBaseModel extends IBaseModelWithoutUid {
 
 export interface IBaseModelWithoutUid {
   ownerUid: string,
-  createdTimestamp: number
+  createdTimestamp: number,
+  version: Versions
 }
 
 export interface IBaseModelUpdating {
   updatedTimestamp: number
+}
+
+export enum Versions {
+  v1 = "v1"
 }

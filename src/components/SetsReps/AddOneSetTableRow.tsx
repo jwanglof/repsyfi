@@ -8,11 +8,12 @@ import {getCurrentUsersUid} from '../../config/FirebaseUtils';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import FormikField from '../shared/formik/FormikField';
 import {Button, ButtonGroup} from 'reactstrap';
+import {isNumber} from 'lodash';
 // TODO :(
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 
-const AddOneSetTableRow: FunctionComponent<IAddOneSetTableRowProps> = ({ exerciseUid, initialData, setAddSetViewVisible, setLastSetUid }) => {
+const AddOneSetTableRow: FunctionComponent<IAddOneSetTableRowProps> = ({ exerciseUid, initialData, setAddSetViewVisible }) => {
   const { t } = useTranslation();
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
@@ -39,8 +40,6 @@ const AddOneSetTableRow: FunctionComponent<IAddOneSetTableRowProps> = ({ exercis
       const uid = await addNewSetAndGetUid(data, ownerUid);
       await addSetToSetsRepsExerciseArray(uid, exerciseUid);
 
-      // Set the new last UID for the exercise
-      setLastSetUid(uid);
       // Hide this form
       setAddSetViewVisible(false);
     } catch (e) {
@@ -52,14 +51,14 @@ const AddOneSetTableRow: FunctionComponent<IAddOneSetTableRowProps> = ({ exercis
 
   const validate = (values: IAddOneSetTableRowValidate): IAddOneSetTableRowValidate | {} => {
     const errors: IAddOneSetTableRowValidateErrors = {};
-    if (!values.amountInKg || values.amountInKg <= 0) {
+    if (!isNumber(values.amountInKg) || values.amountInKg && values.amountInKg < 0) {
       errors.amountInKg = t("Amount must exist, and be 0 or higher");
     }
-    if (!values.reps || values.reps <= 0) {
-      errors.reps = t("Repetitions must exist, and be higher than 1");
+    if (!isNumber(values.reps) || values.reps && values.reps <= 0) {
+      errors.reps = t("Repetitions must exist, and be higher than 0");
     }
-    if (!values.index || values.index <= 0) {
-      errors.index = t("Index must exist, and be higher than 1")
+    if (!isNumber(values.index) || values.index && values.index <= 0) {
+      errors.index = t("Index must exist, and be higher than 0")
     }
     return errors;
   };
@@ -103,7 +102,6 @@ interface IAddOneSetTableRowProps {
   exerciseUid: string,
   initialData: any,
   setAddSetViewVisible: any,
-  setLastSetUid?: any
 }
 
 interface IAddOneSetTableRowValidate {

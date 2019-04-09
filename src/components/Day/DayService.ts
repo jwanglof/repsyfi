@@ -11,6 +11,7 @@ import {isEmpty} from 'lodash';
 import {FirebaseCollectionNames, getDayErrorObject, getNowTimestamp} from '../../config/FirebaseUtils';
 import getUnixTime from 'date-fns/getUnixTime';
 import subDays from 'date-fns/subDays';
+import {Versions} from '../../models/IBaseModel';
 
 export const getDay = async (dayUid: string): Promise<IDayModel> => {
   return firebase
@@ -31,7 +32,8 @@ export const getDay = async (dayUid: string): Promise<IDayModel> => {
           exercises: data.exercises,
           uid: querySnapshot.id,
           ownerUid: data.ownerUid,
-          createdTimestamp: data.createdTimestamp
+          createdTimestamp: data.createdTimestamp,
+          version: data.version
         };
       } else {
         throw getDayErrorObject(dayUid);
@@ -70,7 +72,8 @@ export const addDay = async (dayData: IDayBasicModel, ownerUid: string): Promise
     ownerUid,
     createdTimestamp: getNowTimestamp(),
     startTimestamp: dayData.startTimestamp,
-    endTimestamp: null
+    endTimestamp: null,
+    version: Versions.v1
   };
   const dayDocRef = await firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
@@ -100,7 +103,8 @@ export const getAllDays10DaysBackInTime = async (): Promise<Array<IDayModel>> =>
           notes: data.notes,
           createdTimestamp: data.createdTimestamp,
           ownerUid: data.ownerUid,
-          uid: a.id
+          uid: a.id,
+          version: data.ownerUid
         });
         // days.push({...a.data(), uid: a.id});
       });
