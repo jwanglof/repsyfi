@@ -8,35 +8,57 @@ import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {ISetBasicModel} from '../../models/ISetModel';
 import OneSetTableRow from './OneSetTableRow';
 import AddOneSetTableRow from './AddOneSetTableRow';
+import firebase from '../../config/firebase';
+import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
+import {isEmpty} from 'lodash';
 
 const ExerciseSetsReps: FunctionComponent<IExerciseSetsRepsProps> = ({exerciseUid, singleDayView}) => {
   const { t } = useTranslation();
 
+  if (isEmpty(exerciseUid)) {
+    return <ErrorAlert errorText="Must have the exercises's UID to proceed!" componentName="ExerciseSetsReps"/>;
+  }
+
   const [currentExerciseData, setCurrentExerciseData] = useState<ISetsRepsModel | undefined>(undefined);
-  const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
+  const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
   const [addSetViewVisible, setAddSetViewVisible] = useState<boolean>(false);
   const [lastSetData, setLastSetData] = useState<ISetBasicModel | undefined>(undefined);
 
+  // Effect to subscribe on changes on this specific day
   useEffect(() => {
-    const fetchExerciseData = async () => {
-      try {
-        const res = await getSetsRepsExercise(exerciseUid);
-        setCurrentExerciseData(res);
-      } catch (e) {
-        setFetchDataError(e.message);
-        console.error(e);
-      }
-    };
+    // TODO Need to verify that a user can't send any UID in here, somehow... That should be specified in the rules!
+    const unsub = firebase.firestore()
+      .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS)
+      // .where("ownerUid", "==", uid)
+      .doc(exerciseUid)
+      .onSnapshot({includeMetadataChanges: true}, doc => {
+        if (doc.exists && !isEmpty(doc.data())) {
+          const snapshotData: any = doc.data();
+          setCurrentExerciseData({
+            version: snapshotData.version,
+            createdTimestamp: snapshotData.createdTimestamp,
+            uid: doc.id,
+            ownerUid: snapshotData.ownerUid,
+            sets: snapshotData.sets
+          });
+        }
+      }, err => {
+        console.error('error:', err);
+        setSnapshotErrorData(err.message);
+      });
 
-    fetchExerciseData();
+    // Unsubscribe on un-mount
+    return () => {
+      unsub();
+    };
   }, []);
 
-  if (fetchDataError) {
-    return <ErrorAlert errorText={fetchDataError} componentName="TSExerciseSetsReps"/>;
+  if (snapshotErrorData) {
+    return <ErrorAlert errorText={snapshotErrorData} componentName="ExerciseSetsReps"/>;
   }
 
   if (!currentExerciseData) {
-    return <LoadingAlert componentName="TSExerciseSetsReps"/>;
+    return <LoadingAlert componentName="ExerciseSetsReps"/>;
   }
 
   // Return the last set's data so that it can be pre-filled to the new set

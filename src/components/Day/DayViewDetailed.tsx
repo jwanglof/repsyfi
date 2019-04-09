@@ -21,7 +21,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
   const { t } = useTranslation();
 
   if (isEmpty(dayUid)) {
-    return <ErrorAlert errorText="Must have the day's UID to proceed!"/>;
+    return <ErrorAlert errorText="Must have the day's UID to proceed!" componentName="DayViewDetailed"/>;
   }
 
   const [currentData, setCurrentData] = useState<IDayModel | undefined>(undefined);
@@ -30,62 +30,47 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
   const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
   const [addExerciseViewVisible, setAddExerciseViewVisible] = useState(false);
 
-  useEffect(() => {
-    if (!isEmpty(dayUid)) {
-      // Get the day's data
-      const fetchDay = async () => {
-        const data = await getDay(dayUid);
-        console.log(343, data);
-        setCurrentData(data);
-      };
-      fetchDay();
-    }
-  }, []);
-
   // Effect to subscribe on changes on this specific day
   useEffect(() => {
-    if (!isEmpty(dayUid)) {
-      // TODO Need to verify that a user can't send any UID in here, somehow... That should be specified in the rules!
-      const unsub = firebase.firestore()
-        .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
-        // .where("ownerUid", "==", uid)
-        .doc(dayUid)
-        .onSnapshot({includeMetadataChanges: true}, doc => {
-          if (doc.exists && !isEmpty(doc.data())) {
-            const snapshotData: any = doc.data();
-            setCurrentData({
-              ownerUid: snapshotData.ownerUid,
-              uid: snapshotData.id,
-              createdTimestamp: snapshotData.createdTimestamp,
-              notes: snapshotData.notes,
-              title: snapshotData.title,
-              muscleGroups: snapshotData.muscleGroups,
-              location: snapshotData.location,
-              exercises: snapshotData.exercises,
-              startTimestamp: snapshotData.startTimestamp,
-              endTimestamp: snapshotData.endTimestamp,
-              version: snapshotData.version
-            });
-          }
-        }, err => {
-          console.error('error:', err);
-          setSnapshotErrorData(err.message);
-        });
+    // TODO Need to verify that a user can't send any UID in here, somehow... That should be specified in the rules!
+    const unsub = firebase.firestore()
+      .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
+      // .where("ownerUid", "==", uid)
+      .doc(dayUid)
+      .onSnapshot({includeMetadataChanges: true}, doc => {
+        if (doc.exists && !isEmpty(doc.data())) {
+          const snapshotData: any = doc.data();
+          setCurrentData({
+            ownerUid: snapshotData.ownerUid,
+            uid: doc.id,
+            createdTimestamp: snapshotData.createdTimestamp,
+            notes: snapshotData.notes,
+            title: snapshotData.title,
+            muscleGroups: snapshotData.muscleGroups,
+            location: snapshotData.location,
+            exercises: snapshotData.exercises,
+            startTimestamp: snapshotData.startTimestamp,
+            endTimestamp: snapshotData.endTimestamp,
+            version: snapshotData.version
+          });
+        }
+      }, err => {
+        console.error('error:', err);
+        setSnapshotErrorData(err.message);
+      });
 
-      // Unsubscribe on un-mount
-      return () => {
-        console.log('IUUUUUNSUB');
-        unsub();
-      };
-    }
+    // Unsubscribe on un-mount
+    return () => {
+      unsub();
+    };
   }, []);
-
-  if (!currentData) {
-    return <LoadingAlert componentName="DayDetailedView"/>;
-  }
 
   if (deleteErrorData || updateErrorData || snapshotErrorData) {
     return <ErrorAlert errorText={deleteErrorData || updateErrorData || snapshotErrorData} componentName="DayDetailedView" uid={dayUid}/>
+  }
+
+  if (!currentData) {
+    return <LoadingAlert componentName="DayDetailedView"/>;
   }
 
   const dayEnd = async () => {
