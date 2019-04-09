@@ -60,7 +60,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({
 interface IExerciseTypeContainerProps {
   exerciseUid: string,
   singleDayView: boolean,
-  dayUid: string | undefined
+  dayUid?: string
 }
 
 export default ExerciseTypeContainer;

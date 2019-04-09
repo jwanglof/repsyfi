@@ -7,6 +7,14 @@ export const getCurrentUsersUid = async (): Promise<string> => {
   return currentUser.uid;
 };
 
+export enum FirebaseCollectionNames {
+  FIRESTORE_COLLECTION_EXERCISES = "exercises",
+  FIRESTORE_COLLECTION_DAYS = "days",
+  FIRESTORE_COLLECTION_SETS = "sets",
+  FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS = "exercises-sets-reps",
+  FIRESTORE_COLLECTION_EXERCISE_TYPE_TIME_DISTANCE = "exercises-time-distance"
+}
+
 // TODO Move! To a context, perhaps?
 export const getNowTimestamp = (): number => Math.ceil(Date.now() / 1000);
 export const getDayErrorObject = (dayUid: string): object => _getErrorObject(dayUid, "Day");
