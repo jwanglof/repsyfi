@@ -14,6 +14,8 @@ import {Button, ButtonGroup, Col, Row} from 'reactstrap';
 import {getFormattedDate, getTitle} from './DayUtils';
 import AddExerciseForm from '../Exercise/AddExerciseForm';
 import ExerciseTypeContainer from '../Exercise/ExerciseTypeContainer';
+import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
+import firebase from '../../config/firebase';
 
 const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayUid}) => {
   const { t } = useTranslation();
@@ -25,6 +27,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
   const [currentData, setCurrentData] = useState<IDayModel | undefined>(undefined);
   const [deleteErrorData, setDeleteErrorData] = useState<string | undefined>(undefined);
   const [updateErrorData, setUpdateErrorData] = useState<string | undefined>(undefined);
+  const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
   const [addExerciseViewVisible, setAddExerciseViewVisible] = useState(false);
 
   useEffect(() => {
@@ -32,10 +35,48 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
       // Get the day's data
       const fetchDay = async () => {
         const data = await getDay(dayUid);
-        console.log('Day data:', data);
+        console.log(343, data);
         setCurrentData(data);
       };
       fetchDay();
+    }
+  }, []);
+
+  // Effect to subscribe on changes on this specific day
+  useEffect(() => {
+    if (!isEmpty(dayUid)) {
+      // TODO Need to verify that a user can't send any UID in here, somehow... That should be specified in the rules!
+      const unsub = firebase.firestore()
+        .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
+        // .where("ownerUid", "==", uid)
+        .doc(dayUid)
+        .onSnapshot({includeMetadataChanges: true}, doc => {
+          if (doc.exists && !isEmpty(doc.data())) {
+            const snapshotData: any = doc.data();
+            setCurrentData({
+              ownerUid: snapshotData.ownerUid,
+              uid: snapshotData.id,
+              createdTimestamp: snapshotData.createdTimestamp,
+              notes: snapshotData.notes,
+              title: snapshotData.title,
+              muscleGroups: snapshotData.muscleGroups,
+              location: snapshotData.location,
+              exercises: snapshotData.exercises,
+              startTimestamp: snapshotData.startTimestamp,
+              endTimestamp: snapshotData.endTimestamp,
+              version: snapshotData.version
+            });
+          }
+        }, err => {
+          console.error('error:', err);
+          setSnapshotErrorData(err.message);
+        });
+
+      // Unsubscribe on un-mount
+      return () => {
+        console.log('IUUUUUNSUB');
+        unsub();
+      };
     }
   }, []);
 
@@ -43,15 +84,15 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
     return <LoadingAlert componentName="DayDetailedView"/>;
   }
 
-  if (deleteErrorData || updateErrorData) {
-    return <ErrorAlert errorText={deleteErrorData || updateErrorData} componentName="DayDetailedView" uid={dayUid}/>
+  if (deleteErrorData || updateErrorData || snapshotErrorData) {
+    return <ErrorAlert errorText={deleteErrorData || updateErrorData || snapshotErrorData} componentName="DayDetailedView" uid={dayUid}/>
   }
 
   const dayEnd = async () => {
     try {
       await endDayNow(dayUid);
     } catch (e) {
-      setUpdateErrorData(e);
+      setUpdateErrorData(e.message);
     }
   };
 
@@ -60,7 +101,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
       await deleteDay(dayUid);
       router.navigate(routeNameRoot, {}, {reload: true});
     } catch (e) {
-      setDeleteErrorData(e);
+      setDeleteErrorData(e.message);
     }
   };
 
@@ -77,6 +118,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
       {addExerciseViewVisible && <AddExerciseForm dayUid={dayUid} setAddExerciseViewVisible={setAddExerciseViewVisible}/>}
 
       <Row>
+        {/* TODO Sort the exercises on createdTimestamp! */}
         {currentData.exercises.length && currentData.exercises.map(exerciseUid => <ExerciseTypeContainer key={exerciseUid} exerciseUid={exerciseUid} singleDayView={!isEmpty(dayUid)} dayUid={dayUid}/>)}
       </Row>
 
