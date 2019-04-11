@@ -100,8 +100,8 @@ const SetsRepsTableRowForm: FunctionComponent<ISetsRepsTableRowFormProps> = ({ e
 
 interface ISetsRepsTableRowFormProps {
   exerciseUid: string,
-  initialData: any,
-  setAddSetViewVisible: any,
+  initialData: ISetBasicModel,
+  setAddSetViewVisible: ((visible: boolean) => void),
 }
 
 interface ISetsRepsTableRowFormValidate {

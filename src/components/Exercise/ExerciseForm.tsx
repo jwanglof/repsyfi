@@ -105,7 +105,7 @@ const ExerciseForm: FunctionComponent<IExerciseFormProps> = ({dayUid, setAddExer
 
 interface IExerciseFormProps {
   dayUid: string,
-  setAddExerciseViewVisible: any  // TODO Change to method?
+  setAddExerciseViewVisible: ((visible: boolean) => void)
 }
 
 interface IExerciseForm {

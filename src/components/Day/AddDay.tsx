@@ -19,7 +19,7 @@ import DatepickerFormGroup from '../shared/formik/DatepickerFormGroup';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 
-const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router, setAddExerciseViewVisible}) => {
+const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
   const { t } = useTranslation();
   const nowDate = format(new Date(), dateFormat);
   const initialData: IAddDayEditData = {
@@ -101,9 +101,7 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router, setAdd
   );
 };
 
-interface IAddDayProps {
-  setAddExerciseViewVisible: any
-}
+interface IAddDayProps {}
 
 interface IAddDayRouter {
   router: Router
