@@ -179,6 +179,7 @@ export const updateExercise = async(exerciseUid: string, exerciseHeaderData: IEx
 
 // TODO Move to the DayService?
 export const addExerciseToDayArray = async (exerciseUid: string, dayUid: string): Promise<void> => {
+  // TODO Should exercises be an object with the index as key??
   return await firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
     .doc(dayUid)

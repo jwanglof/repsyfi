@@ -3,7 +3,7 @@ import {IExerciseHeaderModel, IExerciseModel} from '../../models/IExerciseModel'
 import {useTranslation} from 'react-i18next';
 import {updateExercise} from './ExerciseService';
 import {Form, Formik, FormikActions} from 'formik';
-import {Button, ButtonGroup, CardHeader} from 'reactstrap';
+import {Button, ButtonGroup} from 'reactstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import FormikField from '../shared/formik/FormikField';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
@@ -40,7 +40,7 @@ const ExerciseHeader: FunctionComponent<IExerciseHeaderProps> = ({exerciseData, 
   };
 
   return (
-    <CardHeader className="text-center pt-0 pb-0">
+    <>
       {isCollapsed && <h1 className="exercise--title" onClick={toggleEditForm}>{exerciseData.exerciseName} <FontAwesomeIcon icon="edit" size="xs"/></h1>}
       {!isCollapsed &&
       <Formik
@@ -63,7 +63,7 @@ const ExerciseHeader: FunctionComponent<IExerciseHeaderProps> = ({exerciseData, 
           </>
         )}
       />}
-    </CardHeader>
+    </>
   );
 
   // TODO Move this to another place!

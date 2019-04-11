@@ -1,8 +1,7 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {getSetsRepsExercise} from '../Exercise/ExerciseService';
 import {ISetsRepsModel} from '../../models/ISetsRepsModel';
-import {Button, CardBody, Table} from 'reactstrap';
+import {Button, Table} from 'reactstrap';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {ISetBasicModel} from '../../models/ISetModel';
@@ -78,34 +77,41 @@ const ExerciseSetsReps: FunctionComponent<IExerciseSetsRepsProps> = ({exerciseUi
   };
 
   return (
-    <CardBody className="mb-0 p-0">
-      <Table striped hover={singleDayView && !addSetViewVisible} size="sm" className="mb-0">
-        <thead>
-        <tr>
-          <th style={{width: "10%"}}>#</th>
-          <th style={{width: "45%"}}>{t("Amount in KG")}</th>
-          <th style={{width: "45%"}}>{t("Repetitions")}</th>
-        </tr>
-        </thead>
-        <tbody>
-        {currentExerciseData.sets.map((setUid, i) => {
-          if ((i + 1 ) === currentExerciseData.sets.length) {
-            // Pass the setter for the last set to the last set
-            return <OneSetTableRow key={setUid} setUid={setUid} disabled={addSetViewVisible} setLastSetData={setLastSetData}/>;
-          }
-          return <OneSetTableRow key={setUid} setUid={setUid} disabled={addSetViewVisible}/>;
-        })}
-        {addSetViewVisible && <AddOneSetTableRow exerciseUid={currentExerciseData.uid} setAddSetViewVisible={setAddSetViewVisible} initialData={getLastSetData()}/>}
-        </tbody>
-        <tfoot>
-        {singleDayView && !addSetViewVisible && <tr>
-          <td colSpan={3}>
-            <Button color="success" block onClick={() => setAddSetViewVisible(!addSetViewVisible)}>{t("Add set")}</Button>
-          </td>
-        </tr>}
-        </tfoot>
-      </Table>
-    </CardBody>
+    <Table striped hover={singleDayView && !addSetViewVisible} size="sm" className="mb-0">
+      <thead>
+      <tr>
+        <th style={{width: "10%"}}>#</th>
+        <th style={{width: "45%"}}>{t("Amount in KG")}</th>
+        <th style={{width: "45%"}}>{t("Repetitions")}</th>
+      </tr>
+      </thead>
+
+      <tbody>
+
+      {currentExerciseData.sets.map((setUid, i) => {
+        if ((i + 1 ) === currentExerciseData.sets.length) {
+          // Pass the setter for the last set to the last set
+          return <OneSetTableRow key={setUid} setUid={setUid} disabled={addSetViewVisible} setLastSetData={setLastSetData}/>;
+        }
+        return <OneSetTableRow key={setUid} setUid={setUid} disabled={addSetViewVisible}/>;
+      })}
+
+      {addSetViewVisible && <AddOneSetTableRow exerciseUid={currentExerciseData.uid} setAddSetViewVisible={setAddSetViewVisible} initialData={getLastSetData()}/>}
+
+      </tbody>
+
+      {singleDayView && !addSetViewVisible && <tfoot>
+      <tr>
+        <td colSpan={3}>
+          <Button color="success" block onClick={() => setAddSetViewVisible(!addSetViewVisible)}>{t("Add set")}</Button>
+        </td>
+      </tr>
+      <tr>
+        <td className="text-muted text-center font-italic" colSpan={3}><small>{t("Click on a set for different actions")}</small></td>
+      </tr>
+      </tfoot>}
+
+    </Table>
   );
 };
 

@@ -1,49 +1,62 @@
-import React, {FunctionComponent, useContext} from 'react';
+import React, {FunctionComponent} from 'react';
 import {ITimeDistanceModel} from '../../models/ITimeDistanceModel';
-import {TSEditVisibleCtx} from './ExerciseTimeDistance';
-import {Button, CardBody, Col, Row} from 'reactstrap';
+import {Button, Table} from 'reactstrap';
+import {useTranslation} from 'react-i18next';
 
-const TimeDistanceCard: FunctionComponent<ITimeDistanceCardProps> = ({currentExerciseData, singleDayView}) => {
-  const [editVisible, setEditVisible] = useContext<any>(TSEditVisibleCtx);
+const TimeDistanceCard: FunctionComponent<ITimeDistanceCardProps> = ({currentExerciseData, setEditVisible}) => {
+  const { t } = useTranslation();
 
-  return (
-    <CardBody className="m-0 p-0">
-      <Row>
-        <Col xs={6}>Total time</Col>
-        <Col xs={6}>Total warm-up</Col>
-        <Col xs={6}>{currentExerciseData.totalTimeSeconds}</Col>
-        <Col xs={6}>{currentExerciseData.totalWarmupSeconds}</Col>
-      </Row>
-      <Row>
-        <Col xs={6}>Total distance</Col>
-        <Col xs={6}>Total kcal</Col>
-        <Col xs={6}>{currentExerciseData.totalDistanceMeter}</Col>
-        <Col xs={6}>{currentExerciseData.totalKcal}</Col>
-      </Row>
-      <Row>
-        <Col xs={6}>Speed min</Col>
-        <Col xs={6}>Speed max</Col>
-        <Col xs={6}>{currentExerciseData.speedMin}</Col>
-        <Col xs={6}>{currentExerciseData.speedMax}</Col>
-      </Row>
-      <Row>
-        <Col xs={6}>Incline min</Col>
-        <Col xs={6}>Incline max</Col>
-        <Col xs={6}>{currentExerciseData.inclineMin}</Col>
-        <Col xs={6}>{currentExerciseData.inclineMax}</Col>
-      </Row>
-      {singleDayView && <Row>
-        <Col>
-          <Button color="success" block onClick={() => setEditVisible(true)}>Edit</Button>
-        </Col>
-      </Row>}
-    </CardBody>
-  );
+  return (<Table size="sm" className="mb-0">
+    <tbody>
+    <tr>
+      <td>{t("Total time")}</td>
+      <td>{currentExerciseData.totalTimeSeconds}</td>
+    </tr>
+    <tr>
+      <td>{t("Total warm-up")}</td>
+      <td>{currentExerciseData.totalWarmupSeconds}</td>
+    </tr>
+
+    <tr>
+      <td>{t("Total distance")}</td>
+      <td>{currentExerciseData.totalDistanceMeter}</td>
+    </tr>
+    <tr>
+      <td>{t("Total kcal")}</td>
+      <td>{currentExerciseData.totalKcal}</td>
+    </tr>
+
+    <tr>
+      <td>{t("Speed min")}</td>
+      <td>{currentExerciseData.speedMin}</td>
+    </tr>
+    <tr>
+      <td>{t("Speed max")}</td>
+      <td>{currentExerciseData.speedMax}</td>
+    </tr>
+
+    <tr>
+      <td>{t("Incline min")}</td>
+      <td>{currentExerciseData.inclineMin}</td>
+    </tr>
+    <tr>
+      <td>{t("Incline max")}</td>
+      <td>{currentExerciseData.inclineMax}</td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+      <td colSpan={2}>
+        <Button color="success" block onClick={() => setEditVisible(true)}>Edit</Button>
+      </td>
+    </tr>
+    </tfoot>
+  </Table>);
 };
 
 interface ITimeDistanceCardProps {
   currentExerciseData: ITimeDistanceModel,
-  singleDayView: boolean
+  setEditVisible: ((visible: boolean) => void)
 }
 
 export default TimeDistanceCard;

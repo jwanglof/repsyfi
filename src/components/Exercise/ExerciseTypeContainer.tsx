@@ -4,7 +4,7 @@ import React, {FunctionComponent, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {getExercise} from './ExerciseService';
 import {IExerciseModel} from '../../models/IExerciseModel';
-import {Card, CardFooter, Col} from 'reactstrap';
+import {Card, CardBody, CardFooter, CardHeader, Col} from 'reactstrap';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import ExerciseHeader from './ExerciseHeader';
@@ -44,14 +44,15 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({
   return (
     <Col lg={4} xs={12} className="mb-2">
       <Card>
-        {dayUid && <ExerciseHeader exerciseData={currentExerciseData} dayUid={dayUid}/>}
-        {!dayUid && <ExerciseHeaderView exerciseData={currentExerciseData}/>}
+        <CardHeader className="text-center pt-0 pb-0">
+          {dayUid && <ExerciseHeader exerciseData={currentExerciseData} dayUid={dayUid}/>}
+          {!dayUid && <ExerciseHeaderView exerciseData={currentExerciseData}/>}
+        </CardHeader>
 
-        {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS && <ExerciseSetsReps exerciseUid={currentExerciseData.typeUid} singleDayView={singleDayView}/>}
-        {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE && <ExerciseTimeDistance exerciseUid={currentExerciseData.typeUid} singleDayView={singleDayView}/>}
-        {singleDayView && <CardFooter className="text-muted exercise--card-footer">
-          {t("Click on a set for different actions")}
-        </CardFooter>}
+        <CardBody className="mb-0 p-0">
+          {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS && <ExerciseSetsReps exerciseUid={currentExerciseData.typeUid} singleDayView={singleDayView}/>}
+          {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE && <ExerciseTimeDistance exerciseUid={currentExerciseData.typeUid}/>}
+        </CardBody>
       </Card>
     </Col>
   );
