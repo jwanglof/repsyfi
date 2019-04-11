@@ -7,7 +7,7 @@ import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import classnames from 'classnames';
 
-const OneSetTableRow: FunctionComponent<IOneSetTableRowProps> = ({ setUid, disabled, setLastSetData }) => {
+const SetsRepsTableRowView: FunctionComponent<ISetsRepsTableRowViewProps> = ({ setUid, disabled, setLastSetData }) => {
   const [currentData, setCurrentData] = useState<ISetModel | undefined>(undefined);
   const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
 
@@ -29,11 +29,11 @@ const OneSetTableRow: FunctionComponent<IOneSetTableRowProps> = ({ setUid, disab
   }, []);
 
   if (fetchDataError) {
-    return <tr><td colSpan={3}><ErrorAlert errorText={fetchDataError} componentName="OneSetTableRow" uid={setUid}/></td></tr>;
+    return <tr><td colSpan={3}><ErrorAlert errorText={fetchDataError} componentName="SetsRepsTableRowView" uid={setUid}/></td></tr>;
   }
 
   if (!currentData) {
-    return <tr><td colSpan={3}><LoadingAlert componentName="OneSetTableRow"/></td></tr>;
+    return <tr><td colSpan={3}><LoadingAlert componentName="SetsRepsTableRowView"/></td></tr>;
   }
 
   const classNames = classnames({
@@ -51,10 +51,10 @@ const OneSetTableRow: FunctionComponent<IOneSetTableRowProps> = ({ setUid, disab
   );
 };
 
-interface IOneSetTableRowProps {
+interface ISetsRepsTableRowViewProps {
   setUid: string,
   disabled: boolean,
   setLastSetData?: any
 }
 
-export default OneSetTableRow;
+export default SetsRepsTableRowView;

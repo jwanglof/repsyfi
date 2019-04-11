@@ -3,10 +3,10 @@ import {getTimeDistanceExercise} from './TimeDistanceService';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {ITimeDistanceModel} from '../../models/ITimeDistanceModel';
-import TimeDistanceCard from './TimeDistanceCard';
-import TimeDistanceCardForm from './TimeDistanceCardForm';
+import TimeDistanceView from './TimeDistanceView';
+import TimeDistanceForm from './TimeDistanceForm';
 
-const ExerciseTimeDistance: FunctionComponent<IExerciseTimeDistanceProps> = ({exerciseUid}) => {
+const TimeDistanceExerciseContainer: FunctionComponent<ITimeDistanceExerciseContainerProps> = ({exerciseUid}) => {
   const [currentExerciseData, setCurrentExerciseData] = useState<ITimeDistanceModel | undefined>(undefined);
   const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
   const [editVisible, setEditVisible] = useState<boolean>(false);
@@ -26,23 +26,23 @@ const ExerciseTimeDistance: FunctionComponent<IExerciseTimeDistanceProps> = ({ex
   }, []);
 
   if (fetchDataError) {
-    return <ErrorAlert errorText={fetchDataError} componentName="TSExerciseSetsReps"/>;
+    return <ErrorAlert errorText={fetchDataError} componentName="TimeDistanceExerciseContainer"/>;
   }
 
   if (!currentExerciseData) {
-    return <LoadingAlert componentName="TSExerciseSetsReps"/>;
+    return <LoadingAlert componentName="TimeDistanceExerciseContainer"/>;
   }
 
   return (
     <>
-      {!editVisible && <TimeDistanceCard currentExerciseData={currentExerciseData} setEditVisible={setEditVisible}/>}
-      {editVisible && <TimeDistanceCardForm currentExerciseData={currentExerciseData} setEditVisible={setEditVisible}/>}
+      {!editVisible && <TimeDistanceView currentExerciseData={currentExerciseData} setEditVisible={setEditVisible}/>}
+      {editVisible && <TimeDistanceForm currentExerciseData={currentExerciseData} setEditVisible={setEditVisible}/>}
     </>
   );
 };
 
-interface IExerciseTimeDistanceProps {
+interface ITimeDistanceExerciseContainerProps {
   exerciseUid: string
 }
 
-export default ExerciseTimeDistance;
+export default TimeDistanceExerciseContainer;

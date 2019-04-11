@@ -3,7 +3,7 @@ import {ITimeDistanceModel} from '../../models/ITimeDistanceModel';
 import {Button, Table} from 'reactstrap';
 import {useTranslation} from 'react-i18next';
 
-const TimeDistanceCard: FunctionComponent<ITimeDistanceCardProps> = ({currentExerciseData, setEditVisible}) => {
+const TimeDistanceView: FunctionComponent<ITimeDistanceViewProps> = ({currentExerciseData, setEditVisible}) => {
   const { t } = useTranslation();
 
   return (<Table size="sm" className="mb-0">
@@ -54,9 +54,9 @@ const TimeDistanceCard: FunctionComponent<ITimeDistanceCardProps> = ({currentExe
   </Table>);
 };
 
-interface ITimeDistanceCardProps {
+interface ITimeDistanceViewProps {
   currentExerciseData: ITimeDistanceModel,
   setEditVisible: ((visible: boolean) => void)
 }
 
-export default TimeDistanceCard;
+export default TimeDistanceView;

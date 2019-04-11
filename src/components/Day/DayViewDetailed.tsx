@@ -12,7 +12,7 @@ import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {routeNameEditDay, routeNameRoot} from '../../routes';
 import {Button, ButtonGroup, Col, Row} from 'reactstrap';
 import {getFormattedDate, getTitle} from './DayUtils';
-import AddExerciseForm from '../Exercise/AddExerciseForm';
+import ExerciseForm from '../Exercise/ExerciseForm';
 import ExerciseTypeContainer from '../Exercise/ExerciseTypeContainer';
 import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
 import firebase from '../../config/firebase';
@@ -100,7 +100,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
         </Col>
       </Row>}
 
-      {addExerciseViewVisible && <AddExerciseForm dayUid={dayUid} setAddExerciseViewVisible={setAddExerciseViewVisible}/>}
+      {addExerciseViewVisible && <ExerciseForm dayUid={dayUid} setAddExerciseViewVisible={setAddExerciseViewVisible}/>}
 
       <Row>
         {/* TODO Sort the exercises on createdTimestamp! */}

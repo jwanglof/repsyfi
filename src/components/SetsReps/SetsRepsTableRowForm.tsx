@@ -13,17 +13,17 @@ import {isNumber} from 'lodash';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 
-const AddOneSetTableRow: FunctionComponent<IAddOneSetTableRowProps> = ({ exerciseUid, initialData, setAddSetViewVisible }) => {
+const SetsRepsTableRowForm: FunctionComponent<ISetsRepsTableRowFormProps> = ({ exerciseUid, initialData, setAddSetViewVisible }) => {
   const { t } = useTranslation();
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
 
   if (submitErrorMessage) {
-    return <tr><td colSpan={3}><ErrorAlert errorText={submitErrorMessage} componentName="AddOneSetTableRow"/></td></tr>;
+    return <tr><td colSpan={3}><ErrorAlert errorText={submitErrorMessage} componentName="SetsRepsTableRowAdd"/></td></tr>;
   }
 
   if (!exerciseUid) {
-    return <tr><td colSpan={3}><ErrorAlert errorText="Need an exercise UID to add a set!" componentName="AddOneSetTableRow"/></td></tr>;
+    return <tr><td colSpan={3}><ErrorAlert errorText="Need an exercise UID to add a set!" componentName="SetsRepsTableRowAdd"/></td></tr>;
   }
 
   const onSubmit = async (values: ISetBasicModel, actions: FormikActions<ISetBasicModel>) => {
@@ -49,8 +49,8 @@ const AddOneSetTableRow: FunctionComponent<IAddOneSetTableRowProps> = ({ exercis
     actions.setSubmitting(false);
   };
 
-  const validate = (values: IAddOneSetTableRowValidate): IAddOneSetTableRowValidate | {} => {
-    const errors: IAddOneSetTableRowValidateErrors = {};
+  const validate = (values: ISetsRepsTableRowFormValidate): ISetsRepsTableRowFormValidate | {} => {
+    const errors: ISetsRepsTableRowFormValidateErrors = {};
     if (!isNumber(values.amountInKg) || values.amountInKg && values.amountInKg < 0) {
       errors.amountInKg = t("Amount must exist, and be 0 or higher");
     }
@@ -98,28 +98,22 @@ const AddOneSetTableRow: FunctionComponent<IAddOneSetTableRowProps> = ({ exercis
   );
 };
 
-interface IAddOneSetTableRowProps {
+interface ISetsRepsTableRowFormProps {
   exerciseUid: string,
   initialData: any,
   setAddSetViewVisible: any,
 }
 
-interface IAddOneSetTableRowValidate {
+interface ISetsRepsTableRowFormValidate {
   amountInKg?: number,
   reps?: number,
   index?: number
 }
 
-interface IAddOneSetTableRowValidateErrors {
+interface ISetsRepsTableRowFormValidateErrors {
   amountInKg?: string,
   reps?: string,
   index?: string
 }
 
-// interface TSAddOneSetTableRowFormValues {
-//   index: values.index,
-//   amountInKg: values.amountInKg,
-//   reps: values.reps
-// }
-
-export default AddOneSetTableRow;
+export default SetsRepsTableRowForm;

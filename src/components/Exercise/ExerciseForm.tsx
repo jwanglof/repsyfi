@@ -19,7 +19,7 @@ import SelectFormGroup from '../shared/formik/SelectFormGroup';
 import {Form} from 'react-formik-ui';
 import {addNewTimeDistanceExerciseAndGetUid} from '../TimeDistance/TimeDistanceService';
 
-const AddExerciseForm: FunctionComponent<IAddExerciseFormProps> = ({dayUid, setAddExerciseViewVisible}) => {
+const ExerciseForm: FunctionComponent<IExerciseFormProps> = ({dayUid, setAddExerciseViewVisible}) => {
   const { t } = useTranslation();
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
@@ -28,15 +28,15 @@ const AddExerciseForm: FunctionComponent<IAddExerciseFormProps> = ({dayUid, setA
     return <ErrorAlert errorText={submitErrorMessage} componentName="AddExerciseForm"/>;
   }
 
-  const validate = (values: IAddExerciseFormValidate): IAddExerciseFormValidate | {} => {
-    const errors: IAddExerciseFormValidate = {};
+  const validate = (values: IExerciseFormValidate): IExerciseFormValidate | {} => {
+    const errors: IExerciseFormValidate = {};
     if (isEmpty(values.exerciseName)) {
       errors.exerciseName = "Exercise name can't be empty"
     }
     return errors;
   };
 
-  const onSubmit = async (values: IAddExerciseForm, actions: FormikActions<IAddExerciseFormSubmitValues>) => {
+  const onSubmit = async (values: IExerciseForm, actions: FormikActions<IExerciseFormSubmitValues>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
     console.log('values:', values);
@@ -70,7 +70,7 @@ const AddExerciseForm: FunctionComponent<IAddExerciseFormProps> = ({dayUid, setA
     actions.setSubmitting(false);
   };
 
-  const emptyInitialValues: IAddExerciseForm = {exerciseName: '', type: ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS};
+  const emptyInitialValues: IExerciseForm = {exerciseName: '', type: ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS};
 
   return (
     <Row>
@@ -103,24 +103,23 @@ const AddExerciseForm: FunctionComponent<IAddExerciseFormProps> = ({dayUid, setA
   );
 };
 
-interface IAddExerciseFormProps {
-  // initialValues: IAddExerciseForm,
+interface IExerciseFormProps {
   dayUid: string,
   setAddExerciseViewVisible: any  // TODO Change to method?
 }
 
-interface IAddExerciseForm {
+interface IExerciseForm {
   exerciseName: string,
   type: ExerciseTypesEnum
 }
 
-interface IAddExerciseFormValidate {
+interface IExerciseFormValidate {
   exerciseName?: string
 }
 
-interface IAddExerciseFormSubmitValues {
+interface IExerciseFormSubmitValues {
   exerciseName: string,
   type: ExerciseTypesEnum
 }
 
-export default AddExerciseForm;
+export default ExerciseForm;

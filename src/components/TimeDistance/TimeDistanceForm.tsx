@@ -10,13 +10,13 @@ import FieldFormGroup from '../shared/formik/FieldFormGroup';
 import {Form} from 'react-formik-ui';
 import DurationFormGroup from '../shared/formik/DurationFormGroup';
 
-const TimeDistanceCardForm: FunctionComponent<ITimeDistanceCardFormProps> = ({currentExerciseData, setEditVisible}) => {
+const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({currentExerciseData, setEditVisible}) => {
   const { t } = useTranslation();
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
 
   if (submitErrorMessage) {
-    return <ErrorAlert errorText={submitErrorMessage} componentName="TSTimeDistanceCardForm"/>;
+    return <ErrorAlert errorText={submitErrorMessage} componentName="TimeDistanceForm"/>;
   }
 
   const onSubmit = async (values: ITimeDistanceBasicModel, actions: FormikActions<ITimeDistanceBasicModel>) => {
@@ -67,9 +67,9 @@ const TimeDistanceCardForm: FunctionComponent<ITimeDistanceCardFormProps> = ({cu
   );
 };
 
-interface ITimeDistanceCardFormProps {
+interface ITimeDistanceFormProps {
   currentExerciseData: ITimeDistanceBasicModel,
   setEditVisible: ((visible: boolean) => void)
 }
 
-export default TimeDistanceCardForm;
+export default TimeDistanceForm;

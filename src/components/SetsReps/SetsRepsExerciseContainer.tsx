@@ -5,17 +5,17 @@ import {Button, Table} from 'reactstrap';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {ISetBasicModel} from '../../models/ISetModel';
-import OneSetTableRow from './OneSetTableRow';
-import AddOneSetTableRow from './AddOneSetTableRow';
+import SetsRepsTableRowView from './SetsRepsTableRowView';
+import SetsRepsTableRowForm from './SetsRepsTableRowForm';
 import firebase from '../../config/firebase';
 import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
 import {isEmpty} from 'lodash';
 
-const ExerciseSetsReps: FunctionComponent<IExerciseSetsRepsProps> = ({exerciseUid, singleDayView}) => {
+const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerProps> = ({exerciseUid, singleDayView}) => {
   const { t } = useTranslation();
 
   if (isEmpty(exerciseUid)) {
-    return <ErrorAlert errorText="Must have the exercises's UID to proceed!" componentName="ExerciseSetsReps"/>;
+    return <ErrorAlert errorText="Must have the exercises's UID to proceed!" componentName="SetsRepsExerciseContainer"/>;
   }
 
   const [currentExerciseData, setCurrentExerciseData] = useState<ISetsRepsModel | undefined>(undefined);
@@ -53,11 +53,11 @@ const ExerciseSetsReps: FunctionComponent<IExerciseSetsRepsProps> = ({exerciseUi
   }, []);
 
   if (snapshotErrorData) {
-    return <ErrorAlert errorText={snapshotErrorData} componentName="ExerciseSetsReps"/>;
+    return <ErrorAlert errorText={snapshotErrorData} componentName="SetsRepsExerciseContainer"/>;
   }
 
   if (!currentExerciseData) {
-    return <LoadingAlert componentName="ExerciseSetsReps"/>;
+    return <LoadingAlert componentName="SetsRepsExerciseContainer"/>;
   }
 
   // Return the last set's data so that it can be pre-filled to the new set
@@ -91,12 +91,12 @@ const ExerciseSetsReps: FunctionComponent<IExerciseSetsRepsProps> = ({exerciseUi
       {currentExerciseData.sets.map((setUid, i) => {
         if ((i + 1 ) === currentExerciseData.sets.length) {
           // Pass the setter for the last set to the last set
-          return <OneSetTableRow key={setUid} setUid={setUid} disabled={addSetViewVisible} setLastSetData={setLastSetData}/>;
+          return <SetsRepsTableRowView key={setUid} setUid={setUid} disabled={addSetViewVisible} setLastSetData={setLastSetData}/>;
         }
-        return <OneSetTableRow key={setUid} setUid={setUid} disabled={addSetViewVisible}/>;
+        return <SetsRepsTableRowView key={setUid} setUid={setUid} disabled={addSetViewVisible}/>;
       })}
 
-      {addSetViewVisible && <AddOneSetTableRow exerciseUid={currentExerciseData.uid} setAddSetViewVisible={setAddSetViewVisible} initialData={getLastSetData()}/>}
+      {addSetViewVisible && <SetsRepsTableRowForm exerciseUid={currentExerciseData.uid} setAddSetViewVisible={setAddSetViewVisible} initialData={getLastSetData()}/>}
 
       </tbody>
 
@@ -115,9 +115,9 @@ const ExerciseSetsReps: FunctionComponent<IExerciseSetsRepsProps> = ({exerciseUi
   );
 };
 
-interface IExerciseSetsRepsProps {
+interface ISetsRepsExerciseContainerProps {
   exerciseUid: string,
   singleDayView: boolean
 }
 
-export default ExerciseSetsReps;
+export default SetsRepsExerciseContainer;
