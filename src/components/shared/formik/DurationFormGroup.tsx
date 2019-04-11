@@ -3,6 +3,7 @@ import {Alert, Col, FormGroup, Input, Label, Row} from 'reactstrap';
 import {colSmSize, labelSmSize} from './formik-utils';
 import {connect, ErrorMessage, FormikContext} from 'formik';
 import {defaultTo, toNumber} from 'lodash';
+import {getHourMinuteSecondsFromSeconds} from '../time-utils';
 
 const DurationFormGroup: FunctionComponent<IDurationFormGroupProps & IDurationFormGroupPropsFormik> = ({formik, labelText, name}) => {
   const [hours, setHours] = useState<number>(0);
@@ -12,8 +13,17 @@ const DurationFormGroup: FunctionComponent<IDurationFormGroupProps & IDurationFo
   const MAX_MINUTES_SECONDS: number = 59;
 
   useEffect(() => {
-    formik.values[name] = getTotalSeconds();
+    // The first time, set the current data
+    if (hours === 0 && minutes === 0 && seconds === 0) {
+      let t = getHourMinuteSecondsFromSeconds(formik.values[name]);
+      setHours(t.hours);
+      setMinutes(t.minutes);
+      setSeconds(t.seconds);
+    } else {
+      formik.values[name] = getTotalSeconds();
+    }
   }, [hours, minutes, seconds]);
+
 
   const onBlur = (e: ChangeEvent<HTMLInputElement>) => {
     const { name } = e.target;
@@ -32,6 +42,7 @@ const DurationFormGroup: FunctionComponent<IDurationFormGroupProps & IDurationFo
         setSeconds(remainingSeconds);
       }
     }
+    formik.values[name] = getTotalSeconds();
   };
 
   const getTotalSeconds = (): number => ((hours * 3600) + (minutes * 60) + seconds);
@@ -42,15 +53,13 @@ const DurationFormGroup: FunctionComponent<IDurationFormGroupProps & IDurationFo
     <Label for={name} sm={labelSmSize}>{labelText}</Label>
     <Col sm={colSmSize}>
       <Row>
-        <Col xs={3}>
-          <Input className="text-center" type="number" name="hours" onChange={e => setHours(getNumber(e))} value={hours} placeholder="Hours" />
+        <Col xs={4}>
+          <Input className="text-center" type="number" name="hours" onChange={e => setHours(getNumber(e))} onBlur={onBlur} value={hours} placeholder="Hours" />
         </Col>
-        <Col xs={1}>:</Col>
-        <Col xs={3}>
+        <Col xs={4}>
           <Input className="text-center" type="number" name="minutes" onChange={e => setMinutes(getNumber(e))} onBlur={onBlur} value={minutes} placeholder="Minutes" max={MAX_MINUTES_SECONDS}/>
         </Col>
-        <Col xs={1}>:</Col>
-        <Col xs={3}>
+        <Col xs={4}>
           <Input className="text-center" type="number" name="seconds" onChange={e => setSeconds(getNumber(e))} onBlur={onBlur} value={seconds} placeholder="Seconds" max={MAX_MINUTES_SECONDS}/>
         </Col>
       </Row>

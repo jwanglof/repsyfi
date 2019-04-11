@@ -1,4 +1,4 @@
-import {IBaseModel, IBaseModelWithoutUid} from './IBaseModel';
+import {IBaseModel, IBaseModelUpdating, IBaseModelWithoutUid} from './IBaseModel';
 
 export interface ITimeDistanceBasicModel {
   totalTimeSeconds: number,
@@ -13,3 +13,4 @@ export interface ITimeDistanceBasicModel {
 
 export interface ITimeDistanceModel extends ITimeDistanceBasicModel, IBaseModel {}
 export interface ITimeDistanceModelWithoutUid extends ITimeDistanceBasicModel, IBaseModelWithoutUid {}
+export interface ITimeDistanceUpdateModel extends ITimeDistanceBasicModel, IBaseModelUpdating {}

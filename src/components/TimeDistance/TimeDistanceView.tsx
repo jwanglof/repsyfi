@@ -2,24 +2,38 @@ import React, {FunctionComponent} from 'react';
 import {ITimeDistanceModel} from '../../models/ITimeDistanceModel';
 import {Button, Table} from 'reactstrap';
 import {useTranslation} from 'react-i18next';
+import {getHourMinuteSecondsFromSeconds} from '../shared/time-utils';
 
 const TimeDistanceView: FunctionComponent<ITimeDistanceViewProps> = ({currentExerciseData, setEditVisible}) => {
   const { t } = useTranslation();
+
+  const formatSecondsToTime = (seconds: number): string => {
+    let t = getHourMinuteSecondsFromSeconds(seconds);
+    let hh: number | string = t.hours;
+    let mm: number | string = t.minutes;
+    let ss: number | string = t.seconds;
+    if (hh < 10) hh = "0"+hh;
+    if (mm < 10) mm = "0"+mm;
+    if (ss < 10) ss = "0"+ss;
+    return `${hh}:${mm}:${ss}`;
+  };
+
+  console.log(9888, currentExerciseData);
 
   return (<Table size="sm" className="mb-0">
     <tbody>
     <tr>
       <td>{t("Total time")}</td>
-      <td>{currentExerciseData.totalTimeSeconds}</td>
+      <td>{formatSecondsToTime(currentExerciseData.totalTimeSeconds)}</td>
     </tr>
     <tr>
       <td>{t("Total warm-up")}</td>
-      <td>{currentExerciseData.totalWarmupSeconds}</td>
+      <td>{formatSecondsToTime(currentExerciseData.totalWarmupSeconds)}</td>
     </tr>
 
     <tr>
       <td>{t("Total distance")}</td>
-      <td>{currentExerciseData.totalDistanceMeter}</td>
+      <td>{currentExerciseData.totalDistanceMeter}m</td>
     </tr>
     <tr>
       <td>{t("Total kcal")}</td>

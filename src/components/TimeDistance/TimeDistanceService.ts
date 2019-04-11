@@ -1,8 +1,14 @@
-import {ITimeDistanceModel, ITimeDistanceModelWithoutUid} from '../../models/ITimeDistanceModel';
+import {
+  ITimeDistanceBasicModel,
+  ITimeDistanceModel,
+  ITimeDistanceModelWithoutUid,
+  ITimeDistanceUpdateModel
+} from '../../models/ITimeDistanceModel';
 import {FirebaseCollectionNames, getNowTimestamp, getTimeDistanceExerciseErrorObject} from '../../config/FirebaseUtils';
 import {Versions} from '../../models/IBaseModel';
 import firebase from '../../config/firebase';
 import {isEmpty} from 'lodash';
+import {IExerciseBasicModel} from '../../models/IExerciseModel';
 
 export const addNewTimeDistanceExerciseAndGetUid = async (ownerUid: string): Promise<string> => {
   const timeDistanceData: ITimeDistanceModelWithoutUid = {
@@ -49,9 +55,28 @@ export const getTimeDistanceExercise = async (exerciseUid: string): Promise<ITim
     throw getTimeDistanceExerciseErrorObject(exerciseUid);
   }
 };
+
 export const deleteTimeDistanceExercise = async (exerciseUid: string): Promise<void> => {
   return await firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_TIME_DISTANCE)
     .doc(exerciseUid)
     .delete();
+};
+
+export const updateTimeDistanceExercise = async(exerciseUid: string, timeDistanceData: ITimeDistanceBasicModel): Promise<void> => {
+  const data: ITimeDistanceUpdateModel = {
+    totalTimeSeconds: timeDistanceData.totalTimeSeconds,
+    totalDistanceMeter: timeDistanceData.totalDistanceMeter,
+    totalWarmupSeconds: timeDistanceData.totalWarmupSeconds,
+    totalKcal: timeDistanceData.totalKcal,
+    speedMin: timeDistanceData.speedMin,
+    speedMax: timeDistanceData.speedMax,
+    inclineMin: timeDistanceData.inclineMin,
+    inclineMax: timeDistanceData.inclineMax,
+    updatedTimestamp: getNowTimestamp()
+  };
+  return await firebase.firestore()
+    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_TIME_DISTANCE)
+    .doc(exerciseUid)
+    .update(data);
 };
