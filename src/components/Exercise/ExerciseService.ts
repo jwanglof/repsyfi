@@ -1,18 +1,17 @@
-import {deleteSet} from '../SetsReps/SetService';
+import {deleteSet} from '../SetsReps/SetsRepsService';
 import firebase from '../../config/firebase';
 import {isEmpty} from 'lodash';
 import {IExerciseBasicModel, IExerciseModel, IExerciseModelWithoutUid} from '../../models/IExerciseModel';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {ISetsRepsModel, ISetsRepsModelWithoutUid} from '../../models/ISetsRepsModel';
-import {ITimeDistanceModel, ITimeDistanceModelWithoutUid} from '../../models/ITimeDistanceModel';
 import {
   FirebaseCollectionNames,
   getExerciseErrorObject,
   getNowTimestamp,
-  getSetsRepsExerciseErrorObject,
-  getTimeDistanceExerciseErrorObject
+  getSetsRepsExerciseErrorObject
 } from '../../config/FirebaseUtils';
 import {Versions} from '../../models/IBaseModel';
+import {deleteTimeDistanceExercise} from '../TimeDistance/TimeDistanceService';
 
 export const getExercise = async (exerciseUid: string): Promise<IExerciseModel> => {
   const querySnapshot = await firebase.firestore()
@@ -65,13 +64,6 @@ export const deleteSetsRepsExercise = async (exerciseUid: string): Promise<void>
     .delete();
 };
 
-export const deleteTimeDistanceExercise = async (exerciseUid: string): Promise<void> => {
-  return await firebase.firestore()
-    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_TIME_DISTANCE)
-    .doc(exerciseUid)
-    .delete();
-};
-
 export const getSetsRepsExercise = async (exerciseUid: string): Promise<ISetsRepsModel> => {
   const querySnapshot = await firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS)
@@ -91,32 +83,6 @@ export const getSetsRepsExercise = async (exerciseUid: string): Promise<ISetsRep
   }
 };
 
-export const getTimeDistanceExercise = async (exerciseUid: string): Promise<ITimeDistanceModel> => {
-  const querySnapshot = await firebase.firestore()
-    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_TIME_DISTANCE)
-    .doc(exerciseUid)
-    .get();
-  if (!isEmpty(querySnapshot.data())) {
-    const exerciseData = querySnapshot.data()!;
-    return {
-      totalTimeSeconds: exerciseData.totalTimeSeconds,
-      totalDistanceMeter: exerciseData.totalDistanceMeter,
-      totalWarmupSeconds: exerciseData.totalWarmupSeconds,
-      totalKcal: exerciseData.totalKcal,
-      speedMin: exerciseData.speedMin,
-      speedMax: exerciseData.speedMax,
-      inclineMin: exerciseData.inclineMin,
-      inclineMax: exerciseData.inclineMax,
-      uid: querySnapshot.id,
-      ownerUid: exerciseData.ownerUid,
-      createdTimestamp: exerciseData.createdTimestamp,
-      version: exerciseData.version
-    };
-  } else {
-    throw getTimeDistanceExerciseErrorObject(exerciseUid);
-  }
-};
-
 export const addNewSetsRepsExerciseAndGetUid = async (ownerUid: string): Promise<string> => {
   const setsRepsData: ISetsRepsModelWithoutUid = {
     sets: [],
@@ -127,26 +93,6 @@ export const addNewSetsRepsExerciseAndGetUid = async (ownerUid: string): Promise
   const exerciseSetsRepsDocRef = await firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS)
     .add(setsRepsData);
-  return exerciseSetsRepsDocRef.id;
-};
-
-export const addNewTimeDistanceExerciseAndGetUid = async (ownerUid: string): Promise<string> => {
-  const timeDistanceData: ITimeDistanceModelWithoutUid = {
-    totalTimeSeconds: 0,
-    totalDistanceMeter: 0,
-    totalWarmupSeconds: 0,
-    totalKcal: 0,
-    speedMin: 0,
-    speedMax: 0,
-    inclineMin: 0,
-    inclineMax: 0,
-    ownerUid: ownerUid,
-    createdTimestamp: getNowTimestamp(),
-    version: Versions.v1
-  };
-  const exerciseSetsRepsDocRef = await firebase.firestore()
-    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_TIME_DISTANCE)
-    .add(timeDistanceData);
   return exerciseSetsRepsDocRef.id;
 };
 

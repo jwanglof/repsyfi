@@ -9,7 +9,6 @@ import {
   addExerciseAndGetUid,
   addExerciseToDayArray,
   addNewSetsRepsExerciseAndGetUid,
-  addNewTimeDistanceExerciseAndGetUid,
   getExerciseTypes
 } from './ExerciseService';
 import {IExerciseBasicModel} from '../../models/IExerciseModel';
@@ -18,6 +17,7 @@ import FieldFormGroup from '../shared/formik/FieldFormGroup';
 import SelectFormGroup from '../shared/formik/SelectFormGroup';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
+import {addNewTimeDistanceExerciseAndGetUid} from '../TimeDistance/TimeDistanceService';
 
 const AddExerciseForm: FunctionComponent<IAddExerciseFormProps> = ({dayUid, setAddExerciseViewVisible}) => {
   const { t } = useTranslation();

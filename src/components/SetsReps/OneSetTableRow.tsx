@@ -1,7 +1,7 @@
 import "./OneSet.scss";
 
 import React, {FunctionComponent, useEffect, useState} from 'react';
-import {getSet} from './SetService';
+import {getSet} from './SetsRepsService';
 import {ISetModel} from '../../models/ISetModel';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';

@@ -47,7 +47,7 @@ const TimeDistanceCard: FunctionComponent<ITimeDistanceCardProps> = ({currentExe
     <tfoot>
     <tr>
       <td colSpan={2}>
-        <Button color="success" block onClick={() => setEditVisible(true)}>Edit</Button>
+        <Button color="success" block onClick={() => setEditVisible(true)}>{t("Edit")}</Button>
       </td>
     </tr>
     </tfoot>

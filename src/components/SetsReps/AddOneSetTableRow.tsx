@@ -1,7 +1,7 @@
 import React, {FunctionComponent, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
-import {addNewSetAndGetUid, addSetToSetsRepsExerciseArray} from './SetService';
+import {addNewSetAndGetUid, addSetToSetsRepsExerciseArray} from './SetsRepsService';
 import {ISetBasicModel} from '../../models/ISetModel';
 import {Formik, FormikActions} from 'formik';
 import {getCurrentUsersUid} from '../../config/FirebaseUtils';

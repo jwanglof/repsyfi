@@ -1,5 +1,5 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
-import {getTimeDistanceExercise} from '../Exercise/ExerciseService';
+import {getTimeDistanceExercise} from './TimeDistanceService';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {ITimeDistanceModel} from '../../models/ITimeDistanceModel';

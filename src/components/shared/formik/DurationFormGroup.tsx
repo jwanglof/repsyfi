@@ -1,5 +1,5 @@
 import React, {ChangeEvent, FunctionComponent, useEffect, useState} from 'react';
-import {Alert, Col, FormGroup, Input, Label} from 'reactstrap';
+import {Alert, Col, FormGroup, Input, Label, Row} from 'reactstrap';
 import {colSmSize, labelSmSize} from './formik-utils';
 import {connect, ErrorMessage, FormikContext} from 'formik';
 import {defaultTo, toNumber} from 'lodash';
@@ -38,14 +38,22 @@ const DurationFormGroup: FunctionComponent<IDurationFormGroupProps & IDurationFo
 
   const getNumber = (e: ChangeEvent<HTMLInputElement>): number => defaultTo(toNumber(e.target.value), 0);
 
-  const classNames = "col-3 text-center";
-  
   return (<FormGroup row>
     <Label for={name} sm={labelSmSize}>{labelText}</Label>
     <Col sm={colSmSize}>
-      <Input className={classNames} type="number" name="hours" onChange={e => setHours(getNumber(e))} value={hours} placeholder="Hours" />
-      <Input className={classNames} type="number" name="minutes" onChange={e => setMinutes(getNumber(e))} onBlur={onBlur} value={minutes} placeholder="Minutes" max={MAX_MINUTES_SECONDS}/>
-      <Input className={classNames} type="number" name="seconds" onChange={e => setSeconds(getNumber(e))} onBlur={onBlur} value={seconds} placeholder="Seconds" max={MAX_MINUTES_SECONDS}/>
+      <Row>
+        <Col xs={3}>
+          <Input className="text-center" type="number" name="hours" onChange={e => setHours(getNumber(e))} value={hours} placeholder="Hours" />
+        </Col>
+        <Col xs={1}>:</Col>
+        <Col xs={3}>
+          <Input className="text-center" type="number" name="minutes" onChange={e => setMinutes(getNumber(e))} onBlur={onBlur} value={minutes} placeholder="Minutes" max={MAX_MINUTES_SECONDS}/>
+        </Col>
+        <Col xs={1}>:</Col>
+        <Col xs={3}>
+          <Input className="text-center" type="number" name="seconds" onChange={e => setSeconds(getNumber(e))} onBlur={onBlur} value={seconds} placeholder="Seconds" max={MAX_MINUTES_SECONDS}/>
+        </Col>
+      </Row>
       <ErrorMessage name={name}>{msg => <Alert color="warning" className="pb-0 pt-0 pl-2 pr-2 mt-2">{msg}</Alert>}</ErrorMessage>
     </Col>
   </FormGroup>);
