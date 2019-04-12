@@ -38,7 +38,6 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
       // .where("ownerUid", "==", uid)
       .doc(dayUid)
       .onSnapshot({includeMetadataChanges: true}, doc => {
-        console.log(122, doc.data(), doc.id);
         if (doc.exists && !isEmpty(doc.data())) {
           const snapshotData: any = doc.data();
           setCurrentData({
@@ -83,12 +82,13 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
   };
 
   const dayDelete = async () => {
-    try {
-      await deleteDay(dayUid);
-      router.navigate(routeNameRoot, {}, {reload: true});
-    } catch (e) {
-      setDeleteErrorData(e.message);
-    }
+    console.warn('Delete! Must show a dialog, or something, to make it an active choice!');
+    // try {
+    //   await deleteDay(dayUid);
+    //   router.navigate(routeNameRoot, {}, {reload: true});
+    // } catch (e) {
+    //   setDeleteErrorData(e.message);
+    // }
   };
 
   const editDay = () => router.navigate(routeNameEditDay, {dayUid}, {reload: true});

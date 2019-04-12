@@ -47,7 +47,7 @@ const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({currentExe
             <DurationFormGroup name="totalTimeSeconds" labelText={t("Total exercise time (HH MM SS)")}/>
             <DurationFormGroup name="totalWarmupSeconds" labelText={t("Total warm-up time (HH MM SS)")}/>
             <FieldFormGroup type="number" name="totalDistanceMeter" labelText={t("Total distance (meters)")}/>
-            <FieldFormGroup type="number" name="kcal" labelText={t("Total kcal")}/>
+            <FieldFormGroup type="number" name="totalKcal" labelText={t("Total kcal")}/>
             <FieldFormGroup type="number" name="speedMin" labelText={t("Speed min")}/>
             <FieldFormGroup type="number" name="speedMax" labelText={t("Speed max")}/>
             <FieldFormGroup type="number" name="inclineMin" labelText={t("Incline min")}/>
