@@ -39,7 +39,6 @@ const Footer = ({router}) => {
   const signOut = () => {
     firebase.auth().signOut().then(function() {
       // Sign-out successful.
-      console.log('WOWOWOWOWPP');
       router.navigate(routeNameRoot, {}, {reload: true});
     }).catch(function(error) {
       // An error happened.

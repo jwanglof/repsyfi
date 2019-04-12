@@ -36,7 +36,6 @@ const ExerciseForm: FunctionComponent<IExerciseFormProps> = ({dayUid, setAddExer
   const onSubmit = async (values: IExerciseForm, actions: FormikActions<IExerciseFormSubmitValues>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
-    console.log('values:', values);
     try {
       const ownerUid: string = await getCurrentUsersUid();
 
@@ -49,15 +48,12 @@ const ExerciseForm: FunctionComponent<IExerciseFormProps> = ({dayUid, setAddExer
         return;
       }
 
-      console.log('exerciseTypeUid:', exerciseTypeUid);
-
       const exerciseData: IExerciseBasicModel = {
         exerciseName: values.exerciseName,
         type: values.type,
         typeUid: exerciseTypeUid
       };
       const exerciseUid = await addExerciseAndGetUid(exerciseData, ownerUid);
-      console.log('exerciseUid:', exerciseUid, exerciseData);
       await addExerciseToDayArray(exerciseUid, dayUid);
       setAddExerciseViewVisible(false);
     } catch (e) {

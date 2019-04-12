@@ -88,7 +88,7 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
       await updateDay(dayUid, data);
       router.navigate(routeNameSpecificDay, {uid: dayUid}, {reload: true});
     } catch (e) {
-      console.log(e);
+      console.error(e);
       setSubmitErrorMessage(e.message);
     }
     actions.setSubmitting(false);

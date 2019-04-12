@@ -23,7 +23,6 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({
     const fetchExerciseData = async () => {
       try {
         const res = await getExercise(exerciseUid);
-        console.log('EXEC::', res);
         setCurrentExerciseData(res);
       } catch (e) {
         console.error(e);

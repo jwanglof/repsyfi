@@ -60,7 +60,7 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
       const newUid = await addDay(data, ownerUid);
       router.navigate(routeNameSpecificDay, {uid: newUid}, {reload: true});
     } catch (e) {
-      console.log(e);
+      console.error(e);
       setSubmitErrorMessage(e.message);
     }
     actions.setSubmitting(false);
