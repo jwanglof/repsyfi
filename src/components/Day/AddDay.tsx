@@ -18,6 +18,7 @@ import DateTimePickerFormGroup from '../shared/formik/DateTimePickerFormGroup';
 import DatepickerFormGroup from '../shared/formik/DatepickerFormGroup';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
+import isDate from 'date-fns/isDate';
 
 const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
   const { t } = useTranslation();
@@ -42,12 +43,18 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
     setSubmitErrorMessage(undefined);
     try {
       const ownerUid: string = await getCurrentUsersUid();
+      let startDateFormatted: string = values.startDateFormatted;
+      if (isDate(values.startDateFormatted)) {
+        // TODO Fix so that 'values.startDateFormatted' never is a date but formatted!
+        // @ts-ignore
+        startDateFormatted = format(values.startDateFormatted, dateFormat);
+      }
       const data: IDayBasicModel = {
         title: values.title,
         muscleGroups: values.muscleGroups,
         location: values.location,
         exercises: [],
-        startTimestamp: getUnixTime(parseISO(`${values.startDateFormatted}T${values.startTimeFormatted}`)),
+        startTimestamp: getUnixTime(parseISO(`${startDateFormatted}T${values.startTimeFormatted}`)),
         notes: values.notes
       };
       const newUid = await addDay(data, ownerUid);
