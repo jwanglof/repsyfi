@@ -35,13 +35,14 @@ const App = ({ route }) => {
         if (user) {
           setUserSignedIn(true);
           // User is signed in.
-          console.log('User logged in!', user);
+          console.log('User logged in!');
+          // console.log(user);
           const name = user.displayName;
           const email = user.email;
           const photoUrl = user.photoURL;
           const emailVerified = user.emailVerified;
           const uid = user.uid;
-          console.log(name, email, photoUrl, emailVerified, uid)
+          // console.log(name, email, photoUrl, emailVerified, uid)
         } else {
           // No user is signed in.
           console.log('User not lgoged in');

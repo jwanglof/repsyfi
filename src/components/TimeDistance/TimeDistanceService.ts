@@ -8,7 +8,6 @@ import {FirebaseCollectionNames, getNowTimestamp, getTimeDistanceExerciseErrorOb
 import {Versions} from '../../models/IBaseModel';
 import firebase from '../../config/firebase';
 import {isEmpty} from 'lodash';
-import {IExerciseBasicModel} from '../../models/IExerciseModel';
 
 export const addNewTimeDistanceExerciseAndGetUid = async (ownerUid: string): Promise<string> => {
   const timeDistanceData: ITimeDistanceModelWithoutUid = {

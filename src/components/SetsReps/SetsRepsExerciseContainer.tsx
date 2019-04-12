@@ -31,8 +31,10 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerPro
       // .where("ownerUid", "==", uid)
       .doc(exerciseUid)
       .onSnapshot({includeMetadataChanges: true}, doc => {
+        console.log(123332, doc);
         if (doc.exists && !isEmpty(doc.data())) {
           const snapshotData: any = doc.data();
+          console.log(12332, snapshotData);
           setCurrentExerciseData({
             version: snapshotData.version,
             createdTimestamp: snapshotData.createdTimestamp,

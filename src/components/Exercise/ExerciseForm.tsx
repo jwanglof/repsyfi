@@ -5,12 +5,7 @@ import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {getCurrentUsersUid} from '../../config/FirebaseUtils';
 import {Formik, FormikActions} from 'formik';
 import {isEmpty} from 'lodash';
-import {
-  addExerciseAndGetUid,
-  addExerciseToDayArray,
-  addNewSetsRepsExerciseAndGetUid,
-  getExerciseTypes
-} from './ExerciseService';
+import {addExerciseAndGetUid, getExerciseTypes} from './ExerciseService';
 import {IExerciseBasicModel} from '../../models/IExerciseModel';
 import {Button, ButtonGroup, Col, FormGroup, Row} from 'reactstrap';
 import FieldFormGroup from '../shared/formik/FieldFormGroup';
@@ -18,6 +13,8 @@ import SelectFormGroup from '../shared/formik/SelectFormGroup';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 import {addNewTimeDistanceExerciseAndGetUid} from '../TimeDistance/TimeDistanceService';
+import {addNewSetsRepsExerciseAndGetUid} from '../SetsReps/SetsRepsService';
+import {addExerciseToDayArray} from '../Day/DayService';
 
 const ExerciseForm: FunctionComponent<IExerciseFormProps> = ({dayUid, setAddExerciseViewVisible}) => {
   const { t } = useTranslation();

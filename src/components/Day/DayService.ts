@@ -127,3 +127,11 @@ export const updateDay = async (dayUid: string, dayData: IDayBasicUpdateModel) =
     .doc(dayUid)
     .update(data);
 };
+
+export const addExerciseToDayArray = async (exerciseUid: string, dayUid: string): Promise<void> => {
+  // TODO Should exercises be an object with the index as key??
+  return await firebase.firestore()
+    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
+    .doc(dayUid)
+    .update({exercises: firebase.firestore.FieldValue.arrayUnion(exerciseUid)});
+};

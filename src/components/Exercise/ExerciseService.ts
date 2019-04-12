@@ -1,15 +1,9 @@
-import {deleteSet} from '../SetsReps/SetsRepsService';
+import {deleteSet, deleteSetsRepsExercise, getSetsRepsExercise} from '../SetsReps/SetsRepsService';
 import firebase from '../../config/firebase';
 import {isEmpty} from 'lodash';
 import {IExerciseBasicModel, IExerciseModel, IExerciseModelWithoutUid} from '../../models/IExerciseModel';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
-import {ISetsRepsModel, ISetsRepsModelWithoutUid} from '../../models/ISetsRepsModel';
-import {
-  FirebaseCollectionNames,
-  getExerciseErrorObject,
-  getNowTimestamp,
-  getSetsRepsExerciseErrorObject
-} from '../../config/FirebaseUtils';
+import {FirebaseCollectionNames, getExerciseErrorObject, getNowTimestamp} from '../../config/FirebaseUtils';
 import {Versions} from '../../models/IBaseModel';
 import {deleteTimeDistanceExercise} from '../TimeDistance/TimeDistanceService';
 
@@ -57,45 +51,6 @@ export const deleteExercise = async (exerciseUid: string): Promise<void> => {
     .delete();
 };
 
-export const deleteSetsRepsExercise = async (exerciseUid: string): Promise<void> => {
-  return await firebase.firestore()
-    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS)
-    .doc(exerciseUid)
-    .delete();
-};
-
-export const getSetsRepsExercise = async (exerciseUid: string): Promise<ISetsRepsModel> => {
-  const querySnapshot = await firebase.firestore()
-    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS)
-    .doc(exerciseUid)
-    .get();
-  if (querySnapshot.exists && !isEmpty(querySnapshot.data())) {
-    const exerciseData = querySnapshot.data()!;
-    return {
-      sets: exerciseData.sets,
-      uid: querySnapshot.id,
-      ownerUid: exerciseData.ownerUid,
-      createdTimestamp: exerciseData.createdTimestamp,
-      version: exerciseData.version
-    };
-  } else {
-    throw getSetsRepsExerciseErrorObject(exerciseUid);
-  }
-};
-
-export const addNewSetsRepsExerciseAndGetUid = async (ownerUid: string): Promise<string> => {
-  const setsRepsData: ISetsRepsModelWithoutUid = {
-    sets: [],
-    ownerUid,
-    createdTimestamp: getNowTimestamp(),
-    version: Versions.v1
-  };
-  const exerciseSetsRepsDocRef = await firebase.firestore()
-    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS)
-    .add(setsRepsData);
-  return exerciseSetsRepsDocRef.id;
-};
-
 export const addExerciseAndGetUid = async (exerciseData: IExerciseBasicModel, ownerUid: string): Promise<string> => {
   const data: IExerciseModelWithoutUid = {
     ownerUid,
@@ -121,15 +76,6 @@ export const updateExercise = async(exerciseUid: string, exerciseHeaderData: IEx
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISES)
     .doc(exerciseUid)
     .update(data);
-};
-
-// TODO Move to the DayService?
-export const addExerciseToDayArray = async (exerciseUid: string, dayUid: string): Promise<void> => {
-  // TODO Should exercises be an object with the index as key??
-  return await firebase.firestore()
-    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
-    .doc(dayUid)
-    .update({exercises: firebase.firestore.FieldValue.arrayUnion(exerciseUid)});
 };
 
 export const getExerciseTypes = (): Array<ExerciseTypesOptions> => ([

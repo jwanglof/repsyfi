@@ -24,6 +24,9 @@ const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({currentExe
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
 
+    // TODO! Clear the entire database! Add checks for the versions where it should apply!
+    //  Before clearing, save YOUR workouts first!!
+
     try {
       await updateTimeDistanceExercise(currentExerciseData.uid, values);
       // Hide this form
