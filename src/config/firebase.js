@@ -27,9 +27,4 @@ export const getCurrentUsersUid = async () => {
   return currentUser.uid;
 };
 
-// Collection names
-export const FIRESTORE_COLLECTION_EXERCISES = "exercises";
-export const FIRESTORE_COLLECTION_DAYS = "days";
-export const FIRESTORE_COLLECTION_SETS = "sets";
-
 export default firebase;

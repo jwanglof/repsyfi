@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {routeNode} from 'react-router5'
-import AllDays from './components/Day/AllDays';
 import {routeNameAddDay, routeNameAllDays, routeNameEditDay, routeNameSpecificDay} from './routes';
-import Day from './components/Day/Day';
-import AddEditDay from './components/Day/AddEditDay';
+import TSDay from './components/Day/DayViewDetailed';
 import Login from './components/Login/Login';
 import firebase, {initializeFirebase} from './config/firebase';
 import Footer from './components/Footer/Footer';
-import Header from './components/Header/Header';
+import TSAddEditDay from './components/Day/AddDay';
+import AllDays from './components/Day/AllDays';
+import EditDay from './components/Day/EditDay';
+import Dashboard from './components/Dashboard/Dashboard';
 
 const App = ({ route }) => {
   const topRouteName = route.name.split('.')[0];
@@ -31,16 +32,17 @@ const App = ({ route }) => {
         console.log('Logged in???');
         setSignInStatusLoading(false);
 
-        if (user) { // KeDpGnOg4zdzq3jIoJVUOjywwEB3
+        if (user) {
           setUserSignedIn(true);
           // User is signed in.
-          console.log('User logged in!', user);
+          console.log('User logged in!');
+          // console.log(user);
           const name = user.displayName;
           const email = user.email;
           const photoUrl = user.photoURL;
           const emailVerified = user.emailVerified;
           const uid = user.uid;
-          console.log(name, email, photoUrl, emailVerified, uid)
+          // console.log(name, email, photoUrl, emailVerified, uid)
         } else {
           // No user is signed in.
           console.log('User not lgoged in');
@@ -63,17 +65,19 @@ const App = ({ route }) => {
   } else {
     switch (topRouteName) {
       case routeNameSpecificDay:
-        shownComponent = <Day uid={route.params.uid}/>;
+        shownComponent = <TSDay dayUid={route.params.uid}/>;
         break;
       case routeNameAddDay:
+        shownComponent = <TSAddEditDay/>;
+        break;
       case routeNameEditDay:
-        shownComponent = <AddEditDay/>;
+        shownComponent = <EditDay dayUid={route.params.dayUid}/>;
         break;
       case routeNameAllDays:
         shownComponent = <AllDays/>;
         break;
       default:
-        shownComponent = <div>This is where you'll see your dashboard with some stats. Because everyone loves stats, right? <span role="img" aria-label="" aria-labelledby="">😉</span></div>;
+        shownComponent = <Dashboard/>;
     }
   }
 
