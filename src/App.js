@@ -8,6 +8,7 @@ import Footer from './components/Footer/Footer';
 import TSAddEditDay from './components/Day/AddDay';
 import AllDays from './components/Day/AllDays';
 import EditDay from './components/Day/EditDay';
+import Dashboard from './components/Dashboard/Dashboard';
 
 const App = ({ route }) => {
   const topRouteName = route.name.split('.')[0];
@@ -75,7 +76,7 @@ const App = ({ route }) => {
         shownComponent = <AllDays/>;
         break;
       default:
-        shownComponent = <div>This is where you'll see your dashboard with some stats. Because everyone loves stats, right? <span role="img" aria-label="" aria-labelledby="">😉</span></div>;
+        shownComponent = <Dashboard/>;
     }
   }
 

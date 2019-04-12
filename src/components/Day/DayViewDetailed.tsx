@@ -38,6 +38,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
       // .where("ownerUid", "==", uid)
       .doc(dayUid)
       .onSnapshot({includeMetadataChanges: true}, doc => {
+        console.log(122, doc.data(), doc.id);
         if (doc.exists && !isEmpty(doc.data())) {
           const snapshotData: any = doc.data();
           setCurrentData({

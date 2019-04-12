@@ -35,8 +35,6 @@ const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({currentExe
     actions.setSubmitting(false);
   };
 
-  console.log(9888, currentExerciseData);
-
   return (
     <Formik
       initialValues={currentExerciseData}

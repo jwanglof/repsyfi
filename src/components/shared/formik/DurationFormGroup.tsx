@@ -50,21 +50,17 @@ const DurationFormGroup: FunctionComponent<IDurationFormGroupProps & IDurationFo
   const getNumber = (e: ChangeEvent<HTMLInputElement>): number => defaultTo(toNumber(e.target.value), 0);
 
   return (<FormGroup row>
-    <Label for={name} sm={labelSmSize}>{labelText}</Label>
-    <Col sm={colSmSize}>
-      <Row>
-        <Col xs={4}>
-          <Input className="text-center" type="number" name="hours" onChange={e => setHours(getNumber(e))} onBlur={onBlur} value={hours} placeholder="Hours" />
-        </Col>
-        <Col xs={4}>
-          <Input className="text-center" type="number" name="minutes" onChange={e => setMinutes(getNumber(e))} onBlur={onBlur} value={minutes} placeholder="Minutes" max={MAX_MINUTES_SECONDS}/>
-        </Col>
-        <Col xs={4}>
-          <Input className="text-center" type="number" name="seconds" onChange={e => setSeconds(getNumber(e))} onBlur={onBlur} value={seconds} placeholder="Seconds" max={MAX_MINUTES_SECONDS}/>
-        </Col>
-      </Row>
-      <ErrorMessage name={name}>{msg => <Alert color="warning" className="pb-0 pt-0 pl-2 pr-2 mt-2">{msg}</Alert>}</ErrorMessage>
+    <Label for={name} xs={12}>{labelText}</Label>
+    <Col xs={4}>
+      <Input className="text-center" type="number" name="hours" onChange={e => setHours(getNumber(e))} onBlur={onBlur} value={hours} placeholder="Hours" />
     </Col>
+    <Col xs={4}>
+      <Input className="text-center" type="number" name="minutes" onChange={e => setMinutes(getNumber(e))} onBlur={onBlur} value={minutes} placeholder="Minutes" max={MAX_MINUTES_SECONDS}/>
+    </Col>
+    <Col xs={4}>
+      <Input className="text-center" type="number" name="seconds" onChange={e => setSeconds(getNumber(e))} onBlur={onBlur} value={seconds} placeholder="Seconds" max={MAX_MINUTES_SECONDS}/>
+    </Col>
+    <ErrorMessage name={name}>{msg => <Alert color="warning" className="pb-0 pt-0 pl-2 pr-2 mt-2">{msg}</Alert>}</ErrorMessage>
   </FormGroup>);
 };
 

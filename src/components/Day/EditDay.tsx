@@ -3,7 +3,6 @@ import {Router} from 'router5';
 import {withRoute} from 'react-router5';
 import {useTranslation} from 'react-i18next';
 import {getDay, updateDay} from './DayService';
-import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import {dateFormat, timeFormat} from '../shared/formik/formik-utils';
 import {IDayBasicUpdateModel} from '../../models/IDayModel';
@@ -20,6 +19,7 @@ import DateTimePickerFormGroup from '../shared/formik/DateTimePickerFormGroup';
 import DatepickerFormGroup from '../shared/formik/DatepickerFormGroup';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
+import {isDate, format} from 'date-fns';
 
 const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, dayUid}) => {
   const { t } = useTranslation();
@@ -61,7 +61,20 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
 
   const onUpdate = async (values: IEditDayEditData, actions: FormikActions<IEditDayEditData>) => {
     actions.setSubmitting(true);
+    setSubmitErrorMessage(undefined);
+
     try {
+      if (isDate(values.startDateFormatted)) {
+        // TODO Fix!!
+        // @ts-ignore
+        values.startDateFormatted = format(values.startDateFormatted, dateFormat);
+      }
+      if (isDate(values.endDateFormatted)) {
+        // TODO Fix!!
+        // @ts-ignore
+        values.endDateFormatted = format(values.endDateFormatted, dateFormat);
+      }
+
       const data: IDayBasicUpdateModel = {
         notes: values.notes,
         title: values.title,
@@ -141,9 +154,9 @@ interface IEditDayRouter {
 
 interface IEditDayEditData {
   startTimeFormatted: string,
-  startDateFormatted: string,
+  startDateFormatted: Date | string,
   endTimeFormatted?: string,
-  endDateFormatted?: string,
+  endDateFormatted?: string | Date,
   location: string,
   muscleGroups: string,
   title: string,
@@ -152,9 +165,9 @@ interface IEditDayEditData {
 
 interface IEditDayFormValidate {
   startTimeFormatted?: string,
-  startDateFormatted?: string,
+  startDateFormatted?: string | Date,
   endTimeFormatted?: string,
-  endDateFormatted?: string,
+  endDateFormatted?: string | Date,
   location?: string,
   muscleGroups?: string,
   title?: string,

@@ -18,8 +18,6 @@ const TimeDistanceView: FunctionComponent<ITimeDistanceViewProps> = ({currentExe
     return `${hh}:${mm}:${ss}`;
   };
 
-  console.log(9888, currentExerciseData);
-
   return (<Table size="sm" className="mb-0">
     <tbody>
     <tr>
