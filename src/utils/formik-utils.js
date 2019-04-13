@@ -1,13 +1,5 @@
-import isNull from 'lodash/isNull';
-import isUndefined from 'lodash/isUndefined';
-import isEmpty from 'lodash/isEmpty';
-import isNumber from 'lodash/isNumber';
-import isBoolean from 'lodash/isBoolean';
-
-import format from "date-fns/format";
-import fromUnixTime from "date-fns/fromUnixTime";
-import getUnixTime from 'date-fns/getUnixTime';
-import parseISO from 'date-fns/parseISO';
+import {isNumber, isNull, isUndefined, isEmpty, isBoolean} from 'lodash';
+import {format, fromUnixTime, getUnixTime, parseISO} from 'date-fns';
 
 // Replace all empty values with an empty string
 export const replaceEmptyValues = values => {

@@ -2,7 +2,7 @@ import React, {ChangeEvent, FunctionComponent, useEffect, useState} from 'react'
 import {Alert, Col, FormGroup, Input, Label} from 'reactstrap';
 import {connect, ErrorMessage, FormikContext} from 'formik';
 import {defaultTo, toNumber} from 'lodash';
-import {getHoursMinutesSecondsFromSeconds, getMinutesSecondsFromSeconds} from '../time-utils';
+import {getHoursMinutesSecondsFromSeconds, getMinutesSecondsFromSeconds} from '../../utils/time-utils';
 
 const DurationFormGroup: FunctionComponent<IDurationFormGroupProps & IDurationFormGroupPropsFormik> = ({formik, labelText, name}) => {
   const [hours, setHours] = useState<number>(0);

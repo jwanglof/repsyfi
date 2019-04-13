@@ -2,7 +2,7 @@ import React, {FunctionComponent} from 'react';
 import {ITimeDistanceModel} from '../../models/ITimeDistanceModel';
 import {Button, Table} from 'reactstrap';
 import {useTranslation} from 'react-i18next';
-import {formatSecondsToPrettyPrint} from '../shared/time-utils';
+import {formatSecondsToPrettyPrint} from '../../utils/time-utils';
 import {withRouter} from 'react-router5';
 import {Router} from 'router5';
 import {RouteNames} from '../../routes';

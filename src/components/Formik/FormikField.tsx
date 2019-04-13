@@ -1,7 +1,7 @@
 import React, {FunctionComponent, useContext} from 'react';
-import {IFormikProps} from './ts-formik-utils';
+import {IFormikProps} from '../../utils/ts-formik-utils';
 import {Alert, Input, Label} from 'reactstrap';
-import {labelSmSize} from './formik-utils';
+import {labelSmSize} from '../../utils/formik-utils';
 import {ErrorMessage, Field} from 'formik';
 
 const FormikField: FunctionComponent<IFormikProps> = ({labelText, name, type="text", labelHidden=false, ...inputProps}) => {

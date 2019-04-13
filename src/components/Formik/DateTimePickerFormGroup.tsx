@@ -1,7 +1,7 @@
 import React, {FunctionComponent} from 'react';
-import {IFormikProps} from './ts-formik-utils';
+import {IFormikProps} from '../../utils/ts-formik-utils';
 import {Alert, Col, FormGroup, Input, Label} from 'reactstrap';
-import {colSmSize, labelSmSize} from './formik-utils';
+import {colSmSize, labelSmSize} from '../../utils/formik-utils';
 import {ErrorMessage, Field} from 'formik';
 
 const DateTimePickerFormGroup: FunctionComponent<IFormikProps> = ({labelText, name, ...inputProps}) => {

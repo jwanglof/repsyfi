@@ -8,8 +8,8 @@ import {isEmpty} from 'lodash';
 import {addExerciseAndGetUid, getExerciseTypes} from './ExerciseService';
 import {IExerciseBasicModel} from '../../models/IExerciseModel';
 import {Button, ButtonGroup, Col, FormGroup, Row} from 'reactstrap';
-import FieldFormGroup from '../shared/formik/FieldFormGroup';
-import SelectFormGroup from '../shared/formik/SelectFormGroup';
+import FieldFormGroup from '../Formik/FieldFormGroup';
+import SelectFormGroup from '../Formik/SelectFormGroup';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 import {addNewTimeDistanceExerciseAndGetUid} from '../TimeDistance/TimeDistanceService';

@@ -4,7 +4,7 @@ import {withRoute} from 'react-router5';
 import {useTranslation} from 'react-i18next';
 import {addDay} from './DayService';
 import format from 'date-fns/format';
-import {dateFormat, timeFormat} from '../shared/formik/formik-utils';
+import {dateFormat, timeFormat} from '../../utils/formik-utils';
 import {IDayBasicModel} from '../../models/IDayModel';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import getUnixTime from 'date-fns/getUnixTime';
@@ -12,13 +12,13 @@ import parseISO from 'date-fns/parseISO';
 import {Formik, FormikActions} from 'formik';
 import {getCurrentUsersUid} from '../../config/FirebaseUtils';
 import {Button, Col, FormGroup, Row} from 'reactstrap';
-import FieldFormGroup from '../shared/formik/FieldFormGroup';
-import DateTimePickerFormGroup from '../shared/formik/DateTimePickerFormGroup';
-import DatepickerFormGroup from '../shared/formik/DatepickerFormGroup';
+import DateTimePickerFormGroup from '../Formik/DateTimePickerFormGroup';
+import DatepickerFormGroup from '../Formik/DatepickerFormGroup';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 import isDate from 'date-fns/isDate';
 import {RouteNames} from '../../routes';
+import FieldFormGroup from '../Formik/FieldFormGroup';
 
 const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
   const { t } = useTranslation();

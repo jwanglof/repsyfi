@@ -5,10 +5,10 @@ import {ITimeDistanceBasicModel, ITimeDistanceModel} from '../../models/ITimeDis
 import {Formik, FormikActions} from 'formik';
 import {Button, ButtonGroup} from 'reactstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import FieldFormGroup from '../shared/formik/FieldFormGroup';
+import FieldFormGroup from '../Formik/FieldFormGroup';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
-import DurationFormGroup from '../shared/formik/DurationFormGroup';
+import DurationFormGroup from '../Formik/DurationFormGroup';
 import {updateTimeDistanceExercise} from './TimeDistanceService';
 
 const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({currentExerciseData, setEditVisible}) => {

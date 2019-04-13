@@ -6,7 +6,7 @@ import {ISetBasicModel} from '../../models/ISetModel';
 import {Formik, FormikActions} from 'formik';
 import {getCurrentUsersUid} from '../../config/FirebaseUtils';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import FormikField from '../shared/formik/FormikField';
+import FormikField from '../Formik/FormikField';
 import {Button, ButtonGroup} from 'reactstrap';
 import {isNumber} from 'lodash';
 // TODO :(
