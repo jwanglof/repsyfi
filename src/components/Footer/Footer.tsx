@@ -10,10 +10,14 @@ import {Router} from 'router5';
 import {withRouter} from 'react-router5';
 // @ts-ignore
 import Flag from 'react-country-flags';
+import FooterDurationTimer from './FooterDurationTimer';
 
 const Footer: FunctionComponent<IFooterRouter & IFooterProps> = ({router}) => {
   const [collapsed, setCollapsed] = useState(true);
   const { t, i18n } = useTranslation();
+
+  const {name: routeName} = router.getState();
+  console.log(1232, routeName);
 
   const toggleNavbar = (): void => setCollapsed(!collapsed);
 
@@ -38,7 +42,9 @@ const Footer: FunctionComponent<IFooterRouter & IFooterProps> = ({router}) => {
 
   return (<footer>
     <Navbar color="dark" fixed="bottom" dark>
-      <NavbarBrand href="/" className="mr-auto">repsify</NavbarBrand>
+      <NavbarBrand href="/" className="mr-auto">
+        repsify <FooterDurationTimer/>
+      </NavbarBrand>
       <NavbarToggler onClick={toggleNavbar} className="mr-2" />
       <Collapse isOpen={!collapsed} navbar>
         <Nav navbar>
