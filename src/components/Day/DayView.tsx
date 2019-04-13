@@ -7,11 +7,11 @@ import {Router} from 'router5';
 import {isEmpty} from 'lodash';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {IDayModel} from '../../models/IDayModel';
-import {routeNameSpecificDay} from '../../routes';
 import {Button, Col, Collapse, Row} from 'reactstrap';
 import {getFormattedDate, getTitle} from './DayUtils';
 import ExerciseTypeContainer from '../Exercise/ExerciseTypeContainer';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {RouteNames} from '../../routes';
 
 const DayView: FunctionComponent<IDayViewProps & IDayViewRouter> = ({router, data}) => {
   const { t } = useTranslation();
@@ -26,7 +26,7 @@ const DayView: FunctionComponent<IDayViewProps & IDayViewRouter> = ({router, dat
     setCollapseIsOpen(!collapseIsOpen);
   };
 
-  const openDetailedView = () => router.navigate(routeNameSpecificDay, { uid: data.uid }, {reload: true});
+  const openDetailedView = () => router.navigate(RouteNames.SPECIFIC_DAY, { uid: data.uid }, {reload: true});
 
   return (
     <div className="day--separator" onClick={toggle}>

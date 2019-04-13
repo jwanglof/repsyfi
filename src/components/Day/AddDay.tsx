@@ -9,7 +9,6 @@ import {IDayBasicModel} from '../../models/IDayModel';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import getUnixTime from 'date-fns/getUnixTime';
 import parseISO from 'date-fns/parseISO';
-import {routeNameSpecificDay} from '../../routes';
 import {Formik, FormikActions} from 'formik';
 import {getCurrentUsersUid} from '../../config/FirebaseUtils';
 import {Button, Col, FormGroup, Row} from 'reactstrap';
@@ -19,6 +18,7 @@ import DatepickerFormGroup from '../shared/formik/DatepickerFormGroup';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 import isDate from 'date-fns/isDate';
+import {RouteNames} from '../../routes';
 
 const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
   const { t } = useTranslation();
@@ -58,7 +58,7 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
         notes: values.notes
       };
       const newUid = await addDay(data, ownerUid);
-      router.navigate(routeNameSpecificDay, {uid: newUid}, {reload: true});
+      router.navigate(RouteNames.SPECIFIC_DAY, {uid: newUid}, {reload: true});
     } catch (e) {
       console.error(e);
       setSubmitErrorMessage(e.message);

@@ -5,12 +5,12 @@ import {useTranslation} from 'react-i18next';
 import {getHourMinuteSecondsFromSeconds} from '../shared/time-utils';
 import {withRouter} from 'react-router5';
 import {Router} from 'router5';
-import {routeNameSpecificDay} from '../../routes';
+import {RouteNames} from '../../routes';
 
 const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanceViewProps> = ({router, currentExerciseData, setEditVisible}) => {
   const { t } = useTranslation();
   const {name: routeName} = router.getState();
-  const detailedDayView = (routeName === routeNameSpecificDay);
+  const detailedDayView = (routeName === RouteNames.SPECIFIC_DAY);
 
   const formatSecondsToTime = (seconds: number): string => {
     let t = getHourMinuteSecondsFromSeconds(seconds);

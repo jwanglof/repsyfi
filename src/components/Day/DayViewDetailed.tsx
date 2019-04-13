@@ -9,13 +9,13 @@ import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {IDayModel} from '../../models/IDayModel';
 import {deleteDay, endDayNow, getDay} from './DayService';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
-import {routeNameEditDay, routeNameRoot} from '../../routes';
 import {Button, ButtonGroup, Col, Row} from 'reactstrap';
 import {getFormattedDate, getTitle} from './DayUtils';
 import ExerciseForm from '../Exercise/ExerciseForm';
 import ExerciseTypeContainer from '../Exercise/ExerciseTypeContainer';
 import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
 import firebase from '../../config/firebase';
+import {RouteNames} from '../../routes';
 
 const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayUid}) => {
   const { t } = useTranslation();
@@ -91,7 +91,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
     // }
   };
 
-  const editDay = () => router.navigate(routeNameEditDay, {dayUid}, {reload: true});
+  const editDay = () => router.navigate(RouteNames.EDIT_DAY, {dayUid}, {reload: true});
 
   return (
     <>

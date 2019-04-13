@@ -10,15 +10,15 @@ import SetsRepsTableRowForm from './SetsRepsTableRowForm';
 import firebase from '../../config/firebase';
 import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
 import {isEmpty} from 'lodash';
-import {routeNameSpecificDay} from '../../routes';
 import {withRouter} from 'react-router5';
 import {Router} from 'router5';
+import {RouteNames} from '../../routes';
 
 const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRouter & ISetsRepsExerciseContainerProps> = ({router, exerciseUid}) => {
   const { t } = useTranslation();
 
   const {name: routeName} = router.getState();
-  const detailedDayView = (routeName === routeNameSpecificDay);
+  const detailedDayView = (routeName === RouteNames.SPECIFIC_DAY);
 
   if (isEmpty(exerciseUid)) {
     return <ErrorAlert errorText="Must have the exercises's UID to proceed!" componentName="SetsRepsExerciseContainer"/>;

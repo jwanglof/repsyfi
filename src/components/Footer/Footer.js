@@ -14,11 +14,11 @@ import {
   Row
 } from 'reactstrap';
 import {withRoute} from 'react-router5';
-import {routeNameAddDay, routeNameAllDays, routeNameRoot} from '../../routes';
 import {useTranslation} from 'react-i18next';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import firebase from '../../config/firebase';
 import Flag from 'react-country-flags';
+import {RouteNames} from '../../routes';
 
 const Footer = ({router}) => {
   const [collapsed, setCollapsed] = useState(true);
@@ -39,7 +39,7 @@ const Footer = ({router}) => {
   const signOut = () => {
     firebase.auth().signOut().then(function() {
       // Sign-out successful.
-      router.navigate(routeNameRoot, {}, {reload: true});
+      router.navigate(RouteNames.ROOT, {}, {reload: true});
     }).catch(function(error) {
       // An error happened.
       console.error(error);
@@ -56,15 +56,15 @@ const Footer = ({router}) => {
             <NavItem>
               <Row className="text-center">
                 <Col>
-                  <NavLink onClick={() => navigateToRoute(routeNameRoot)}>{t("Home")}</NavLink>
+                  <NavLink onClick={() => navigateToRoute(RouteNames.ROOT)}>{t("Home")}</NavLink>
                 </Col>
                 <Col>
-                  <NavLink onClick={() => navigateToRoute(routeNameAllDays)}>{t("All days")}</NavLink>
+                  <NavLink onClick={() => navigateToRoute(RouteNames.ALL_DAYS)}>{t("All days")}</NavLink>
                 </Col>
               </Row>
             </NavItem>
             <NavItem>
-              <NavLink tag={Button} block onClick={() => navigateToRoute(routeNameAddDay)}>{t("Add new day")}</NavLink>
+              <NavLink tag={Button} block onClick={() => navigateToRoute(RouteNames.ADD_DAY)}>{t("Add new day")}</NavLink>
             </NavItem>
             <NavItem>
               <Row className="text-center">

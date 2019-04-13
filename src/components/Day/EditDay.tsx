@@ -11,7 +11,6 @@ import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {isEmpty} from 'lodash';
 import getUnixTime from 'date-fns/getUnixTime';
 import parseISO from 'date-fns/parseISO';
-import {routeNameSpecificDay} from '../../routes';
 import {Formik, FormikActions} from 'formik';
 import {Button, ButtonGroup, Col, FormGroup, Row} from 'reactstrap';
 import FieldFormGroup from '../shared/formik/FieldFormGroup';
@@ -20,6 +19,7 @@ import DatepickerFormGroup from '../shared/formik/DatepickerFormGroup';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 import {isDate, format} from 'date-fns';
+import {RouteNames} from '../../routes';
 
 const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, dayUid}) => {
   const { t } = useTranslation();
@@ -86,7 +86,7 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
         data.endTimestamp = getUnixTime(parseISO(`${values.endDateFormatted}T${values.endTimeFormatted}`));
       }
       await updateDay(dayUid, data);
-      router.navigate(routeNameSpecificDay, {uid: dayUid}, {reload: true});
+      router.navigate(RouteNames.SPECIFIC_DAY, {uid: dayUid}, {reload: true});
     } catch (e) {
       console.error(e);
       setSubmitErrorMessage(e.message);
@@ -105,7 +105,7 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
     return errors;
   };
 
-  const toggleEditForm = () => router.navigate(routeNameSpecificDay, {uid: dayUid}, {reload: true});
+  const toggleEditForm = () => router.navigate(RouteNames.SPECIFIC_DAY, {uid: dayUid}, {reload: true});
 
   return (
     <Row>
