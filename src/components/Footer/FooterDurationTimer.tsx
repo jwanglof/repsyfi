@@ -1,7 +1,7 @@
 import React, {FunctionComponent, useState} from 'react';
 import {formatSecondsToPrettyPrint} from '../../utils/time-utils';
 import {useGlobalState} from '../../state';
-import useInterval from './useInterval';
+import useInterval from '../../utils/useInterval';
 
 const FooterDurationTimer: FunctionComponent<IFooterDurationTimerProps> = () => {
   const [duration, setDuration] = useState<number>(0);
