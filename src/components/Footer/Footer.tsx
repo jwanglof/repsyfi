@@ -11,9 +11,12 @@ import {withRouter} from 'react-router5';
 // @ts-ignore
 import Flag from 'react-country-flags';
 import FooterDurationTimer from './FooterDurationTimer';
+import {useGlobalState} from '../../state';
 
 const Footer: FunctionComponent<IFooterRouter & IFooterProps> = ({router}) => {
   const [collapsed, setCollapsed] = useState(true);
+  const [timerRunning, setTimerRunning] = useGlobalState('timerRunning');
+
   const { t, i18n } = useTranslation();
 
   const toggleNavbar = (): void => setCollapsed(!collapsed);
@@ -57,6 +60,9 @@ const Footer: FunctionComponent<IFooterRouter & IFooterProps> = ({router}) => {
           </NavItem>
           <NavItem>
             <NavLink tag={Button} block onClick={() => navigateToRoute(RouteNames.ADD_DAY)}>{t("Add new day")}</NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink tag={Button} block onClick={() => setTimerRunning(!timerRunning)}>{timerRunning ? t("Stop timer") : t("Start timer")}</NavLink>
           </NavItem>
           <NavItem>
             <Row className="text-center">
