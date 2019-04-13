@@ -15,7 +15,6 @@ export enum FirebaseCollectionNames {
   FIRESTORE_COLLECTION_EXERCISE_TYPE_TIME_DISTANCE = "exercises-time-distance"
 }
 
-// TODO Move! To a context, perhaps?
 export const getNowTimestamp = (): number => Math.ceil(Date.now() / 1000);
 export const getDayErrorObject = (dayUid: string): object => _getErrorObject(dayUid, "Day");
 export const getExerciseErrorObject = (dayUid: string): object => _getErrorObject(dayUid, "Exercise");
