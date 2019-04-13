@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useState} from 'react';
+import React, {FunctionComponent, useEffect, useReducer, useState} from 'react';
 import {Router} from 'router5';
 import {withRoute} from 'react-router5';
 import {useTranslation} from 'react-i18next';
@@ -19,6 +19,7 @@ import {Form} from 'react-formik-ui';
 import isDate from 'date-fns/isDate';
 import {RouteNames} from '../../routes';
 import FieldFormGroup from '../Formik/FieldFormGroup';
+import durationTimerReducer, {DurationTimerReducerActionTypes} from '../../reducers/duration-timer.reducer';
 
 const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
   const { t } = useTranslation();
@@ -33,6 +34,11 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
   };
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
+  // const [timerDurationState, dispatch] = useReducer(durationTimerReducer, {timerRunning: false});
+  //
+  // useEffect(() => {
+  //   console.log('State change!!!!:', timerDurationState);
+  // }, [timerDurationState]);
 
   if (submitErrorMessage) {
     return <ErrorAlert componentName="AddEditDay" errorText={submitErrorMessage}/>;
@@ -58,6 +64,7 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
         notes: values.notes
       };
       const newUid = await addDay(data, ownerUid);
+      // dispatch({type: DurationTimerReducerActionTypes.START_TIMER});
       router.navigate(RouteNames.SPECIFIC_DAY, {uid: newUid}, {reload: true});
     } catch (e) {
       console.error(e);

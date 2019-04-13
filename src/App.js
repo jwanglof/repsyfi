@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useReducer, useState} from 'react';
 import {routeNode} from 'react-router5'
 import TSDay from './components/Day/DayViewDetailed';
 import Login from './components/Login/Login';
@@ -9,6 +9,8 @@ import AllDays from './components/Day/AllDays';
 import EditDay from './components/Day/EditDay';
 import Dashboard from './components/Dashboard/Dashboard';
 import {RouteNames} from './routes';
+import {GlobalStateContext, initialStore} from './index';
+import durationTimerReducer from './reducers/duration-timer.reducer';
 
 const App = ({ route }) => {
   const topRouteName = route.name.split('.')[0];
@@ -17,6 +19,8 @@ const App = ({ route }) => {
   const [firebaseIsInitialized, setFirebaseIsInitialized] = useState(false);
   const [signInStatusLoading, setSignInStatusLoading] = useState(true);
   const [userSignedIn, setUserSignedIn] = useState(null);
+
+  const [store, dispatch] = useReducer(durationTimerReducer, initialStore);
 
   useEffect(() => {
     const initFirebase = async () => {
@@ -81,15 +85,14 @@ const App = ({ route }) => {
     }
   }
 
-  return (
-    <>
-      {/*{userSignedIn && <Header/>}*/}
-      <div className="App">
-        {shownComponent}
-      </div>
-      {userSignedIn && <Footer/>}
-    </>
-  );
+  // return (<GlobalStateContext.Provider value={[ store, dispatch ]}>
+  return (<GlobalStateContext.Provider value={{ store, dispatch }}>
+    {/*{userSignedIn && <Header/>}*/}
+    <div className="App">
+      {shownComponent}
+    </div>
+    {userSignedIn && <Footer/>}
+  </GlobalStateContext.Provider>);
 };
 
 export default routeNode('')(App);

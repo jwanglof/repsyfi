@@ -1,13 +1,13 @@
 import './Day.scss';
 
-import React, {FunctionComponent, useEffect, useState} from 'react';
+import React, {FunctionComponent, useContext, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {withRoute} from 'react-router5';
 import {Router} from 'router5';
 import isEmpty from 'lodash/isEmpty';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {IDayModel} from '../../models/IDayModel';
-import {deleteDay, endDayNow, getDay} from './DayService';
+import {endDayNow} from './DayService';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {Button, ButtonGroup, Col, Row} from 'reactstrap';
 import {getFormattedDate, getTitle} from './DayUtils';
@@ -16,9 +16,13 @@ import ExerciseTypeContainer from '../Exercise/ExerciseTypeContainer';
 import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
 import firebase from '../../config/firebase';
 import {RouteNames} from '../../routes';
+import {DurationTimerReducerActionTypes} from '../../reducers/duration-timer.reducer';
+import {GlobalStateContext} from '../../index';
 
 const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayUid}) => {
   const { t } = useTranslation();
+
+  console.log('NO!');
 
   if (isEmpty(dayUid)) {
     return <ErrorAlert errorText="Must have the day's UID to proceed!" componentName="DayViewDetailed"/>;
@@ -29,6 +33,12 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
   const [updateErrorData, setUpdateErrorData] = useState<string | undefined>(undefined);
   const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
   const [addExerciseViewVisible, setAddExerciseViewVisible] = useState(false);
+
+  // TODO Remove this!!
+  // const [store, dispatch] = useContext(GlobalStateContext);
+  const {store, dispatch} = useContext(GlobalStateContext);
+  console.log("DayViewDetailed::", store);
+  // TODO ^^^^ Remove this!!
 
   // Effect to subscribe on changes on this specific day
   useEffect(() => {
@@ -126,6 +136,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
             <Button color="info" onClick={editDay}>{t("Edit day")}</Button>
             <Button disabled={!!currentData.endTimestamp} onClick={dayEnd}>{t("End day")}</Button>
             <Button color="danger" onClick={dayDelete}>{t("Delete day")}</Button>
+            <Button color="danger" onClick={() => dispatch({type: DurationTimerReducerActionTypes.START_TIMER})}>LOL</Button>
           </ButtonGroup>
         </Col>
       </Row>

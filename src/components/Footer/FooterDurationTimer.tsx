@@ -5,6 +5,10 @@ import {formatSecondsToPrettyPrint} from '../../utils/time-utils';
 const FooterDurationTimer: FunctionComponent<IFooterDurationTimerProps> = () => {
   const [duration, setDuration] = useState<number>(7159);
 
+  // const store = useContext(GlobalStateContext);
+  // console.log("FooterDurationTimer::", store);
+  // if (store.)
+
   useInterval(() => {
     setDuration(duration + 1);
   }, 1000);
