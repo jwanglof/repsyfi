@@ -1,9 +1,8 @@
 import React, {ChangeEvent, FunctionComponent, useEffect, useState} from 'react';
-import {Alert, Col, FormGroup, Input, Label, Row} from 'reactstrap';
-import {colSmSize, labelSmSize} from './formik-utils';
+import {Alert, Col, FormGroup, Input, Label} from 'reactstrap';
 import {connect, ErrorMessage, FormikContext} from 'formik';
 import {defaultTo, toNumber} from 'lodash';
-import {getHourMinuteSecondsFromSeconds} from '../time-utils';
+import {getHoursMinutesSecondsFromSeconds, getMinutesSecondsFromSeconds} from '../time-utils';
 
 const DurationFormGroup: FunctionComponent<IDurationFormGroupProps & IDurationFormGroupPropsFormik> = ({formik, labelText, name}) => {
   const [hours, setHours] = useState<number>(0);
@@ -15,7 +14,7 @@ const DurationFormGroup: FunctionComponent<IDurationFormGroupProps & IDurationFo
   useEffect(() => {
     // The first time, set the current data
     if (hours === 0 && minutes === 0 && seconds === 0) {
-      let t = getHourMinuteSecondsFromSeconds(formik.values[name]);
+      let t = getHoursMinutesSecondsFromSeconds(formik.values[name]);
       setHours(t.hours);
       setMinutes(t.minutes);
       setSeconds(t.seconds);
@@ -35,11 +34,10 @@ const DurationFormGroup: FunctionComponent<IDurationFormGroupProps & IDurationFo
         setMinutes(remainingMinutes);
       }
     } else if (name === 'seconds' && (seconds > MAX_MINUTES_SECONDS)) {
-      const addMinutes = Math.floor(seconds / 60);
-      if (addMinutes > 0) {
-        const remainingSeconds = seconds - (addMinutes * 60);
-        setMinutes(minutes + addMinutes);
-        setSeconds(remainingSeconds);
+      const {seconds: s, minutes: m} = getMinutesSecondsFromSeconds(seconds);
+      if (m > 0) {
+        setMinutes(minutes + m);
+        setSeconds(s);
       }
     }
     formik.values[name] = getTotalSeconds();

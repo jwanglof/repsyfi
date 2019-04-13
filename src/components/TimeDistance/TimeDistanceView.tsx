@@ -2,7 +2,7 @@ import React, {FunctionComponent} from 'react';
 import {ITimeDistanceModel} from '../../models/ITimeDistanceModel';
 import {Button, Table} from 'reactstrap';
 import {useTranslation} from 'react-i18next';
-import {getHourMinuteSecondsFromSeconds} from '../shared/time-utils';
+import {formatSecondsToPrettyPrint} from '../shared/time-utils';
 import {withRouter} from 'react-router5';
 import {Router} from 'router5';
 import {RouteNames} from '../../routes';
@@ -12,26 +12,15 @@ const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanc
   const {name: routeName} = router.getState();
   const detailedDayView = (routeName === RouteNames.SPECIFIC_DAY);
 
-  const formatSecondsToTime = (seconds: number): string => {
-    let t = getHourMinuteSecondsFromSeconds(seconds);
-    let hh: number | string = t.hours;
-    let mm: number | string = t.minutes;
-    let ss: number | string = t.seconds;
-    if (hh < 10) hh = "0"+hh;
-    if (mm < 10) mm = "0"+mm;
-    if (ss < 10) ss = "0"+ss;
-    return `${hh}:${mm}:${ss}`;
-  };
-
   return (<Table size="sm" className="mb-0">
     <tbody>
     <tr>
       <td>{t("Total time")}</td>
-      <td>{formatSecondsToTime(currentExerciseData.totalTimeSeconds)}</td>
+      <td>{formatSecondsToPrettyPrint(currentExerciseData.totalTimeSeconds)}</td>
     </tr>
     <tr>
       <td>{t("Total warm-up")}</td>
-      <td>{formatSecondsToTime(currentExerciseData.totalWarmupSeconds)}</td>
+      <td>{formatSecondsToPrettyPrint(currentExerciseData.totalWarmupSeconds)}</td>
     </tr>
 
     <tr>
