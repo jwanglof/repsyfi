@@ -1,5 +1,4 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
-import {getTimeDistanceExercise} from './TimeDistanceService';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {ITimeDistanceModel} from '../../models/ITimeDistanceModel';
@@ -7,7 +6,7 @@ import TimeDistanceView from './TimeDistanceView';
 import TimeDistanceForm from './TimeDistanceForm';
 import firebase from '../../config/firebase';
 import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
-import {isEmpty} from "lodash";
+import {isEmpty} from 'lodash';
 
 const TimeDistanceExerciseContainer: FunctionComponent<ITimeDistanceExerciseContainerProps> = ({exerciseUid}) => {
   const [currentExerciseData, setCurrentExerciseData] = useState<ITimeDistanceModel | undefined>(undefined);

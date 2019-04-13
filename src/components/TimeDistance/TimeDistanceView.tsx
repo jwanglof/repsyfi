@@ -3,9 +3,14 @@ import {ITimeDistanceModel} from '../../models/ITimeDistanceModel';
 import {Button, Table} from 'reactstrap';
 import {useTranslation} from 'react-i18next';
 import {getHourMinuteSecondsFromSeconds} from '../shared/time-utils';
+import {withRouter} from 'react-router5';
+import {Router} from 'router5';
+import {routeNameSpecificDay} from '../../routes';
 
-const TimeDistanceView: FunctionComponent<ITimeDistanceViewProps> = ({currentExerciseData, setEditVisible}) => {
+const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanceViewProps> = ({router, currentExerciseData, setEditVisible}) => {
   const { t } = useTranslation();
+  const {name: routeName} = router.getState();
+  const detailedDayView = (routeName === routeNameSpecificDay);
 
   const formatSecondsToTime = (seconds: number): string => {
     let t = getHourMinuteSecondsFromSeconds(seconds);
@@ -56,13 +61,13 @@ const TimeDistanceView: FunctionComponent<ITimeDistanceViewProps> = ({currentExe
       <td>{currentExerciseData.inclineMax}</td>
     </tr>
     </tbody>
-    <tfoot>
+    {detailedDayView && <tfoot>
     <tr>
       <td colSpan={2}>
         <Button color="success" block onClick={() => setEditVisible(true)}>{t("Edit")}</Button>
       </td>
     </tr>
-    </tfoot>
+    </tfoot>}
   </Table>);
 };
 
@@ -71,4 +76,8 @@ interface ITimeDistanceViewProps {
   setEditVisible: ((visible: boolean) => void)
 }
 
-export default TimeDistanceView;
+interface ITimeDistanceViewRouter {
+  router: Router
+}
+
+export default withRouter(TimeDistanceView);

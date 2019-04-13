@@ -105,7 +105,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
 
       <Row>
         {/* TODO Sort the exercises on createdTimestamp! */}
-        {currentData.exercises.length && currentData.exercises.map(exerciseUid => <ExerciseTypeContainer key={exerciseUid} exerciseUid={exerciseUid} singleDayView={!isEmpty(dayUid)} dayUid={dayUid}/>)}
+        {currentData.exercises.length && currentData.exercises.map(exerciseUid => <ExerciseTypeContainer key={exerciseUid} exerciseUid={exerciseUid} dayUid={dayUid}/>)}
       </Row>
 
       <Row>
