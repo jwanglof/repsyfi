@@ -19,7 +19,7 @@ import {RouteNames} from '../../routes';
 import {DurationTimerReducerActionTypes} from '../../reducers/duration-timer.reducer';
 import {GlobalStateContext} from '../../index';
 
-const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayUid}) => {
+const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetailedProps> = ({router, dayUid}) => {
   const { t } = useTranslation();
 
   console.log('NO!');
@@ -145,8 +145,11 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
 };
 
 interface IDayViewDetailedProps {
-  router: Router,
   dayUid: string
+}
+
+interface IDayViewDetailedRouter {
+  router: Router
 }
 
 export default withRoute(DayViewDetailed);

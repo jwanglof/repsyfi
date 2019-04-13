@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer, useState} from 'react';
+import React, {FunctionComponent, useEffect, useReducer, useState} from 'react';
 import {routeNode} from 'react-router5'
 import TSDay from './components/Day/DayViewDetailed';
 import Login from './components/Login/Login';
@@ -11,14 +11,15 @@ import Dashboard from './components/Dashboard/Dashboard';
 import {RouteNames} from './routes';
 import {GlobalStateContext, initialStore} from './index';
 import durationTimerReducer from './reducers/duration-timer.reducer';
+import {State} from 'router5';
 
-const App = ({ route }) => {
-  const topRouteName = route.name.split('.')[0];
-  let shownComponent = null;
+const App: FunctionComponent<IAppProps & IAppRouter> = ({ route }) => {
+  const topRouteName: string = route.name.split('.')[0];
+  let shownComponent: any = undefined;
 
-  const [firebaseIsInitialized, setFirebaseIsInitialized] = useState(false);
-  const [signInStatusLoading, setSignInStatusLoading] = useState(true);
-  const [userSignedIn, setUserSignedIn] = useState(null);
+  const [firebaseIsInitialized, setFirebaseIsInitialized] = useState<boolean>(false);
+  const [signInStatusLoading, setSignInStatusLoading] = useState<boolean>(true);
+  const [userSignedIn, setUserSignedIn] = useState<boolean | undefined>(undefined);
 
   const [store, dispatch] = useReducer(durationTimerReducer, initialStore);
 
@@ -95,5 +96,11 @@ const App = ({ route }) => {
   </GlobalStateContext.Provider>);
 };
 
-export default routeNode('')(App);
+interface IAppProps {}
+
+interface IAppRouter {
+  route: State
+}
+
+export default routeNode<any>('app')(App);
 
