@@ -54,7 +54,6 @@ export const GlobalStateContext = createContext<any>({});
 // export const GlobalStateContext = createContext<[IGlobalState, any]>([initialStore, () => {}]);
 
 router.start(() => {
-
   ReactDOM.render((
       <Container>
         <RouterProvider router={router}>
