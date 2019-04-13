@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect, useReducer, useState} from 'react';
+import React, {FunctionComponent, useEffect, useState} from 'react';
 import {routeNode} from 'react-router5'
 import TSDay from './components/Day/DayViewDetailed';
 import Login from './components/Login/Login';
@@ -9,9 +9,8 @@ import AllDays from './components/Day/AllDays';
 import EditDay from './components/Day/EditDay';
 import Dashboard from './components/Dashboard/Dashboard';
 import {RouteNames} from './routes';
-import {GlobalStateContext, initialStore} from './index';
-import durationTimerReducer from './reducers/duration-timer.reducer';
 import {State} from 'router5';
+import {GlobalStateProvider} from './state';
 
 const App: FunctionComponent<IAppProps & IAppRouter> = ({ route }) => {
   const topRouteName: string = route.name.split('.')[0];
@@ -20,8 +19,6 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route }) => {
   const [firebaseIsInitialized, setFirebaseIsInitialized] = useState<boolean>(false);
   const [signInStatusLoading, setSignInStatusLoading] = useState<boolean>(true);
   const [userSignedIn, setUserSignedIn] = useState<boolean | undefined>(undefined);
-
-  const [store, dispatch] = useReducer(durationTimerReducer, initialStore);
 
   useEffect(() => {
     const initFirebase = async () => {
@@ -42,11 +39,11 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route }) => {
           // User is signed in.
           console.log('User logged in!');
           // console.log(user);
-          const name = user.displayName;
-          const email = user.email;
-          const photoUrl = user.photoURL;
-          const emailVerified = user.emailVerified;
-          const uid = user.uid;
+          // const name = user.displayName;
+          // const email = user.email;
+          // const photoUrl = user.photoURL;
+          // const emailVerified = user.emailVerified;
+          // const uid = user.uid;
           // console.log(name, email, photoUrl, emailVerified, uid)
         } else {
           // No user is signed in.
@@ -86,14 +83,12 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route }) => {
     }
   }
 
-  // return (<GlobalStateContext.Provider value={[ store, dispatch ]}>
-  return (<GlobalStateContext.Provider value={{ store, dispatch }}>
-    {/*{userSignedIn && <Header/>}*/}
+  return (<GlobalStateProvider>
     <div className="App">
       {shownComponent}
     </div>
     {userSignedIn && <Footer/>}
-  </GlobalStateContext.Provider>);
+  </GlobalStateProvider>);
 };
 
 interface IAppProps {}

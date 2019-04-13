@@ -1,6 +1,6 @@
 import './Day.scss';
 
-import React, {FunctionComponent, useContext, useEffect, useState} from 'react';
+import React, {FunctionComponent, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {withRoute} from 'react-router5';
 import {Router} from 'router5';
@@ -16,13 +16,10 @@ import ExerciseTypeContainer from '../Exercise/ExerciseTypeContainer';
 import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
 import firebase from '../../config/firebase';
 import {RouteNames} from '../../routes';
-import {DurationTimerReducerActionTypes} from '../../reducers/duration-timer.reducer';
-import {GlobalStateContext} from '../../index';
+import {useGlobalState} from '../../state';
 
 const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetailedProps> = ({router, dayUid}) => {
   const { t } = useTranslation();
-
-  console.log('NO!');
 
   if (isEmpty(dayUid)) {
     return <ErrorAlert errorText="Must have the day's UID to proceed!" componentName="DayViewDetailed"/>;
@@ -34,11 +31,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
   const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
   const [addExerciseViewVisible, setAddExerciseViewVisible] = useState(false);
 
-  // TODO Remove this!!
-  // const [store, dispatch] = useContext(GlobalStateContext);
-  const {store, dispatch} = useContext(GlobalStateContext);
-  console.log("DayViewDetailed::", store);
-  // TODO ^^^^ Remove this!!
+  const setTimerRunning = useGlobalState('timerRunning')[1];
 
   // Effect to subscribe on changes on this specific day
   useEffect(() => {
@@ -86,6 +79,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
   const dayEnd = async () => {
     try {
       await endDayNow(dayUid);
+      setTimerRunning(false);
     } catch (e) {
       setUpdateErrorData(e.message);
     }
@@ -136,7 +130,6 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
             <Button color="info" onClick={editDay}>{t("Edit day")}</Button>
             <Button disabled={!!currentData.endTimestamp} onClick={dayEnd}>{t("End day")}</Button>
             <Button color="danger" onClick={dayDelete}>{t("Delete day")}</Button>
-            <Button color="danger" onClick={() => dispatch({type: DurationTimerReducerActionTypes.START_TIMER})}>LOL</Button>
           </ButtonGroup>
         </Col>
       </Row>

@@ -16,9 +16,6 @@ const Footer: FunctionComponent<IFooterRouter & IFooterProps> = ({router}) => {
   const [collapsed, setCollapsed] = useState(true);
   const { t, i18n } = useTranslation();
 
-  const {name: routeName} = router.getState();
-  console.log(1232, routeName);
-
   const toggleNavbar = (): void => setCollapsed(!collapsed);
 
   const navigateToRoute = (routeName: string) => {
