@@ -8,7 +8,7 @@ import {
 } from '../../models/IDayModel';
 import firebase, {getCurrentUsersUid} from '../../config/firebase';
 import {deleteExercise} from '../Exercise/ExerciseService';
-import {isEmpty} from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import {FirebaseCollectionNames, getDayErrorObject, getNowTimestamp} from '../../config/FirebaseUtils';
 import getUnixTime from 'date-fns/getUnixTime';
 import subDays from 'date-fns/subDays';

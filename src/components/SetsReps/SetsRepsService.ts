@@ -1,5 +1,5 @@
 import firebase from '../../config/firebase';
-import {isEmpty} from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import {
   ISetBasicModel,
   ISetBasicUpdateModel,

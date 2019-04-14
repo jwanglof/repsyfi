@@ -8,7 +8,7 @@ import classnames from 'classnames';
 import SetsRepsTableRowFormEdit from './SetsRepsTableRowFormEdit';
 import firebase from '../../config/firebase';
 import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
-import {isEmpty} from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 
 const SetsRepsTableRowView: FunctionComponent<ISetsRepsTableRowViewProps> = ({ setUid, disabled, setLastSetData }) => {
   const [currentData, setCurrentData] = useState<ISetModel | undefined>(undefined);

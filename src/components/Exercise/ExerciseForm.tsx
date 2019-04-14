@@ -4,7 +4,7 @@ import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {getCurrentUsersUid} from '../../config/FirebaseUtils';
 import {Formik, FormikActions} from 'formik';
-import {isEmpty} from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import {addExerciseAndGetUid} from './ExerciseService';
 import {IExerciseBasicModel} from '../../models/IExerciseModel';
 import {Button, ButtonGroup, Col, FormGroup, Row} from 'reactstrap';
