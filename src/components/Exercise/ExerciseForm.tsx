@@ -15,9 +15,16 @@ import {addNewSetsRepsExerciseAndGetUid} from '../SetsReps/SetsRepsService';
 import {addExerciseToDayArray} from '../Day/DayService';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
+import {Router} from 'router5';
+import {withRoute} from 'react-router5';
 
-const ExerciseForm: FunctionComponent<IExerciseFormProps> = ({dayUid, setAddExerciseViewVisible}) => {
+const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> = ({router, setAddExerciseViewVisible}) => {
   const { t } = useTranslation();
+  const dayUid = router.getState().params.uid;
+
+  if (!dayUid) {
+    return <ErrorAlert errorText="Need a day UID to add an exercise!" componentName="ExerciseForm"/>;
+  }
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
 
@@ -103,8 +110,7 @@ const ExerciseForm: FunctionComponent<IExerciseFormProps> = ({dayUid, setAddExer
 };
 
 interface IExerciseFormProps {
-  dayUid: string,
-  setAddExerciseViewVisible: ((visible: boolean) => void)
+  setAddExerciseViewVisible: ((visible: boolean) => void),
 }
 
 interface IExerciseForm {
@@ -121,9 +127,13 @@ interface IExerciseFormSubmitValues {
   type: ExerciseTypesEnum
 }
 
+interface IExerciseFormRouter {
+  router: Router
+}
+
 interface ExerciseTypesOptions {
   value: ExerciseTypesEnum,
   label: string
 }
 
-export default ExerciseForm;
+export default withRoute(ExerciseForm);

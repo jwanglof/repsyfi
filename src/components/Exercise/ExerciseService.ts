@@ -14,7 +14,6 @@ export const getExercise = async (exerciseUid: string): Promise<IExerciseModel> 
     .get();
   if (querySnapshot.exists && !isEmpty(querySnapshot.data())) {
     const exerciseData = querySnapshot.data()!;
-    // exerciseData.uid = querySnapshot.id;
     return {
       exerciseName: exerciseData.exerciseName,
       type: exerciseData.type,

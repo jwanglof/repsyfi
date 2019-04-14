@@ -7,7 +7,12 @@ export interface IDayBasicModel {
   muscleGroups: string,
   title: string,
   notes: string,
-  exercises: Array<string>  // IExerciseModel
+  exercises: Array<IDayExercisesArray>  // IExerciseModel
+}
+
+export interface IDayExercisesArray {
+  index: number,
+  exerciseUid: string
 }
 
 export interface IDayModel extends IDayBasicModel, IBaseModel {}
