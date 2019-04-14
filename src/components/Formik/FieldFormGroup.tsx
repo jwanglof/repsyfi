@@ -1,8 +1,8 @@
 import React, {FunctionComponent} from 'react';
 import {Alert, Col, FormGroup, Input, Label} from 'reactstrap';
-import {colSmSize, labelSmSize} from './formik-utils';
+import {colSmSize, labelSmSize} from '../../utils/formik-utils';
 import {ErrorMessage, Field} from 'formik';
-import {IFormikProps} from './ts-formik-utils';
+import {IFormikProps} from '../../utils/ts-formik-utils';
 
 const FieldFormGroup: FunctionComponent<IFormikProps> = ({labelText, name, type="text", labelHidden=false, ...inputProps}) => {
   return (<FormGroup row>

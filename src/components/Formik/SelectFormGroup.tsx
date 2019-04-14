@@ -1,7 +1,7 @@
 import React, {FunctionComponent, useContext} from 'react';
-import {IFormikProps} from './ts-formik-utils';
+import {IFormikProps} from '../../utils/ts-formik-utils';
 import {Alert, Col, FormGroup, Label} from 'reactstrap';
-import {colSmSize, labelSmSize} from './formik-utils';
+import {colSmSize, labelSmSize} from '../../utils/formik-utils';
 import {ErrorMessage} from 'formik';
 // @ts-ignore
 import {Select} from 'react-formik-ui';

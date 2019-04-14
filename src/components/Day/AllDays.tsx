@@ -15,7 +15,6 @@ const AllDays: FunctionComponent<IAllDaysProps> = () => {
 
   useEffect(() => {
     getAllDays10DaysBackInTime().then(res => {
-      console.log(12332, res);
       setAllDays(orderBy(res, ['startTimestamp'], ['desc']));
     });
   }, []);

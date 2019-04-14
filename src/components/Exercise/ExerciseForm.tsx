@@ -5,16 +5,16 @@ import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {getCurrentUsersUid} from '../../config/FirebaseUtils';
 import {Formik, FormikActions} from 'formik';
 import {isEmpty} from 'lodash';
-import {addExerciseAndGetUid, getExerciseTypes} from './ExerciseService';
+import {addExerciseAndGetUid} from './ExerciseService';
 import {IExerciseBasicModel} from '../../models/IExerciseModel';
 import {Button, ButtonGroup, Col, FormGroup, Row} from 'reactstrap';
-import FieldFormGroup from '../shared/formik/FieldFormGroup';
-import SelectFormGroup from '../shared/formik/SelectFormGroup';
-// @ts-ignore
-import {Form} from 'react-formik-ui';
+import FieldFormGroup from '../Formik/FieldFormGroup';
+import SelectFormGroup from '../Formik/SelectFormGroup';
 import {addNewTimeDistanceExerciseAndGetUid} from '../TimeDistance/TimeDistanceService';
 import {addNewSetsRepsExerciseAndGetUid} from '../SetsReps/SetsRepsService';
 import {addExerciseToDayArray} from '../Day/DayService';
+// @ts-ignore
+import {Form} from 'react-formik-ui';
 
 const ExerciseForm: FunctionComponent<IExerciseFormProps> = ({dayUid, setAddExerciseViewVisible}) => {
   const { t } = useTranslation();
@@ -36,7 +36,6 @@ const ExerciseForm: FunctionComponent<IExerciseFormProps> = ({dayUid, setAddExer
   const onSubmit = async (values: IExerciseForm, actions: FormikActions<IExerciseFormSubmitValues>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
-    console.log('values:', values);
     try {
       const ownerUid: string = await getCurrentUsersUid();
 
@@ -49,15 +48,12 @@ const ExerciseForm: FunctionComponent<IExerciseFormProps> = ({dayUid, setAddExer
         return;
       }
 
-      console.log('exerciseTypeUid:', exerciseTypeUid);
-
       const exerciseData: IExerciseBasicModel = {
         exerciseName: values.exerciseName,
         type: values.type,
         typeUid: exerciseTypeUid
       };
       const exerciseUid = await addExerciseAndGetUid(exerciseData, ownerUid);
-      console.log('exerciseUid:', exerciseUid, exerciseData);
       await addExerciseToDayArray(exerciseUid, dayUid);
       setAddExerciseViewVisible(false);
     } catch (e) {
@@ -66,6 +62,12 @@ const ExerciseForm: FunctionComponent<IExerciseFormProps> = ({dayUid, setAddExer
     }
     actions.setSubmitting(false);
   };
+
+  const getExerciseTypes = (): Array<ExerciseTypesOptions> => ([
+    {value: ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS, label: t("Sets and reps")},
+    {value: ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE, label: t("Time and distance")},
+    // {value: ExerciseTypesEnum.EXERCISE_TYPE_NOT_CHOSEN, label: 'Other'},  // TODO Implement
+  ]);
 
   const emptyInitialValues: IExerciseForm = {exerciseName: '', type: ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS};
 
@@ -79,7 +81,7 @@ const ExerciseForm: FunctionComponent<IExerciseFormProps> = ({dayUid, setAddExer
           // render={({ errors, status, touched, isSubmitting }) => (
           render={({ errors, isSubmitting }) => (
             <Form themed>
-              <FieldFormGroup name="exerciseName" labelText={t("Exercise")}/>
+              <FieldFormGroup name="exerciseName" labelText={t("Exercise name")}/>
               <SelectFormGroup name="type" labelText={t("Exercise type")} options={getExerciseTypes()}/>
 
               <Row>
@@ -117,6 +119,11 @@ interface IExerciseFormValidate {
 interface IExerciseFormSubmitValues {
   exerciseName: string,
   type: ExerciseTypesEnum
+}
+
+interface ExerciseTypesOptions {
+  value: ExerciseTypesEnum,
+  label: string
 }
 
 export default ExerciseForm;

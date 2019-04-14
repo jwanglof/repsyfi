@@ -1,18 +1,24 @@
 import {Route} from 'router5';
 
-export const routeNameRoot: string = "root";
-export const routeNameAllDays: string = "all-days";
-export const routeNameSpecificDay: string = "specific-day";
-export const routeNameAddDay: string = "add-day";
-export const routeNameEditDay: string = "edit-day";
-export const routeNameLogout: string = "logout";
+export enum RouteNames {
+  ROOT = 'root',
+  ALL_DAYS = 'all-days',
+  SPECIFIC_DAY = 'specific-day',
+  ADD_DAY = 'add-day',
+  EDIT_DAY = 'edit-day',
+  LOGOUT = 'logout',
+  DASHBOARD = 'dashboard',
+  FAQ = 'faq',
+}
 
 const routes: Route[] = [
-  { name: routeNameRoot, path: '/' },
-  { name: routeNameAllDays, path: '/days' },
-  { name: routeNameSpecificDay, path: '/day/:uid' },
-  { name: routeNameAddDay, path: '/day/add' },
-  { name: routeNameEditDay, path: '/day/edit?:dayUid' },
-  { name: routeNameLogout, path: '/logout' },
+  { name: RouteNames.ROOT, path: '/' },
+  { name: RouteNames.ALL_DAYS, path: '/days' },
+  { name: RouteNames.SPECIFIC_DAY, path: '/day/:uid' },
+  { name: RouteNames.ADD_DAY, path: '/day/add' },
+  { name: RouteNames.EDIT_DAY, path: '/day/edit?:dayUid' },
+  { name: RouteNames.LOGOUT, path: '/logout' },
+  { name: RouteNames.FAQ, path: '/faq' },
 ];
+
 export default routes;

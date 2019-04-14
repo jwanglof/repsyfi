@@ -15,7 +15,6 @@ const SetsRepsTableRowView: FunctionComponent<ISetsRepsTableRowViewProps> = ({ s
     const fetchSetData = async () => {
       try {
         const res = await getSet(setUid);
-        console.log(1232, res);
         if (setLastSetData) {
           setLastSetData(res);
         }

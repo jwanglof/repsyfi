@@ -8,11 +8,19 @@ import routes from './routes';
 import browserPlugin from 'router5-plugin-browser';
 import loggerPlugin from 'router5-plugin-logger';
 import createRouter from 'router5';
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faHome, faPlusCircle, faSpinner, faSignOutAlt, faExternalLinkAlt, faEdit, faCaretUp, faCaretDown } from '@fortawesome/free-solid-svg-icons'
+import {library} from '@fortawesome/fontawesome-svg-core'
+import {
+  faCaretDown,
+  faCaretUp,
+  faEdit,
+  faExternalLinkAlt,
+  faHome,
+  faPlusCircle,
+  faSignOutAlt,
+  faSpinner
+} from '@fortawesome/free-solid-svg-icons'
 import './config/i18n';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.scss';
 
 const router = createRouter(routes, {
@@ -29,11 +37,13 @@ library.add(faHome, faPlusCircle, faSpinner, faSignOutAlt, faExternalLinkAlt, fa
 
 router.start(() => {
   ReactDOM.render((
+    // <React.StrictMode>  -- Can't use this yet :(
       <Container>
         <RouterProvider router={router}>
           <App />
         </RouterProvider>
       </Container>
+    // </React.StrictMode>
     ), document.getElementById('root'));
 });
 

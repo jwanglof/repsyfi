@@ -1,10 +1,9 @@
 import './Exercise.scss';
 
 import React, {FunctionComponent, useEffect, useState} from 'react';
-import {useTranslation} from 'react-i18next';
 import {getExercise} from './ExerciseService';
 import {IExerciseModel} from '../../models/IExerciseModel';
-import {Card, CardBody, CardFooter, CardHeader, Col} from 'reactstrap';
+import {Card, CardBody, CardHeader, Col} from 'reactstrap';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import ExerciseHeader from './ExerciseHeader';
@@ -13,9 +12,7 @@ import SetsRepsExerciseContainer from '../SetsReps/SetsRepsExerciseContainer';
 import TimeDistanceExerciseContainer from '../TimeDistance/TimeDistanceExerciseContainer';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 
-const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({ exerciseUid, singleDayView=false, dayUid=null }) => {
-  const { t } = useTranslation();
-
+const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({ exerciseUid, dayUid=null }) => {
   const [currentExerciseData, setCurrentExerciseData] = useState<IExerciseModel | undefined>(undefined);
   const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
 
@@ -23,7 +20,6 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({
     const fetchExerciseData = async () => {
       try {
         const res = await getExercise(exerciseUid);
-        console.log('EXEC::', res);
         setCurrentExerciseData(res);
       } catch (e) {
         console.error(e);
@@ -51,7 +47,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({
         </CardHeader>
 
         <CardBody className="mb-0 p-0">
-          {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS && <SetsRepsExerciseContainer exerciseUid={currentExerciseData.typeUid} singleDayView={singleDayView}/>}
+          {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS && <SetsRepsExerciseContainer exerciseUid={currentExerciseData.typeUid}/>}
           {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE && <TimeDistanceExerciseContainer exerciseUid={currentExerciseData.typeUid}/>}
         </CardBody>
       </Card>
@@ -61,7 +57,6 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({
 
 interface IExerciseTypeContainerProps {
   exerciseUid: string,
-  singleDayView: boolean,
   dayUid?: string
 }
 

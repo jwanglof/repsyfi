@@ -7,17 +7,18 @@ import {Router} from 'router5';
 import isEmpty from 'lodash/isEmpty';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {IDayModel} from '../../models/IDayModel';
-import {deleteDay, endDayNow, getDay} from './DayService';
+import {deleteDay, endDayNow} from './DayService';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
-import {routeNameEditDay, routeNameRoot} from '../../routes';
 import {Button, ButtonGroup, Col, Row} from 'reactstrap';
 import {getFormattedDate, getTitle} from './DayUtils';
 import ExerciseForm from '../Exercise/ExerciseForm';
 import ExerciseTypeContainer from '../Exercise/ExerciseTypeContainer';
 import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
 import firebase from '../../config/firebase';
+import {RouteNames} from '../../routes';
+import {useGlobalState} from '../../state';
 
-const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayUid}) => {
+const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetailedProps> = ({router, dayUid}) => {
   const { t } = useTranslation();
 
   if (isEmpty(dayUid)) {
@@ -29,6 +30,9 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
   const [updateErrorData, setUpdateErrorData] = useState<string | undefined>(undefined);
   const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
   const [addExerciseViewVisible, setAddExerciseViewVisible] = useState(false);
+  const [dayDeleteStep2Shown, setDayDeleteStep2Shown] = useState<boolean>(false);
+
+  const setTimerRunning = useGlobalState('timerRunning')[1];
 
   // Effect to subscribe on changes on this specific day
   useEffect(() => {
@@ -76,22 +80,25 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
   const dayEnd = async () => {
     try {
       await endDayNow(dayUid);
+      setTimerRunning(false);
     } catch (e) {
       setUpdateErrorData(e.message);
     }
   };
 
+  const dayDeleteStep1 = () => setDayDeleteStep2Shown(true);
+
   const dayDelete = async () => {
-    console.warn('Delete! Must show a dialog, or something, to make it an active choice!');
-    // try {
-    //   await deleteDay(dayUid);
-    //   router.navigate(routeNameRoot, {}, {reload: true});
-    // } catch (e) {
-    //   setDeleteErrorData(e.message);
-    // }
+    try {
+      console.log('Removing dayUid:', dayUid);
+      await deleteDay(dayUid);
+      router.navigate(RouteNames.ALL_DAYS, {}, {reload: true});
+    } catch (e) {
+      setDeleteErrorData(e.message);
+    }
   };
 
-  const editDay = () => router.navigate(routeNameEditDay, {dayUid}, {reload: true});
+  const editDay = () => router.navigate(RouteNames.EDIT_DAY, {dayUid}, {reload: true});
 
   return (
     <>
@@ -105,7 +112,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
 
       <Row>
         {/* TODO Sort the exercises on createdTimestamp! */}
-        {currentData.exercises.length && currentData.exercises.map(exerciseUid => <ExerciseTypeContainer key={exerciseUid} exerciseUid={exerciseUid} singleDayView={!isEmpty(dayUid)} dayUid={dayUid}/>)}
+        {currentData.exercises.length && currentData.exercises.map(exerciseUid => <ExerciseTypeContainer key={exerciseUid} exerciseUid={exerciseUid} dayUid={dayUid}/>)}
       </Row>
 
       <Row>
@@ -125,7 +132,8 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
           <ButtonGroup className="w-100">
             <Button color="info" onClick={editDay}>{t("Edit day")}</Button>
             <Button disabled={!!currentData.endTimestamp} onClick={dayEnd}>{t("End day")}</Button>
-            <Button color="danger" onClick={dayDelete}>{t("Delete day")}</Button>
+            {!dayDeleteStep2Shown && <Button color="warning" onClick={dayDeleteStep1}>{t("Delete day")}</Button>}
+            {dayDeleteStep2Shown && <Button color="danger" onClick={dayDelete}>{t("Delete day")}</Button>}
           </ButtonGroup>
         </Col>
       </Row>
@@ -134,8 +142,11 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedProps> = ({router, dayU
 };
 
 interface IDayViewDetailedProps {
-  router: Router,
   dayUid: string
+}
+
+interface IDayViewDetailedRouter {
+  router: Router
 }
 
 export default withRoute(DayViewDetailed);

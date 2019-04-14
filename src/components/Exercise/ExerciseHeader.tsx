@@ -5,7 +5,7 @@ import {updateExercise} from './ExerciseService';
 import {Form, Formik, FormikActions} from 'formik';
 import {Button, ButtonGroup} from 'reactstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import FormikField from '../shared/formik/FormikField';
+import FormikField from '../Formik/FormikField';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 
 const ExerciseHeader: FunctionComponent<IExerciseHeaderProps> = ({exerciseData, dayUid}) => {

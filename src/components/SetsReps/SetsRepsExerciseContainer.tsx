@@ -10,9 +10,15 @@ import SetsRepsTableRowForm from './SetsRepsTableRowForm';
 import firebase from '../../config/firebase';
 import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
 import {isEmpty} from 'lodash';
+import {withRouter} from 'react-router5';
+import {Router} from 'router5';
+import {RouteNames} from '../../routes';
 
-const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerProps> = ({exerciseUid, singleDayView}) => {
+const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRouter & ISetsRepsExerciseContainerProps> = ({router, exerciseUid}) => {
   const { t } = useTranslation();
+
+  const {name: routeName} = router.getState();
+  const detailedDayView = (routeName === RouteNames.SPECIFIC_DAY);
 
   if (isEmpty(exerciseUid)) {
     return <ErrorAlert errorText="Must have the exercises's UID to proceed!" componentName="SetsRepsExerciseContainer"/>;
@@ -31,10 +37,8 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerPro
       // .where("ownerUid", "==", uid)
       .doc(exerciseUid)
       .onSnapshot({includeMetadataChanges: true}, doc => {
-        console.log(123332, doc);
         if (doc.exists && !isEmpty(doc.data())) {
           const snapshotData: any = doc.data();
-          console.log(12332, snapshotData);
           setCurrentExerciseData({
             version: snapshotData.version,
             createdTimestamp: snapshotData.createdTimestamp,
@@ -79,7 +83,7 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerPro
   };
 
   return (
-    <Table striped hover={singleDayView && !addSetViewVisible} size="sm" className="mb-0">
+    <Table striped hover={detailedDayView && !addSetViewVisible} size="sm" className="mb-0">
       <thead>
       <tr>
         <th style={{width: "10%"}}>#</th>
@@ -102,7 +106,7 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerPro
 
       </tbody>
 
-      {singleDayView && !addSetViewVisible && <tfoot>
+      {detailedDayView && !addSetViewVisible && <tfoot>
       <tr>
         <td colSpan={3}>
           <Button color="success" block onClick={() => setAddSetViewVisible(!addSetViewVisible)}>{t("Add set")}</Button>
@@ -118,8 +122,11 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerPro
 };
 
 interface ISetsRepsExerciseContainerProps {
-  exerciseUid: string,
-  singleDayView: boolean
+  exerciseUid: string
 }
 
-export default SetsRepsExerciseContainer;
+interface ISetsRepsExerciseContainerRouter {
+  router: Router
+}
+
+export default withRouter(SetsRepsExerciseContainer);

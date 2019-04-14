@@ -2,31 +2,25 @@ import React, {FunctionComponent} from 'react';
 import {ITimeDistanceModel} from '../../models/ITimeDistanceModel';
 import {Button, Table} from 'reactstrap';
 import {useTranslation} from 'react-i18next';
-import {getHourMinuteSecondsFromSeconds} from '../shared/time-utils';
+import {formatSecondsToPrettyPrint} from '../../utils/time-utils';
+import {withRouter} from 'react-router5';
+import {Router} from 'router5';
+import {RouteNames} from '../../routes';
 
-const TimeDistanceView: FunctionComponent<ITimeDistanceViewProps> = ({currentExerciseData, setEditVisible}) => {
+const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanceViewProps> = ({router, currentExerciseData, setEditVisible}) => {
   const { t } = useTranslation();
-
-  const formatSecondsToTime = (seconds: number): string => {
-    let t = getHourMinuteSecondsFromSeconds(seconds);
-    let hh: number | string = t.hours;
-    let mm: number | string = t.minutes;
-    let ss: number | string = t.seconds;
-    if (hh < 10) hh = "0"+hh;
-    if (mm < 10) mm = "0"+mm;
-    if (ss < 10) ss = "0"+ss;
-    return `${hh}:${mm}:${ss}`;
-  };
+  const {name: routeName} = router.getState();
+  const detailedDayView = (routeName === RouteNames.SPECIFIC_DAY);
 
   return (<Table size="sm" className="mb-0">
     <tbody>
     <tr>
       <td>{t("Total time")}</td>
-      <td>{formatSecondsToTime(currentExerciseData.totalTimeSeconds)}</td>
+      <td>{formatSecondsToPrettyPrint(currentExerciseData.totalTimeSeconds)}</td>
     </tr>
     <tr>
       <td>{t("Total warm-up")}</td>
-      <td>{formatSecondsToTime(currentExerciseData.totalWarmupSeconds)}</td>
+      <td>{formatSecondsToPrettyPrint(currentExerciseData.totalWarmupSeconds)}</td>
     </tr>
 
     <tr>
@@ -56,13 +50,13 @@ const TimeDistanceView: FunctionComponent<ITimeDistanceViewProps> = ({currentExe
       <td>{currentExerciseData.inclineMax}</td>
     </tr>
     </tbody>
-    <tfoot>
+    {detailedDayView && <tfoot>
     <tr>
       <td colSpan={2}>
         <Button color="success" block onClick={() => setEditVisible(true)}>{t("Edit")}</Button>
       </td>
     </tr>
-    </tfoot>
+    </tfoot>}
   </Table>);
 };
 
@@ -71,4 +65,8 @@ interface ITimeDistanceViewProps {
   setEditVisible: ((visible: boolean) => void)
 }
 
-export default TimeDistanceView;
+interface ITimeDistanceViewRouter {
+  router: Router
+}
+
+export default withRouter(TimeDistanceView);

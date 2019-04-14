@@ -1,11 +1,11 @@
 import React from 'react';
 import {Alert, Col, FormGroup, Label} from 'reactstrap';
-import {ErrorMessage} from 'formik';
+import {ErrorMessage} from 'formik/dist/index';
 import capitalize from 'lodash/capitalize';
 import PropTypes from 'prop-types';
 
 import {Toggle} from 'react-formik-ui'
-import {colSmSize, labelSmSize} from './formik-utils';
+import {colSmSize, labelSmSize} from '../../utils/formik-utils';
 
 const YesNoField = ({labelText, name, ...inputProps}) => {
   const disabled = !!inputProps.disabled;

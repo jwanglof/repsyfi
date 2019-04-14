@@ -23,7 +23,7 @@ const resources = {
       "Discard exercise": "Discard exercise",
       "Open detailed view": "Open detailed view",
       "Add exercise": "Add exercise",
-      "Exercise": "Exercise",
+      "Exercise name": "Exercise name",
       "Workout location": "Workout location",
       "Muscle groups": "Muscle groups",
       "Title": "Title",
@@ -47,7 +47,17 @@ const resources = {
       "Discard": "Discard",
       "Title can't be empty": "Title can't be empty",
       "Delete": "Delete",
-      "to edit": "to edit"
+      "to edit": "to edit",
+      "Welcome to your": "Welcome to your",
+      "exercise diary": "exercise diary",
+      "This application will help you to": "This application will help you to",
+      "Track your sets and repetitions": "Track your sets and repetitions",
+      "Track your cardio machines": "Track your cardio machines",
+      "See how long you've been exercising": "See how long you've been exercising",
+      "Exercise type": "Exercise type",
+      "Sets and reps": "Sets and reps",
+      "Time and distance": "Time and distance",
+      "Notes": "Notes"
     }
   },
   sv: {
@@ -69,7 +79,7 @@ const resources = {
       "Discard exercise": "Avbryt",
       "Open detailed view": "Öppna detaljvyn",
       "Add exercise": "Ny övning",
-      "Exercise": "Övning",
+      "Exercise name": "Övningsnamn",
       "Workout location": "Träningslokal",
       "Muscle groups": "Muskelgrupper",
       "Title": "Titel",
@@ -93,7 +103,17 @@ const resources = {
       "Discard": "Avbryt",
       "Title can't be empty": "Titel kan inte vara tom",
       "Delete": "Ta bort",
-      "to edit": "för att redigera"
+      "to edit": "för att redigera",
+      "Welcome to your": "Välkommen till din",
+      "exercise diary": "träningsdagbok",
+      "This application will help you to": "Denna applikation hjälper dig att",
+      "Track your sets and repetitions": "Hålla koll på dina set och repetitioner",
+      "Track your cardio machines": "Hålla koll på dina flåsmaskiner",
+      "See how long you've been exercising": "Se hur länge du har tränat",
+      "Exercise type": "Övningstyp",
+      "Sets and reps": "Set och repetitioner",
+      "Time and distance": "Flås",
+      "Notes": "Noteringar"
     }
   }
 };

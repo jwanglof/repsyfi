@@ -1,7 +1,7 @@
 import fromUnixTime from "date-fns/fromUnixTime";
 import format from "date-fns/format";
 import {isEmpty} from 'lodash';
-import {dateFormat, dateFormatWithTime} from '../shared/formik/formik-utils';
+import {dateFormat, dateFormatWithTime} from '../../utils/formik-utils';
 
 export const getFormattedDate = (timestamp: number, dateFormat: string = dateFormatWithTime): string => {
   if (timestamp === null) {
