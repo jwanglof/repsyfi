@@ -6,7 +6,6 @@ import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {FirebaseCollectionNames, getExerciseErrorObject, getNowTimestamp} from '../../config/FirebaseUtils';
 import {Versions} from '../../models/IBaseModel';
 import {deleteTimeDistanceExercise} from '../TimeDistance/TimeDistanceService';
-import {useTranslation} from 'react-i18next';
 
 export const getExercise = async (exerciseUid: string): Promise<IExerciseModel> => {
   const querySnapshot = await firebase.firestore()
@@ -78,18 +77,3 @@ export const updateExercise = async(exerciseUid: string, exerciseHeaderData: IEx
     .doc(exerciseUid)
     .update(data);
 };
-
-export const getExerciseTypes = (): Array<ExerciseTypesOptions> => {
-  const { t } = useTranslation();
-
-  return [
-    {value: ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS, label: t("Sets and reps")},
-    {value: ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE, label: t("Time and distance")},
-    // {value: ExerciseTypesEnum.EXERCISE_TYPE_NOT_CHOSEN, label: 'Other'},  // TODO Implement
-  ];
-};
-
-interface ExerciseTypesOptions {
-  value: ExerciseTypesEnum,
-  label: string
-}
