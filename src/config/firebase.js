@@ -16,9 +16,9 @@ const config = {
 };
 
 export const initializeFirebase = async () => {
-  console.log('Initializing firebase!!');
+  // console.log('Initializing firebase!!');
   app = await firebase.initializeApp(config);
-  console.log('Firebase is initialized!', app);
+  // console.log('Firebase is initialized!', app);
   return firebase;
 };
 

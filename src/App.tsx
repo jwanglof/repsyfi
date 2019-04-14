@@ -20,7 +20,8 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
 
   const [firebaseIsInitialized, setFirebaseIsInitialized] = useState<boolean>(false);
   const [signInStatusLoading, setSignInStatusLoading] = useState<boolean>(true);
-  const [userSignedIn, setUserSignedIn] = useState<boolean | undefined>(undefined);
+  const [userSignedIn, setUserSignedIn] = useState<boolean>(false);
+  const [userDetails, setUserDetails] = useState<firebase.User | undefined>(undefined);
 
   useEffect(() => {
     const initFirebase = async () => {
@@ -34,12 +35,12 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
     if (firebaseIsInitialized) {
       firebase.auth().onAuthStateChanged(function(user) {
         console.log('Logged in???');
-        setSignInStatusLoading(false);
 
         if (user) {
           setUserSignedIn(true);
+          setUserDetails(user);
           // User is signed in.
-          console.log('User logged in!');
+          // console.log('User logged in!');
           // console.log(user);
           // const name = user.displayName;
           // const email = user.email;
@@ -49,9 +50,10 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
           // console.log(name, email, photoUrl, emailVerified, uid)
         } else {
           // No user is signed in.
-          console.log('User not lgoged in');
+          // console.log('User not lgoged in');
           setUserSignedIn(false);
         }
+        setSignInStatusLoading(false);
       });
     }
   }, [firebaseIsInitialized]);
@@ -65,11 +67,14 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
   }
 
   const signInReq = (component: any) => {
+    console.log('Signed in?!', userSignedIn);
     if (userSignedIn) {
       return component;
     }
     router.navigate(RouteNames.ROOT, {}, {reload: true})
   };
+
+  console.log(topRouteName);
 
   switch (topRouteName) {
     case RouteNames.SPECIFIC_DAY:
@@ -91,7 +96,7 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
       shownComponent = <Faq/>;
       break;
     default:
-      shownComponent = <StartPage userSignedIn={userSignedIn || false}/>;
+      shownComponent = <StartPage userSignedIn={userSignedIn || false} userDetails={userDetails}/>;
   }
 
   return (<GlobalStateProvider>

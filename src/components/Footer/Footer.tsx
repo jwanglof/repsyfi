@@ -22,7 +22,7 @@ const Footer: FunctionComponent<IFooterRouter & IFooterProps> = ({router}) => {
   const toggleNavbar = (): void => setCollapsed(!collapsed);
 
   const navigateToRoute = (routeName: string) => {
-    toggleNavbar();
+    setCollapsed(true);
     router.navigate(routeName, {}, {reload: true})
   };
 
@@ -42,7 +42,7 @@ const Footer: FunctionComponent<IFooterRouter & IFooterProps> = ({router}) => {
 
   return (<footer>
     <Navbar color="dark" fixed="bottom" dark>
-      <NavbarBrand href="/" className="mr-auto">
+      <NavbarBrand  onClick={() => navigateToRoute(RouteNames.ROOT)} className="mr-auto">
         repsify <FooterDurationTimer/>
       </NavbarBrand>
       <NavbarToggler onClick={toggleNavbar} className="mr-2" />
@@ -51,10 +51,10 @@ const Footer: FunctionComponent<IFooterRouter & IFooterProps> = ({router}) => {
           <NavItem>
             <Row className="text-center">
               <Col>
-                <NavLink href={RouteNames.ROOT} onClick={() => navigateToRoute(RouteNames.ROOT)}>{t("Home")}</NavLink>
+                <NavLink  onClick={() => navigateToRoute(RouteNames.ROOT)}>{t("Home")}</NavLink>
               </Col>
               <Col>
-                <NavLink href={RouteNames.ALL_DAYS} onClick={() => navigateToRoute(RouteNames.ALL_DAYS)}>{t("All days")}</NavLink>
+                <NavLink  onClick={() => navigateToRoute(RouteNames.ALL_DAYS)}>{t("All days")}</NavLink>
               </Col>
             </Row>
           </NavItem>
@@ -67,13 +67,13 @@ const Footer: FunctionComponent<IFooterRouter & IFooterProps> = ({router}) => {
           <NavItem>
             <Row className="text-center">
               <Col>
-                <NavLink href="" onClick={() => i18n.changeLanguage('sv')}>
+                <NavLink  onClick={() => i18n.changeLanguage('sv')}>
                   <Flag country="se" asSquare={true} height="0.3in" className="mr-1" />
                   <span className="align-middle">{t("SW")}</span>
                 </NavLink>
               </Col>
               <Col>
-                <NavLink href="" onClick={() => i18n.changeLanguage('en')}>
+                <NavLink  onClick={() => i18n.changeLanguage('en')}>
                   <Flag country="gb" asSquare={true} height="0.3in" className="mr-1" />
                   <span className="align-middle">{t("EN")}</span>
                 </NavLink>
@@ -88,7 +88,7 @@ const Footer: FunctionComponent<IFooterRouter & IFooterProps> = ({router}) => {
                 </NavLink>
               </Col>
               <Col>
-                <NavLink href={RouteNames.ROOT} onClick={signOut}>
+                <NavLink  onClick={signOut}>
                   <FontAwesomeIcon icon="sign-out-alt"/> {t("Sign out")}
                 </NavLink>
               </Col>

@@ -53,7 +53,10 @@ const resources = {
       "This application will help you to": "This application will help you to",
       "Track your sets and repetitions": "Track your sets and repetitions",
       "Track your cardio machines": "Track your cardio machines",
-      "See how long you've been exercising": "See how long you've been exercising"
+      "See how long you've been exercising": "See how long you've been exercising",
+      "Exercise type": "Exercise type",
+      "Sets and reps": "Sets and reps",
+      "Time and distance": "Time and distance"
     }
   },
   sv: {
@@ -105,7 +108,10 @@ const resources = {
       "This application will help you to": "Denna applikation hjälper dig att",
       "Track your sets and repetitions": "Hålla koll på dina set och repetitioner",
       "Track your cardio machines": "Hålla koll på dina flåsmaskiner",
-      "See how long you've been exercising": "Se hur länge du har tränat"
+      "See how long you've been exercising": "Se hur länge du har tränat",
+      "Exercise type": "Övningstyp",
+      "Sets and reps": "Set och repetitioner",
+      "Time and distance": "Flås"
     }
   }
 };

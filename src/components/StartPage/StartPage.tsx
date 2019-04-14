@@ -6,8 +6,9 @@ import Flag from 'react-country-flags';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import {useTranslation} from 'react-i18next';
 import useInterval from '../../utils/useInterval';
+import Instructions from './Instructions';
 
-const StartPage: FunctionComponent<ILoginProps> = ({userSignedIn}) => {
+const StartPage: FunctionComponent<ILoginProps> = ({userSignedIn, userDetails}) => {
   const { t, i18n } = useTranslation();
 
   const featureList: Array<string> = [
@@ -19,12 +20,14 @@ const StartPage: FunctionComponent<ILoginProps> = ({userSignedIn}) => {
   const [currentFeatureIndex, setCurrentFeatureIndex] = useState<number>(0);
 
   const durationCb = () => {
-    // Change the feature shown
-    let index = currentFeatureIndex + 1;
-    if (index > featureList.length - 1) {
-      index = 0;
+    if (!userSignedIn) {
+      // Change the feature shown
+      let index = currentFeatureIndex + 1;
+      if (index > featureList.length - 1) {
+        index = 0;
+      }
+      setCurrentFeatureIndex(index);
     }
-    setCurrentFeatureIndex(index);
   };
   useInterval(durationCb, 3000);
 
@@ -74,7 +77,7 @@ const StartPage: FunctionComponent<ILoginProps> = ({userSignedIn}) => {
       </Col>
     </Row>
 
-    <Row className="mt-5 text-center">
+    {!userSignedIn && <><Row className="mt-5 text-center">
       <Col xs={12}>
         <blockquote className="blockquote">
           {t("This application will help you to")}:
@@ -86,12 +89,13 @@ const StartPage: FunctionComponent<ILoginProps> = ({userSignedIn}) => {
         </ul>
       </Col>
     </Row>
-
-    {!userSignedIn && <Row className="mt-3">
+    <Row className="mt-3">
       <Col xs={12}>
         <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}/>
       </Col>
-    </Row>}
+    </Row></>}
+
+    {userSignedIn && <Row className="mt-3"><Col><Instructions userDetails={userDetails}/></Col></Row>}
 
     {/*<Row className="text-center fixed-bottom mb-1">*/}
     {/*  <Col xs={12}>*/}
@@ -102,7 +106,8 @@ const StartPage: FunctionComponent<ILoginProps> = ({userSignedIn}) => {
 };
 
 interface ILoginProps {
-  userSignedIn: boolean
+  userSignedIn: boolean,
+  userDetails: firebase.User | undefined
 }
 
 export default StartPage;
