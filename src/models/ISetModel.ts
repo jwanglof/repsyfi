@@ -1,4 +1,4 @@
-import {IBaseModel, IBaseModelWithoutUid} from './IBaseModel';
+import {IBaseModel, IBaseModelUpdating, IBaseModelWithoutUid} from './IBaseModel';
 
 export interface ISetBasicModel {
   index: number,
@@ -9,3 +9,10 @@ export interface ISetBasicModel {
 export interface ISetModel extends IBaseModel, ISetBasicModel {}
 
 export interface ISetModelWithoutUid extends IBaseModelWithoutUid, ISetBasicModel {}
+
+export interface ISetBasicUpdateModel {
+  amountInKg: number,
+  reps: number
+}
+
+export interface ISetUpdateModel extends ISetBasicUpdateModel, IBaseModelUpdating {}

@@ -2,10 +2,14 @@ import "./Instructions.scss";
 
 import React, {FunctionComponent} from 'react';
 import firebase from '../../config/firebase';
+import {Alert} from 'reactstrap';
 
 const Instructions: FunctionComponent<IInstructionsProps> = ({userDetails}) => {
   return (<div>
-    <h4>Riktigt roligt att du hittat hit{userDetails && `, ${userDetails.displayName} 😍`}!</h4>
+    <div className="text-center">
+      <h4>Riktigt roligt att du hittat hit</h4>
+      <h4>{userDetails && userDetails.displayName} <span role="img" aria-label="" aria-labelledby="">😍</span></h4>
+    </div>
 
     <small>Denna applikation är utformad för att göra en sak enkelt och snabbt: Att lägga till dina olika träningsövningar.</small>
 
@@ -16,12 +20,14 @@ const Instructions: FunctionComponent<IInstructionsProps> = ({userDetails}) => {
         <li>En dag består av en, eller flera, övningar</li>
         <li>Det finns två olika övningstyper du kan välja mellan</li>
       </ol>
-      Sådär. Inget mer, inget mindre. Hoppas det inte låter alltför krångligt <span role="img" aria-label="" aria-labelledby="">😉</span>
+      <Alert color="success">
+        Sådär. Inget mer, inget mindre. Hoppas det inte låter alltför krångligt <span role="img" aria-label="" aria-labelledby="">😉</span>
+      </Alert>
     </div>
 
     <p className="lead mt-2">Fortsätt läsa för att få en bättre förståelse hur du använder denna applikation.</p>
 
-    <h5>En dag</h5>
+    <h4>En dag</h4>
     <dl className="instructions--dl">
       <dt>Består av diverse information</dt>
       <dd>När man lägger till en dag kommer många fält vara ifyllda från början, detta för att man så snabbt som möjligt ska kunna börja träna. Du kan ändra informationen antigen innan du lägger till dagen eller i efterhand när du har tid.</dd>
@@ -35,7 +41,7 @@ const Instructions: FunctionComponent<IInstructionsProps> = ({userDetails}) => {
       <dd>När man är klar med sitt träningspass trycker man på <i>Avsluta dag</i>-knappen. När man trycker på den knappen sätts en sluttid och timern stängs av.</dd>
     </dl>
 
-    <h5>En övning</h5>
+    <h4>En övning</h4>
     <dl className="instructions--dl">
       <dt>Består av ett namn och en övningstyp</dt>
       <dd>Namnet är oftast vad övningen heter (t.ex. bänkpress)</dd>

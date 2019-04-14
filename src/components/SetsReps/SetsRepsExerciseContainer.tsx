@@ -18,7 +18,7 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
   const { t } = useTranslation();
 
   const {name: routeName} = router.getState();
-  const detailedDayView = (routeName === RouteNames.SPECIFIC_DAY);
+  const detailedDayView: boolean = (routeName === RouteNames.SPECIFIC_DAY);
 
   if (isEmpty(exerciseUid)) {
     return <ErrorAlert errorText="Must have the exercises's UID to proceed!" componentName="SetsRepsExerciseContainer"/>;

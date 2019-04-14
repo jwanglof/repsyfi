@@ -1,6 +1,12 @@
 import firebase from '../../config/firebase';
 import {isEmpty} from 'lodash';
-import {ISetBasicModel, ISetModel, ISetModelWithoutUid} from '../../models/ISetModel';
+import {
+  ISetBasicModel,
+  ISetBasicUpdateModel,
+  ISetModel,
+  ISetModelWithoutUid,
+  ISetUpdateModel
+} from '../../models/ISetModel';
 import {
   FirebaseCollectionNames,
   getNowTimestamp,
@@ -9,6 +15,7 @@ import {
 } from '../../config/FirebaseUtils';
 import {Versions} from '../../models/IBaseModel';
 import {ISetsRepsModel, ISetsRepsModelWithoutUid} from '../../models/ISetsRepsModel';
+import {IDayBasicUpdateModel, IDayUpdateModel} from '../../models/IDayModel';
 
 export const deleteSet = async (setUid: string): Promise<void> => {
   return await firebase.firestore()
@@ -26,7 +33,7 @@ export const getSet = async (setUid: string): Promise<ISetModel> => {
       if (querySnapshot.exists && !isEmpty(querySnapshot.data())) {
         const data = querySnapshot.data();
         return {
-          uid: data.id,
+          uid: querySnapshot.id,
           ownerUid: data.ownerUid,
           createdTimestamp: data.createdTimestamp,
           index: data.index,
@@ -38,6 +45,18 @@ export const getSet = async (setUid: string): Promise<ISetModel> => {
         throw getSetErrorObject(setUid);
       }
     });
+};
+
+export const updateSetsRepsExercise = async (setUid: string, setData: ISetBasicUpdateModel) => {
+  const data: ISetUpdateModel = {
+    amountInKg: setData.amountInKg,
+    reps: setData.reps,
+    updatedTimestamp: getNowTimestamp()
+  };
+  return await firebase.firestore()
+    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_SETS)
+    .doc(setUid)
+    .update(data);
 };
 
 export const addNewSetAndGetUid = async (setData: ISetBasicModel, ownerUid: string): Promise<string> => {
@@ -100,3 +119,5 @@ export const deleteSetsRepsExercise = async (exerciseUid: string): Promise<void>
     .doc(exerciseUid)
     .delete();
 };
+
+
