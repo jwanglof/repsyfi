@@ -34,7 +34,7 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
   useEffect(() => {
     if (firebaseIsInitialized) {
       firebase.auth().onAuthStateChanged(function(user) {
-        console.log('Logged in???');
+        // console.log('Logged in???');
 
         if (user) {
           setUserSignedIn(true);
@@ -67,14 +67,11 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
   }
 
   const signInReq = (component: any) => {
-    console.log('Signed in?!', userSignedIn);
     if (userSignedIn) {
       return component;
     }
     router.navigate(RouteNames.ROOT, {}, {reload: true})
   };
-
-  console.log(topRouteName);
 
   switch (topRouteName) {
     case RouteNames.SPECIFIC_DAY:

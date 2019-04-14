@@ -45,6 +45,7 @@ const resources = {
       "Update day": "Update day",
       "Save": "Save",
       "Discard": "Discard",
+      "Abort": "Abort",
       "Title can't be empty": "Title can't be empty",
       "Delete": "Delete",
       "to edit": "to edit",
@@ -55,6 +56,9 @@ const resources = {
       "Sets and reps": "Sets and reps",
       "Time and distance": "Time and distance",
       "Notes": "Notes",
+      "Stop timer": "Stop timer",
+      "Start timer": "Start timer",
+      "Click again to delete!": "Click again to delete!",
 
       // Features
       "Track your sets and repetitions": "Track your sets and repetitions",
@@ -107,6 +111,7 @@ const resources = {
       "Update day": "Uppdatera dag",
       "Save": "Spara",
       "Discard": "Avbryt",
+      "Abort": "Avbryt",
       "Title can't be empty": "Titel kan inte vara tom",
       "Delete": "Ta bort",
       "to edit": "för att redigera",
@@ -117,6 +122,9 @@ const resources = {
       "Sets and reps": "Set och repetitioner",
       "Time and distance": "Flås",
       "Notes": "Noteringar",
+      "Stop timer": "Stoppa timern",
+      "Start timer": "Starta timern",
+      "Click again to delete!": "Klicka igen för att ta bort",
 
       // Features
       "Track your sets and repetitions": "Hålla koll på dina set och repetitioner",
