@@ -23,7 +23,7 @@ const resources = {
       "Discard exercise": "Discard exercise",
       "Open detailed view": "Open detailed view",
       "Add exercise": "Add exercise",
-      "Exercise": "Exercise",
+      "Exercise name": "Exercise name",
       "Workout location": "Workout location",
       "Muscle groups": "Muscle groups",
       "Title": "Title",
@@ -56,7 +56,8 @@ const resources = {
       "See how long you've been exercising": "See how long you've been exercising",
       "Exercise type": "Exercise type",
       "Sets and reps": "Sets and reps",
-      "Time and distance": "Time and distance"
+      "Time and distance": "Time and distance",
+      "Notes": "Notes"
     }
   },
   sv: {
@@ -78,7 +79,7 @@ const resources = {
       "Discard exercise": "Avbryt",
       "Open detailed view": "Öppna detaljvyn",
       "Add exercise": "Ny övning",
-      "Exercise": "Övning",
+      "Exercise name": "Övningsnamn",
       "Workout location": "Träningslokal",
       "Muscle groups": "Muskelgrupper",
       "Title": "Titel",
@@ -111,7 +112,8 @@ const resources = {
       "See how long you've been exercising": "Se hur länge du har tränat",
       "Exercise type": "Övningstyp",
       "Sets and reps": "Set och repetitioner",
-      "Time and distance": "Flås"
+      "Time and distance": "Flås",
+      "Notes": "Noteringar"
     }
   }
 };
