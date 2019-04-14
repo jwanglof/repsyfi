@@ -51,10 +51,10 @@ const Footer: FunctionComponent<IFooterRouter & IFooterProps> = ({router}) => {
           <NavItem>
             <Row className="text-center">
               <Col>
-                <NavLink onClick={() => navigateToRoute(RouteNames.ROOT)}>{t("Home")}</NavLink>
+                <NavLink href={RouteNames.ROOT} onClick={() => navigateToRoute(RouteNames.ROOT)}>{t("Home")}</NavLink>
               </Col>
               <Col>
-                <NavLink onClick={() => navigateToRoute(RouteNames.ALL_DAYS)}>{t("All days")}</NavLink>
+                <NavLink href={RouteNames.ALL_DAYS} onClick={() => navigateToRoute(RouteNames.ALL_DAYS)}>{t("All days")}</NavLink>
               </Col>
             </Row>
           </NavItem>
@@ -67,13 +67,13 @@ const Footer: FunctionComponent<IFooterRouter & IFooterProps> = ({router}) => {
           <NavItem>
             <Row className="text-center">
               <Col>
-                <NavLink onClick={() => i18n.changeLanguage('sv')}>
+                <NavLink href="" onClick={() => i18n.changeLanguage('sv')}>
                   <Flag country="se" asSquare={true} height="0.3in" className="mr-1" />
                   <span className="align-middle">{t("SW")}</span>
                 </NavLink>
               </Col>
               <Col>
-                <NavLink onClick={() => i18n.changeLanguage('en')}>
+                <NavLink href="" onClick={() => i18n.changeLanguage('en')}>
                   <Flag country="gb" asSquare={true} height="0.3in" className="mr-1" />
                   <span className="align-middle">{t("EN")}</span>
                 </NavLink>
@@ -88,7 +88,7 @@ const Footer: FunctionComponent<IFooterRouter & IFooterProps> = ({router}) => {
                 </NavLink>
               </Col>
               <Col>
-                <NavLink onClick={signOut}>
+                <NavLink href={RouteNames.ROOT} onClick={signOut}>
                   <FontAwesomeIcon icon="sign-out-alt"/> {t("Sign out")}
                 </NavLink>
               </Col>
