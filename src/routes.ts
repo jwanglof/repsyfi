@@ -6,7 +6,9 @@ export enum RouteNames {
   SPECIFIC_DAY = 'specific-day',
   ADD_DAY = 'add-day',
   EDIT_DAY = 'edit-day',
-  LOGOUT = 'logout'
+  LOGOUT = 'logout',
+  DASHBOARD = 'dashboard',
+  FAQ = 'faq',
 }
 
 const routes: Route[] = [
@@ -16,6 +18,7 @@ const routes: Route[] = [
   { name: RouteNames.ADD_DAY, path: '/day/add' },
   { name: RouteNames.EDIT_DAY, path: '/day/edit?:dayUid' },
   { name: RouteNames.LOGOUT, path: '/logout' },
+  { name: RouteNames.FAQ, path: '/faq' },
 ];
 
 export default routes;

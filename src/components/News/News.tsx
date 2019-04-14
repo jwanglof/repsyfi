@@ -10,9 +10,14 @@ const News: FunctionComponent<INewsProps> = () => {
     }
   ];
 
-  return <Row>
-    {news.map((n: INewsArticle) => <><Col xs={12}><h2>{n.heading}</h2></Col><Col xs={12}>{n.body}</Col></>)}
-  </Row>;
+  return <>
+    <Row>
+      <Col xs={12}>
+        <h1>News</h1>
+      </Col>
+    </Row>
+    {news.map((n: INewsArticle) => <Row key={n.createdTimestamp}><Col xs={12}><h2>{n.heading}</h2></Col><Col xs={12}>{n.body}</Col></Row>)}
+  </>;
 };
 
 interface INewsProps {}

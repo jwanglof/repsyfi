@@ -21,7 +21,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import './config/i18n';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.scss';
 
 const router = createRouter(routes, {

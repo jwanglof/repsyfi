@@ -1,19 +1,21 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
-import {routeNode} from 'react-router5'
-import TSDay from './components/Day/DayViewDetailed';
+import {routeNode, withRouter} from 'react-router5'
+import DayViewDetailed from './components/Day/DayViewDetailed';
 import Login from './components/Login/Login';
 import firebase, {initializeFirebase} from './config/firebase';
 import Footer from './components/Footer/Footer';
-import TSAddEditDay from './components/Day/AddDay';
+import AddDay from './components/Day/AddDay';
 import AllDays from './components/Day/AllDays';
 import EditDay from './components/Day/EditDay';
 import Dashboard from './components/Dashboard/Dashboard';
 import {RouteNames} from './routes';
-import {State} from 'router5';
+import {Router, State} from 'router5';
 import {GlobalStateProvider} from './state';
+import Faq from './components/Faq/Faq';
 
-const App: FunctionComponent<IAppProps & IAppRouter> = ({ route }) => {
+const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
   const topRouteName: string = route.name.split('.')[0];
+  const params: any = router.getState().params;
   let shownComponent: any = undefined;
 
   const [firebaseIsInitialized, setFirebaseIsInitialized] = useState<boolean>(false);
@@ -62,25 +64,38 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route }) => {
     return <div>Loading sign in status!</div>;
   }
 
-  if (!userSignedIn) {
-    shownComponent = <Login/>;
-  } else {
-    switch (topRouteName) {
-      case RouteNames.SPECIFIC_DAY:
-        shownComponent = <TSDay dayUid={route.params.uid}/>;
-        break;
-      case RouteNames.ADD_DAY:
-        shownComponent = <TSAddEditDay/>;
-        break;
-      case RouteNames.EDIT_DAY:
-        shownComponent = <EditDay dayUid={route.params.dayUid}/>;
-        break;
-      case RouteNames.ALL_DAYS:
-        shownComponent = <AllDays/>;
-        break;
-      default:
-        shownComponent = <Dashboard/>;
+  const signInReq = (component: any) => {
+    if (userSignedIn) {
+      return component;
     }
+    router.navigate(RouteNames.ROOT, {}, {reload: true})
+  };
+
+  // if (!userSignedIn) {
+  //   shownComponent = <Login/>;
+  // } else {
+  console.log(1111, topRouteName);
+  switch (topRouteName) {
+    case RouteNames.SPECIFIC_DAY:
+      shownComponent = signInReq(<DayViewDetailed dayUid={params.uid}/>);
+      break;
+    case RouteNames.ADD_DAY:
+      shownComponent = signInReq(<AddDay/>);
+      break;
+    case RouteNames.EDIT_DAY:
+      shownComponent = signInReq(<EditDay dayUid={params.dayUid}/>);
+      break;
+    case RouteNames.ALL_DAYS:
+      shownComponent = signInReq(<AllDays/>);
+      break;
+    case RouteNames.DASHBOARD:
+      shownComponent = signInReq(<Dashboard/>);
+      break;
+    case RouteNames.FAQ:
+      shownComponent = <Faq/>;
+      break;
+    default:
+      shownComponent = <Login userSignedIn={userSignedIn || false}/>;
   }
 
   return (<GlobalStateProvider>
@@ -94,8 +109,10 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route }) => {
 interface IAppProps {}
 
 interface IAppRouter {
-  route: State
+  route: State,
+  router: Router
 }
 
-export default routeNode<any>('app')(App);
+export default routeNode<any>('app')(withRouter(App));
 
+// export default withRouter(App);

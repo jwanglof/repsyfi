@@ -22,9 +22,7 @@ const DayView: FunctionComponent<IDayViewProps & IDayViewRouter> = ({router, dat
 
   const [collapseIsOpen, setCollapseIsOpen] = useState<boolean>(false);
 
-  const toggle = () => {
-    setCollapseIsOpen(!collapseIsOpen);
-  };
+  const toggle = () => setCollapseIsOpen(!collapseIsOpen);
 
   const openDetailedView = () => router.navigate(RouteNames.SPECIFIC_DAY, { uid: data.uid }, {reload: true});
 
