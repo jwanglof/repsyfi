@@ -86,8 +86,6 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
     }
   };
 
-  const dayDeleteStep1 = () => setDayDeleteStep2Shown(true);
-
   const dayDelete = async () => {
     try {
       console.log('Removing dayUid:', dayUid);
@@ -99,6 +97,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
   };
 
   const editDay = () => router.navigate(RouteNames.EDIT_DAY, {dayUid}, {reload: true});
+  const shouldShowEndDayButton = !currentData.endTimestamp;
 
   return (
     <>
@@ -131,9 +130,10 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
         <Col xs={12}>
           <ButtonGroup className="w-100">
             <Button color="info" onClick={editDay}>{t("Edit day")}</Button>
-            <Button disabled={!!currentData.endTimestamp} onClick={dayEnd}>{t("End day")}</Button>
-            {!dayDeleteStep2Shown && <Button color="warning" onClick={dayDeleteStep1}>{t("Delete day")}</Button>}
-            {dayDeleteStep2Shown && <Button color="danger" onClick={dayDelete}>{t("Delete day")}</Button>}
+            {shouldShowEndDayButton && <Button onClick={dayEnd}>{t("End day")}</Button>}
+            {!dayDeleteStep2Shown && <Button color="warning" onClick={() => setDayDeleteStep2Shown(true)}>{t("Delete day")}</Button>}
+            {dayDeleteStep2Shown && <Button color="danger" onClick={dayDelete}>{t("Click again to delete!")}</Button>}
+            {dayDeleteStep2Shown && <Button color="primary" onClick={() => setDayDeleteStep2Shown(false)}>{t("Abort")}</Button>}
           </ButtonGroup>
         </Col>
       </Row>

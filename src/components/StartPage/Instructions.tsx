@@ -5,9 +5,9 @@ import firebase from '../../config/firebase';
 
 const Instructions: FunctionComponent<IInstructionsProps> = ({userDetails}) => {
   return (<div>
-    <h4>Riktigt roligt att du hittat hit, {userDetails && userDetails.displayName}!</h4>
+    <h4>Riktigt roligt att du hittat hit{userDetails && `, ${userDetails.displayName} 😍`}!</h4>
 
-    Denna applikation är utformad för att göra en sak enkelt och snabbt: Att lägga till dina olika träningsövningar.
+    <small>Denna applikation är utformad för att göra en sak enkelt och snabbt: Att lägga till dina olika träningsövningar.</small>
 
     <div className="mt-1">
       <blockquote className="blockquote">Dessa 3 punkter behöver du veta:</blockquote>
@@ -19,7 +19,7 @@ const Instructions: FunctionComponent<IInstructionsProps> = ({userDetails}) => {
       Sådär. Inget mer, inget mindre. Hoppas det inte låter alltför krångligt <span role="img" aria-label="" aria-labelledby="">😉</span>
     </div>
 
-    <blockquote className="blockquote">Fortsätt läsa om detta är din första gång som du använder applikationen för att få bättre förståelse hur du använder den.</blockquote>
+    <p className="lead mt-2">Fortsätt läsa för att få en bättre förståelse hur du använder denna applikation.</p>
 
     <h5>En dag</h5>
     <dl className="instructions--dl">
@@ -31,25 +31,24 @@ const Instructions: FunctionComponent<IInstructionsProps> = ({userDetails}) => {
         <br/>
         Denna timer syns längst ner på sidan där man ser timmar, minuter och sekunder. Om man vill stänga av den innan man avslutar sin dag kan man klicka upp menyn och trycka på <i>Stoppa timer</i>.
       </dd>
-      <dt>Avsluta dag</dt>
+      <dt>Borde avsluta dagen</dt>
       <dd>När man är klar med sitt träningspass trycker man på <i>Avsluta dag</i>-knappen. När man trycker på den knappen sätts en sluttid och timern stängs av.</dd>
     </dl>
 
     <h5>En övning</h5>
     <dl className="instructions--dl">
-      <dt>Namn</dt>
-      <dd>Oftast vad övningen heter (t.ex. bänkpress)</dd>
-      <dt>Typ</dt>
+      <dt>Består av ett namn och en övningstyp</dt>
+      <dd>Namnet är oftast vad övningen heter (t.ex. bänkpress)</dd>
       <dd>
-        <strong>Set och repetitioner</strong> eller <strong>Flås</strong>.
+        Övningstypen är antigen <strong>Set och repetitioner</strong> eller <strong>Flås</strong>.
         <br/>
-        När du väljer typen <strong>Set och repetitioner</strong> kommer du kunna lägga till set med repetitioner och vikt.
+        När <strong>Set och repetitioner</strong> väljs kan du lägga till set med repetitioner och vikt.
         <br/>
-        När du väljer typen <strong>Flås</strong> kommer du kunna skriva in diverse information om ditt flåspass, t.ex. totala längden och totala kalorier förbrukade. Är främst för flåsmaskiner, t.ex. löpband, men fungerar lika bra att fylla i om man utomhus och rör sig även om man kanske har andra applikationer till det.
+        När <strong>Flås</strong> väljs kan du skriva in diverse information om ditt flåspass, t.ex. totala längden och totala kalorier förbrukade.
       </dd>
     </dl>
 
-    Man kan såklart redigera den informationen man lagt till i efterhand, såsom övningsnamnet eller vikten på ett specifikt set.
+    <small>Man kan såklart redigera den informationen man lagt till i efterhand, såsom övningsnamnet eller vikten på ett specifikt set.</small>
   </div>);
 };
 
