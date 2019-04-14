@@ -36,16 +36,20 @@ const Instructions: FunctionComponent<IInstructionsProps> = ({userDetails}) => {
     </dl>
 
     <h5>En övning</h5>
-    <dl>
+    <dl className="instructions--dl">
       <dt>Namn</dt>
-      <dd><small>Oftast vad övningen heter (t.ex. bänkpress)</small></dd>
+      <dd>Oftast vad övningen heter (t.ex. bänkpress)</dd>
       <dt>Typ</dt>
-      <dd><small>"Set och repetitioner" eller "Flås"</small></dd>
+      <dd>
+        <strong>Set och repetitioner</strong> eller <strong>Flås</strong>.
+        <br/>
+        När du väljer typen <strong>Set och repetitioner</strong> kommer du kunna lägga till set med repetitioner och vikt.
+        <br/>
+        När du väljer typen <strong>Flås</strong> kommer du kunna skriva in diverse information om ditt flåspass, t.ex. totala längden och totala kalorier förbrukade. Är främst för flåsmaskiner, t.ex. löpband, men fungerar lika bra att fylla i om man utomhus och rör sig även om man kanske har andra applikationer till det.
+      </dd>
     </dl>
 
-    En övning har ett namn, vilket oftas är den specifika övningen man gör, och är en av två typer.
-    "Set med repetitioner och vikt" och "Flås"
-    Om man väljer "sets and reps" kommer man få upp en vy där man skriver in sina repetitioner och vikt.
+    Man kan såklart redigera den informationen man lagt till i efterhand, såsom övningsnamnet eller vikten på ett specifikt set.
   </div>);
 };
 
