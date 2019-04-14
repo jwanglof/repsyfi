@@ -24,9 +24,7 @@ const FooterDurationTimer: FunctionComponent<IFooterDurationTimerProps> = () => 
     return null;
   }
 
-  return (<span className="text-muted text-lowercase">
-    <small>- {formatSecondsToPrettyPrint(duration)}</small>
-  </span>);
+  return <div className="text-white-50">{formatSecondsToPrettyPrint(duration)}</div>;
 };
 
 interface IFooterDurationTimerProps {
