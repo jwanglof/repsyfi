@@ -51,13 +51,19 @@ const resources = {
       "Welcome to your": "Welcome to your",
       "exercise diary": "exercise diary",
       "This application will help you to": "This application will help you to",
-      "Track your sets and repetitions": "Track your sets and repetitions",
-      "Track your cardio machines": "Track your cardio machines",
-      "See how long you've been exercising": "See how long you've been exercising",
       "Exercise type": "Exercise type",
       "Sets and reps": "Sets and reps",
       "Time and distance": "Time and distance",
-      "Notes": "Notes"
+      "Notes": "Notes",
+
+      // Features
+      "Track your sets and repetitions": "Track your sets and repetitions",
+      "Track your cardio machines": "Track your cardio machines",
+      "See how long you've been exercising": "See how long you've been exercising",
+      "Know how long you ran last time": "Know how long you ran last time",
+      "Know how long your rest has been": "Know how long your rest has been",
+      "Know what you lifted last time": "Know what you lifted last time",
+      "Know how fast you ran last time": "Know how fast you ran last time",
     }
   },
   sv: {
@@ -107,13 +113,19 @@ const resources = {
       "Welcome to your": "Välkommen till din",
       "exercise diary": "träningsdagbok",
       "This application will help you to": "Denna applikation hjälper dig att",
-      "Track your sets and repetitions": "Hålla koll på dina set och repetitioner",
-      "Track your cardio machines": "Hålla koll på dina flåsmaskiner",
-      "See how long you've been exercising": "Se hur länge du har tränat",
       "Exercise type": "Övningstyp",
       "Sets and reps": "Set och repetitioner",
       "Time and distance": "Flås",
-      "Notes": "Noteringar"
+      "Notes": "Noteringar",
+
+      // Features
+      "Track your sets and repetitions": "Hålla koll på dina set och repetitioner",
+      "Track your cardio machines": "Hålla koll på dina flåsmaskiner",
+      "See how long you've been exercising": "Se hur länge du har tränat",
+      "Know how long you ran last time": "Veta hur länge du sprang förra gången",
+      "Know how long your rest has been": "Veta hur länge du har vilat",
+      "Know what you lifted last time": "Veta vad du lyfte förra gången",
+      "Know how fast you ran last time": "Veta hur snabbt du sprang förra gången",
     }
   }
 };

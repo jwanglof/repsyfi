@@ -5,7 +5,7 @@ import firebase from '../../config/firebase';
 
 const Instructions: FunctionComponent<IInstructionsProps> = ({userDetails}) => {
   return (<div>
-    <h4>Riktigt roligt att du hittat hit, {userDetails && userDetails.displayName}!</h4>
+    <h4>Riktigt roligt att du hittat hit{userDetails && `, ${userDetails.displayName}`}!</h4>
 
     Denna applikation är utformad för att göra en sak enkelt och snabbt: Att lägga till dina olika träningsövningar.
 

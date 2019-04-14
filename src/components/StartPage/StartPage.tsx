@@ -1,3 +1,5 @@
+import './StartPage.scss';
+
 import React, {FunctionComponent, useState} from 'react';
 import {Col, Row} from 'reactstrap';
 import firebase from '../../config/firebase';
@@ -14,7 +16,11 @@ const StartPage: FunctionComponent<ILoginProps> = ({userSignedIn, userDetails}) 
   const featureList: Array<string> = [
     t("Track your sets and repetitions"),
     t("Track your cardio machines"),
+    t("Know how long you ran last time"),
     t("See how long you've been exercising"),
+    t("Know how long your rest has been"),
+    t("Know what you lifted last time"),
+    t("Know how fast you ran last time"),
   ];
 
   const [currentFeatureIndex, setCurrentFeatureIndex] = useState<number>(0);
@@ -29,7 +35,7 @@ const StartPage: FunctionComponent<ILoginProps> = ({userSignedIn, userDetails}) 
       setCurrentFeatureIndex(index);
     }
   };
-  useInterval(durationCb, 3000);
+  useInterval(durationCb, 2000);
 
   firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
@@ -38,7 +44,7 @@ const StartPage: FunctionComponent<ILoginProps> = ({userSignedIn, userDetails}) 
     callbacks: {
       signInSuccessWithAuthResult: (authResult: any) => {
         // console.log(111, authResult);
-        const { credential: { accessToken }, additionalUserInfo: { profile: { email, given_name, picture } } } = authResult;
+        // const { credential: { accessToken }, additionalUserInfo: { profile: { email, given_name, picture } } } = authResult;
         // console.log(444, accessToken, email, given_name, picture);
         return false;
       },
@@ -51,7 +57,7 @@ const StartPage: FunctionComponent<ILoginProps> = ({userSignedIn, userDetails}) 
   return (<>
     <Row className="mt-2">
       <Col xs={12} className="text-center">
-        <h1 className="display-1">Repsify</h1>
+        <h1 className="display-1 start-page--title">Repsify</h1>
       </Col>
     </Row>
 
