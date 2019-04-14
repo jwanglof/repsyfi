@@ -107,10 +107,10 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
         </Col>
       </Row>}
 
-      {addExerciseViewVisible && <ExerciseForm setAddExerciseViewVisible={setAddExerciseViewVisible} currentDayData={currentData}/>}
+      {addExerciseViewVisible && <ExerciseForm setAddExerciseViewVisible={setAddExerciseViewVisible}/>}
 
       <Row>
-        {currentData.exercises.length && orderBy(currentData.exercises, ['index', 'desc']).map(e => <ExerciseTypeContainer key={e.exerciseUid} exerciseUid={e.exerciseUid} dayUid={dayUid}/>)}
+        {currentData.exercises.length && orderBy(currentData.exercises, 'index', 'desc').map(e => <ExerciseTypeContainer key={e.exerciseUid} exerciseUid={e.exerciseUid} dayUid={dayUid}/>)}
       </Row>
 
       <Row>
