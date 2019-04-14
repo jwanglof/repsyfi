@@ -45,7 +45,8 @@ export const deleteDay = async (dayUid: string): Promise<void> => {
   const dayData = await getDay(dayUid);
   // Remove all exercises that exist on the day
   if (dayData.exercises.length) {
-    await Promise.all(dayData.exercises.map(exerciseUid => deleteExercise(exerciseUid)));
+    // await Promise.all(dayData.exercises.map(exerciseUid => deleteExercise(exerciseUid)));
+    await Promise.all(dayData.exercises.map(e => deleteExercise(e.exerciseUid)));
   }
   return await firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
@@ -130,8 +131,8 @@ export const updateDay = async (dayUid: string, dayData: IDayBasicUpdateModel) =
 
 export const addExerciseToDayArray = async (exerciseUid: string, dayUid: string): Promise<void> => {
   // TODO Should exercises be an object with the index as key??
-  return await firebase.firestore()
-    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
-    .doc(dayUid)
-    .update({exercises: firebase.firestore.FieldValue.arrayUnion(exerciseUid)});
+  // return await firebase.firestore()
+  //   .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
+  //   .doc(dayUid)
+  //   .update({exercises: firebase.firestore.FieldValue.arrayUnion(exerciseUid)});
 };

@@ -38,7 +38,8 @@ const DayView: FunctionComponent<IDayViewProps & IDayViewRouter> = ({router, dat
 
       <Collapse isOpen={collapseIsOpen}>
         <Row>
-          {data.exercises.length && data.exercises.map(exerciseUid => <ExerciseTypeContainer key={exerciseUid} exerciseUid={exerciseUid}/>)}
+          {data.exercises.length && data.exercises.map(e => <ExerciseTypeContainer key={e.exerciseUid} exerciseUid={e.exerciseUid}/>)}
+          {/*{data.exercises.length && data.exercises.map(exerciseUid => <ExerciseTypeContainer key={exerciseUid} exerciseUid={exerciseUid}/>)}*/}
           {/*{currentData.exercises.length && currentData.exercises.map(exerciseUid => <Exercise key={exerciseUid} exerciseUid={exerciseUid} singleDayView={!isEmpty(dayUid)} dayUid={dayUid}/>)}*/}
         </Row>
       </Collapse>

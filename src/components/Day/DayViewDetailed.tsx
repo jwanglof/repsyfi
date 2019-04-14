@@ -99,6 +99,8 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
   const editDay = () => router.navigate(RouteNames.EDIT_DAY, {dayUid}, {reload: true});
   const shouldShowEndDayButton = !currentData.endTimestamp;
 
+  console.log(1111, currentData.exercises);
+
   return (
     <>
       {!addExerciseViewVisible && <Row className="mb-4 mt-2">
@@ -107,11 +109,11 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
         </Col>
       </Row>}
 
-      {addExerciseViewVisible && <ExerciseForm dayUid={dayUid} setAddExerciseViewVisible={setAddExerciseViewVisible}/>}
+      {addExerciseViewVisible && <ExerciseForm setAddExerciseViewVisible={setAddExerciseViewVisible} currentDayData={currentData}/>}
 
       <Row>
         {/* TODO Sort the exercises on createdTimestamp! */}
-        {currentData.exercises.length && currentData.exercises.map(exerciseUid => <ExerciseTypeContainer key={exerciseUid} exerciseUid={exerciseUid} dayUid={dayUid}/>)}
+        {currentData.exercises.length && currentData.exercises.map(e => <ExerciseTypeContainer key={e.exerciseUid} exerciseUid={e.exerciseUid} dayUid={dayUid}/>)}
       </Row>
 
       <Row>
