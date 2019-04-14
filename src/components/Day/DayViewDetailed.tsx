@@ -4,7 +4,7 @@ import React, {FunctionComponent, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {withRoute} from 'react-router5';
 import {Router} from 'router5';
-import isEmpty from 'lodash/isEmpty';
+import {isEmpty, orderBy} from 'lodash';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {IDayModel} from '../../models/IDayModel';
 import {deleteDay, endDayNow} from './DayService';
@@ -99,8 +99,6 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
   const editDay = () => router.navigate(RouteNames.EDIT_DAY, {dayUid}, {reload: true});
   const shouldShowEndDayButton = !currentData.endTimestamp;
 
-  console.log(1111, currentData.exercises);
-
   return (
     <>
       {!addExerciseViewVisible && <Row className="mb-4 mt-2">
@@ -112,8 +110,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
       {addExerciseViewVisible && <ExerciseForm setAddExerciseViewVisible={setAddExerciseViewVisible} currentDayData={currentData}/>}
 
       <Row>
-        {/* TODO Sort the exercises on createdTimestamp! */}
-        {currentData.exercises.length && currentData.exercises.map(e => <ExerciseTypeContainer key={e.exerciseUid} exerciseUid={e.exerciseUid} dayUid={dayUid}/>)}
+        {currentData.exercises.length && orderBy(currentData.exercises, ['index', 'desc']).map(e => <ExerciseTypeContainer key={e.exerciseUid} exerciseUid={e.exerciseUid} dayUid={dayUid}/>)}
       </Row>
 
       <Row>
