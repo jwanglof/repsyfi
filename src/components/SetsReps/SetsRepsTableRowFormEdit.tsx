@@ -6,7 +6,7 @@ import {Formik, FormikActions} from 'formik';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import FormikField from '../Formik/FormikField';
 import {Button, ButtonGroup} from 'reactstrap';
-import {isNumber} from 'lodash';
+import isNumber from 'lodash/isNumber';
 // TODO :(
 // @ts-ignore
 import {Form} from 'react-formik-ui';

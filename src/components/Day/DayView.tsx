@@ -4,7 +4,7 @@ import React, {FunctionComponent, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {withRoute} from 'react-router5';
 import {Router} from 'router5';
-import {isEmpty} from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {IDayModel} from '../../models/IDayModel';
 import {Button, Col, Collapse, Row} from 'reactstrap';

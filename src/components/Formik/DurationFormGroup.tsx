@@ -1,7 +1,8 @@
 import React, {ChangeEvent, FunctionComponent, useEffect, useState} from 'react';
 import {Alert, Col, FormGroup, Input, Label} from 'reactstrap';
 import {connect, ErrorMessage, FormikContext} from 'formik';
-import {defaultTo, toNumber} from 'lodash';
+import defaultTo from 'lodash/defaultTo';
+import toNumber from 'lodash/toNumber';
 import {getHoursMinutesSecondsFromSeconds, getMinutesSecondsFromSeconds} from '../../utils/time-utils';
 
 const DurationFormGroup: FunctionComponent<IDurationFormGroupProps & IDurationFormGroupPropsFormik> = ({formik, labelText, name}) => {

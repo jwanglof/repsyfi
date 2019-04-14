@@ -1,4 +1,8 @@
-import {isNumber, isNull, isUndefined, isEmpty, isBoolean} from 'lodash';
+import isEmpty from 'lodash/isEmpty';
+import isUndefined from 'lodash/isUndefined';
+import isNull from 'lodash/isNull';
+import isNumber from 'lodash/isNumber';
+import isBoolean from 'lodash/isBoolean';
 import {format, fromUnixTime, getUnixTime, parseISO} from 'date-fns';
 
 // Replace all empty values with an empty string

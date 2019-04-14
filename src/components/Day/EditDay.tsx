@@ -8,7 +8,7 @@ import {dateFormat, timeFormat} from '../../utils/formik-utils';
 import {IDayBasicUpdateModel} from '../../models/IDayModel';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
-import {isEmpty} from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import getUnixTime from 'date-fns/getUnixTime';
 import parseISO from 'date-fns/parseISO';
 import {Formik, FormikActions} from 'formik';

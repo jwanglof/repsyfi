@@ -9,7 +9,7 @@ import SetsRepsTableRowView from './SetsRepsTableRowView';
 import SetsRepsTableRowForm from './SetsRepsTableRowForm';
 import firebase from '../../config/firebase';
 import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
-import {isEmpty} from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import {withRouter} from 'react-router5';
 import {Router} from 'router5';
 import {RouteNames} from '../../routes';

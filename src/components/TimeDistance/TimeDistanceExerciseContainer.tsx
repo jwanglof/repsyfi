@@ -6,7 +6,7 @@ import TimeDistanceView from './TimeDistanceView';
 import TimeDistanceForm from './TimeDistanceForm';
 import firebase from '../../config/firebase';
 import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
-import {isEmpty} from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 
 const TimeDistanceExerciseContainer: FunctionComponent<ITimeDistanceExerciseContainerProps> = ({exerciseUid}) => {
   const [currentExerciseData, setCurrentExerciseData] = useState<ITimeDistanceModel | undefined>(undefined);
