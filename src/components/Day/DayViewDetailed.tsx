@@ -7,7 +7,7 @@ import {Router} from 'router5';
 import isEmpty from 'lodash/isEmpty';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {IDayModel} from '../../models/IDayModel';
-import {endDayNow} from './DayService';
+import {deleteDay, endDayNow} from './DayService';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {Button, ButtonGroup, Col, Row} from 'reactstrap';
 import {getFormattedDate, getTitle} from './DayUtils';
@@ -30,6 +30,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
   const [updateErrorData, setUpdateErrorData] = useState<string | undefined>(undefined);
   const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
   const [addExerciseViewVisible, setAddExerciseViewVisible] = useState(false);
+  const [dayDeleteStep2Shown, setDayDeleteStep2Shown] = useState<boolean>(false);
 
   const setTimerRunning = useGlobalState('timerRunning')[1];
 
@@ -85,14 +86,16 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
     }
   };
 
+  const dayDeleteStep1 = () => setDayDeleteStep2Shown(true);
+
   const dayDelete = async () => {
-    console.warn('Delete! Must show a dialog, or something, to make it an active choice!');
-    // try {
-    //   await deleteDay(dayUid);
-    //   router.navigate(routeNameRoot, {}, {reload: true});
-    // } catch (e) {
-    //   setDeleteErrorData(e.message);
-    // }
+    try {
+      console.log('Removing dayUid:', dayUid);
+      await deleteDay(dayUid);
+      router.navigate(RouteNames.ALL_DAYS, {}, {reload: true});
+    } catch (e) {
+      setDeleteErrorData(e.message);
+    }
   };
 
   const editDay = () => router.navigate(RouteNames.EDIT_DAY, {dayUid}, {reload: true});
@@ -129,7 +132,8 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
           <ButtonGroup className="w-100">
             <Button color="info" onClick={editDay}>{t("Edit day")}</Button>
             <Button disabled={!!currentData.endTimestamp} onClick={dayEnd}>{t("End day")}</Button>
-            <Button color="danger" onClick={dayDelete}>{t("Delete day")}</Button>
+            {!dayDeleteStep2Shown && <Button color="warning" onClick={dayDeleteStep1}>{t("Delete day")}</Button>}
+            {dayDeleteStep2Shown && <Button color="danger" onClick={dayDelete}>{t("Delete day")}</Button>}
           </ButtonGroup>
         </Col>
       </Row>
