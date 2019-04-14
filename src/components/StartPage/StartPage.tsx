@@ -7,7 +7,7 @@ import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import {useTranslation} from 'react-i18next';
 import useInterval from '../../utils/useInterval';
 
-const Login: FunctionComponent<ILoginProps> = ({userSignedIn}) => {
+const StartPage: FunctionComponent<ILoginProps> = ({userSignedIn}) => {
   const { t, i18n } = useTranslation();
 
   const featureList: Array<string> = [
@@ -105,4 +105,4 @@ interface ILoginProps {
   userSignedIn: boolean
 }
 
-export default Login;
+export default StartPage;

@@ -1,7 +1,7 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import {routeNode, withRouter} from 'react-router5'
 import DayViewDetailed from './components/Day/DayViewDetailed';
-import Login from './components/Login/Login';
+import StartPage from './components/StartPage/StartPage';
 import firebase, {initializeFirebase} from './config/firebase';
 import Footer from './components/Footer/Footer';
 import AddDay from './components/Day/AddDay';
@@ -71,10 +71,6 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
     router.navigate(RouteNames.ROOT, {}, {reload: true})
   };
 
-  // if (!userSignedIn) {
-  //   shownComponent = <Login/>;
-  // } else {
-  console.log(1111, topRouteName);
   switch (topRouteName) {
     case RouteNames.SPECIFIC_DAY:
       shownComponent = signInReq(<DayViewDetailed dayUid={params.uid}/>);
@@ -95,7 +91,7 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
       shownComponent = <Faq/>;
       break;
     default:
-      shownComponent = <Login userSignedIn={userSignedIn || false}/>;
+      shownComponent = <StartPage userSignedIn={userSignedIn || false}/>;
   }
 
   return (<GlobalStateProvider>
