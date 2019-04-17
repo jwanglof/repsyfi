@@ -57,7 +57,7 @@ const StartPage: FunctionComponent<ILoginProps> = ({userSignedIn, userDetails}) 
   return (<>
     <Row className="mt-2">
       <Col xs={12} className="text-center">
-        <h1 className="display-1 start-page--title">Repsify</h1>
+        <h1 className="display-1 start-page--title">Repsyfi</h1>
       </Col>
     </Row>
 

@@ -1,5 +1,5 @@
 {
-  "name": "repsify",
+  "name": "repsyfi",
   "version": "0.1.0",
   "private": true,
   "engines": {
@@ -34,11 +34,10 @@
     "router5-plugin-logger": "^7.0.2"
   },
   "scripts": {
-    "start": "react-scripts --max_old_space_size=4096 start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "postinstall": "react-scripts build"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
