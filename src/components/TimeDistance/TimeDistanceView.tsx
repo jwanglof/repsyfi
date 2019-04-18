@@ -15,20 +15,20 @@ const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanc
   return (<Table size="sm" className="mb-0">
     <tbody>
     <tr>
-      <td>{t("Total time")}</td>
+      <td>{t("Exercise time")}</td>
       <td>{formatSecondsToPrettyPrint(currentExerciseData.totalTimeSeconds)}</td>
     </tr>
     <tr>
-      <td>{t("Total warm-up")}</td>
+      <td>{t("Warm-up time")}</td>
       <td>{formatSecondsToPrettyPrint(currentExerciseData.totalWarmupSeconds)}</td>
     </tr>
 
     <tr>
-      <td>{t("Total distance")}</td>
+      <td>{t("Distance (meters)")}</td>
       <td>{currentExerciseData.totalDistanceMeter}m</td>
     </tr>
     <tr>
-      <td>{t("Total kcal")}</td>
+      <td>{t("Kcal")}</td>
       <td>{currentExerciseData.totalKcal}</td>
     </tr>
 

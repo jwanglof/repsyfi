@@ -60,6 +60,14 @@ const resources = {
       "Start timer": "Start timer",
       "Click again to delete!": "Click again to delete!",
       "Edit": "Edit",
+      "Exercise time": "Exercise time",
+      "Warm-up time": "Warm-up time",
+      "Distance (meters)": "Distance (meters)",
+      "Kcal": "Kcal",
+      "Speed min": "Speed min",
+      "Speed max": "Speed max",
+      "Incline min": "Incline min",
+      "Incline max": "Incline max",
 
       // Features
       "Track your sets and repetitions": "Track your sets and repetitions",
@@ -127,6 +135,14 @@ const resources = {
       "Start timer": "Starta timern",
       "Click again to delete!": "Klicka igen för att ta bort",
       "Edit": "Redigera",
+      "Exercise time": "Träningstid",
+      "Warm-up time": "Uppvärmningstid",
+      "Distance (meters)": "Distans (i meter)",
+      "Kcal": "Kcal",
+      "Speed min": "Hastighet, lägst",
+      "Speed max": "Hastighet, högst",
+      "Incline min": "Lutning, minst",
+      "Incline max": "Lutning, störst",
 
       // Features
       "Track your sets and repetitions": "Hålla koll på dina set och repetitioner",
