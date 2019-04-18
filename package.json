@@ -1,7 +1,7 @@
 {
   "name": "repsyfi",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
+  "private": false,
   "engines": {
     "node": "10.10.0",
     "npm": "6.8.0"
@@ -27,7 +27,6 @@
     "react-i18next": "^10.5.2",
     "react-router5": "^7.1.0",
     "react-scripts": "2.1.5",
-    "react-typist": "^2.0.5",
     "reactstrap": "7.1.0",
     "router5": "7.0.2",
     "router5-plugin-browser": "^7.0.2",
