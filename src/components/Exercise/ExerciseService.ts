@@ -1,7 +1,12 @@
 import {deleteSet, deleteSetsRepsExercise, getSetsRepsExercise} from '../SetsReps/SetsRepsService';
 import firebase from '../../config/firebase';
 import isEmpty from 'lodash/isEmpty';
-import {IExerciseBasicModel, IExerciseModel, IExerciseModelWithoutUid} from '../../models/IExerciseModel';
+import {
+  IExerciseBasicModel,
+  IExerciseHeaderModel,
+  IExerciseModel,
+  IExerciseModelWithoutUid
+} from '../../models/IExerciseModel';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {FirebaseCollectionNames, getExerciseErrorObject, getNowTimestamp} from '../../config/FirebaseUtils';
 import {Versions} from '../../models/IBaseModel';
@@ -65,11 +70,9 @@ export const addExerciseAndGetUid = async (exerciseData: IExerciseBasicModel, ow
   return exerciseDocRef.id;
 };
 
-export const updateExercise = async(exerciseUid: string, exerciseHeaderData: IExerciseBasicModel): Promise<void> => {
-  const data: IExerciseBasicModel = {
-    exerciseName: exerciseHeaderData.exerciseName,
-    typeUid: exerciseHeaderData.typeUid,
-    type: exerciseHeaderData.type
+export const updateExercise = async(exerciseUid: string, exerciseHeaderData: IExerciseHeaderModel): Promise<void> => {
+  const data: IExerciseHeaderModel = {
+    exerciseName: exerciseHeaderData.exerciseName
   };
   return await firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISES)

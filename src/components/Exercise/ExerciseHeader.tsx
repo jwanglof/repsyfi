@@ -8,7 +8,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import FormikField from '../Formik/FormikField';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 
-const ExerciseHeader: FunctionComponent<IExerciseHeaderProps> = ({exerciseData, dayUid}) => {
+const ExerciseHeader: FunctionComponent<IExerciseHeaderProps> = ({exerciseData}) => {
   const { t } = useTranslation();
 
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
@@ -21,7 +21,10 @@ const ExerciseHeader: FunctionComponent<IExerciseHeaderProps> = ({exerciseData, 
     setSubmitErrorMessage(undefined);
 
     try {
-      await updateExercise(exerciseData.uid, values);
+      const updateData: IExerciseHeaderModel = {
+        exerciseName: values.exerciseName
+      };
+      await updateExercise(exerciseData.uid, updateData);
       exerciseData.exerciseName = values.exerciseName;
       setIsCollapsed(true);
     } catch (e) {
@@ -34,7 +37,7 @@ const ExerciseHeader: FunctionComponent<IExerciseHeaderProps> = ({exerciseData, 
   const validate = (values: IExerciseHeaderValidate): IExerciseHeaderValidate | {} => {
     const errors: IExerciseHeaderValidate = {};
     if (values.exerciseName === '') {
-      errors.exerciseName = t("Title can't be empty");  // TODO Rename to exercise name!
+      errors.exerciseName = t("Exercise name can't be empty");  // TODO Rename to exercise name!
     }
     return errors;
   };
@@ -84,8 +87,7 @@ interface IExerciseHeaderValidate {
 }
 
 interface IExerciseHeaderProps {
-  exerciseData: IExerciseModel,
-  dayUid: string
+  exerciseData: IExerciseModel
 }
 
 export default ExerciseHeader;

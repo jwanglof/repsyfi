@@ -46,7 +46,7 @@ const resources = {
       "Save": "Save",
       "Discard": "Discard",
       "Abort": "Abort",
-      "Title can't be empty": "Title can't be empty",
+      "Exercise name can't be empty": "Exercise name can't be empty",
       "Delete": "Delete",
       "to edit": "to edit",
       "Welcome to your": "Welcome to your",
@@ -59,6 +59,7 @@ const resources = {
       "Stop timer": "Stop timer",
       "Start timer": "Start timer",
       "Click again to delete!": "Click again to delete!",
+      "Edit": "Edit",
 
       // Features
       "Track your sets and repetitions": "Track your sets and repetitions",
@@ -112,7 +113,7 @@ const resources = {
       "Save": "Spara",
       "Discard": "Avbryt",
       "Abort": "Avbryt",
-      "Title can't be empty": "Titel kan inte vara tom",
+      "Exercise name can't be empty": "Övningsnamn kan inte vara tom",
       "Delete": "Ta bort",
       "to edit": "för att redigera",
       "Welcome to your": "Välkommen till din",
@@ -125,6 +126,7 @@ const resources = {
       "Stop timer": "Stoppa timern",
       "Start timer": "Starta timern",
       "Click again to delete!": "Klicka igen för att ta bort",
+      "Edit": "Redigera",
 
       // Features
       "Track your sets and repetitions": "Hålla koll på dina set och repetitioner",

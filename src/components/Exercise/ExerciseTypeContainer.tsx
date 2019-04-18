@@ -42,7 +42,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({
     <Col lg={4} xs={12} className="mb-2">
       <Card>
         <CardHeader className="text-center pt-0 pb-0">
-          {dayUid && <ExerciseHeader exerciseData={currentExerciseData} dayUid={dayUid}/>}
+          {dayUid && <ExerciseHeader exerciseData={currentExerciseData}/>}
           {!dayUid && <ExerciseHeaderView exerciseData={currentExerciseData}/>}
         </CardHeader>
 
