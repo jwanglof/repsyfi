@@ -68,6 +68,9 @@ const resources = {
       "Speed max": "Speed max",
       "Incline min": "Incline min",
       "Incline max": "Incline max",
+      "Actions": "Actions",
+      "name": "name",
+      "exercise": "exercise",
 
       // Features
       "Track your sets and repetitions": "Track your sets and repetitions",
@@ -143,6 +146,9 @@ const resources = {
       "Speed max": "Hastighet, högst",
       "Incline min": "Lutning, minst",
       "Incline max": "Lutning, störst",
+      "Actions": "Aktioner",
+      "name": "namn",
+      "exercise": "övning",
 
       // Features
       "Track your sets and repetitions": "Hålla koll på dina set och repetitioner",

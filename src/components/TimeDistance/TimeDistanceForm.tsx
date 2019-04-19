@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useState} from 'react';
+import React, {FunctionComponent, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {ITimeDistanceBasicModel, ITimeDistanceModel} from '../../models/ITimeDistanceModel';
@@ -9,22 +9,43 @@ import FieldFormGroup from '../Formik/FieldFormGroup';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 import DurationFormGroup from '../Formik/DurationFormGroup';
-import {updateTimeDistanceExercise} from './TimeDistanceService';
+import {getTimeDistanceExercise, updateTimeDistanceExercise} from './TimeDistanceService';
+import LoadingAlert from '../LoadingAlert/LoadingAlert';
 
-const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({currentExerciseData, setEditVisible}) => {
+const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistanceUid, setEditVisible}) => {
   const { t } = useTranslation();
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
+  const [timeDistanceData, setTimeDistanceDataData] = useState<ITimeDistanceModel | undefined>(undefined);
+  const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
 
-  if (submitErrorMessage) {
-    return <ErrorAlert errorText={submitErrorMessage} componentName="TimeDistanceForm"/>;
+  useEffect(() => {
+    const fetchExerciseData = async () => {
+      try {
+        const res = await getTimeDistanceExercise(timeDistanceUid);
+        setTimeDistanceDataData(res);
+      } catch (e) {
+        console.error(e);
+        setFetchDataError(e.message);
+      }
+    };
+
+    fetchExerciseData();
+  }, []);
+
+  if (fetchDataError || submitErrorMessage) {
+    return <ErrorAlert errorText={fetchDataError || submitErrorMessage} componentName="TimeDistanceView"/>;
+  }
+
+  if (!timeDistanceData) {
+    return <LoadingAlert componentName="TimeDistanceView"/>;
   }
 
   const onSubmit = async (values: ITimeDistanceBasicModel, actions: FormikActions<ITimeDistanceBasicModel>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
     try {
-      await updateTimeDistanceExercise(currentExerciseData.uid, values);
+      await updateTimeDistanceExercise(timeDistanceData.uid, values);
       // Hide this form
       setEditVisible(false)
     } catch (e) {
@@ -36,9 +57,8 @@ const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({currentExe
 
   return (
     <Formik
-      initialValues={currentExerciseData}
+      initialValues={timeDistanceData}
       onSubmit={onSubmit}
-      // validate={validate}
       render={({errors, isSubmitting}) => (
         <>
           {isSubmitting && <div className="text-center"><FontAwesomeIcon icon="spinner" spin/></div>}
@@ -63,7 +83,7 @@ const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({currentExe
 };
 
 interface ITimeDistanceFormProps {
-  currentExerciseData: ITimeDistanceModel,
+  timeDistanceUid: string,
   setEditVisible: ((visible: boolean) => void)
 }
 

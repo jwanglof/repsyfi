@@ -55,6 +55,14 @@ export const deleteExercise = async (exerciseUid: string): Promise<void> => {
     .delete();
 };
 
+
+export const deleteONLYExercise = async (exerciseUid: string): Promise<void> => {
+  return await firebase.firestore()
+    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISES)
+    .doc(exerciseUid)
+    .delete();
+};
+
 export const addExerciseAndGetUid = async (exerciseData: IExerciseBasicModel, ownerUid: string): Promise<string> => {
   const data: IExerciseModelWithoutUid = {
     ownerUid,

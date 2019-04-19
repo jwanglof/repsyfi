@@ -22,3 +22,5 @@ export const getTimeDistanceExerciseErrorObject = (dayUid: string): object => _g
 export const getSetsRepsExerciseErrorObject = (dayUid: string): object => _getErrorObject(dayUid, "SetsReps Exercise");
 export const getSetErrorObject = (dayUid: string): object => _getErrorObject(dayUid, "Set");
 const _getErrorObject = (uid: string, type: string): object => ({message: `${type} (uid: ${uid}) did not exist/had no data!`});
+
+export const _getErrorObjectCustomMessage = (uid: string, type: string, message: string): object => ({message: `${type} (uid: ${uid}): ${message}`});

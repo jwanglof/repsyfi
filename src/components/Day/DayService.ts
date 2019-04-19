@@ -9,7 +9,12 @@ import {
 import firebase, {getCurrentUsersUid} from '../../config/firebase';
 import {deleteExercise} from '../Exercise/ExerciseService';
 import isEmpty from 'lodash/isEmpty';
-import {FirebaseCollectionNames, getDayErrorObject, getNowTimestamp} from '../../config/FirebaseUtils';
+import {
+  _getErrorObjectCustomMessage,
+  FirebaseCollectionNames,
+  getDayErrorObject,
+  getNowTimestamp
+} from '../../config/FirebaseUtils';
 import getUnixTime from 'date-fns/getUnixTime';
 import subDays from 'date-fns/subDays';
 import {Versions} from '../../models/IBaseModel';
@@ -45,6 +50,7 @@ export const getDay = async (dayUid: string): Promise<IDayModel> => {
 export const deleteDay = async (dayUid: string): Promise<void> => {
   const dayData = await getDay(dayUid);
   // Remove all exercises that exist on the day
+  // TODO Side effect, should be removed and made from the caller!
   if (dayData.exercises.length) {
     await Promise.all(dayData.exercises.map(e => deleteExercise(e.exerciseUid)));
   }
@@ -138,4 +144,18 @@ export const addExerciseToDayArray = async (exerciseUid: string, dayUid: string)
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
     .doc(dayUid)
     .update({exercises: firebase.firestore.FieldValue.arrayUnion(exerciseData)});
+};
+
+export const removeExerciseFromDayArray = async (exerciseUid: string, dayUid: string): Promise<void> => {
+  const day = await getDay(dayUid);
+  const exerciseMapArray = day.exercises.filter(e => e.exerciseUid === exerciseUid);
+  if (exerciseMapArray.length) {
+    const exerciseMap = exerciseMapArray[0];
+    return await firebase.firestore()
+      .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
+      .doc(dayUid)
+      .update({exercises: firebase.firestore.FieldValue.arrayRemove(exerciseMap)});
+  } else {
+    throw _getErrorObjectCustomMessage(dayUid, "Day", `Did not find exercise (exercise UID: ${exerciseUid}) on Day!`);
+  }
 };
