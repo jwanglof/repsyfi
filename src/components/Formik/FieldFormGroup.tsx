@@ -4,7 +4,7 @@ import {colSmSize, labelSmSize} from '../../utils/formik-utils';
 import {ErrorMessage, Field} from 'formik';
 import {IFormikProps} from '../../utils/ts-formik-utils';
 
-const FieldFormGroup: FunctionComponent<IFormikProps> = ({labelText, name, type="text", labelHidden=false, ...inputProps}) => {
+const FieldFormGroup: FunctionComponent<IFormikProps> = ({labelText, name, type="text", labelHidden=false, inputProps}) => {
   return (<FormGroup row>
     {!labelHidden && <Label for={name} sm={labelSmSize}>{labelText}</Label>}
     <Col sm={colSmSize}>
