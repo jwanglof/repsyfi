@@ -63,7 +63,7 @@ const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistan
         <>
           {isSubmitting && <div className="text-center"><FontAwesomeIcon icon="spinner" spin/></div>}
           {!isSubmitting && <Form>
-            <DurationFormGroup name="totalTimeSeconds" labelText={t("Total exercise time (HH MM SS)")}/>
+            <DurationFormGroup name="totalTimeSeconds" labelText={t("Total exercise time (HH MM SS)")} autoFocus/>
             <DurationFormGroup name="totalWarmupSeconds" labelText={t("Total warm-up time (HH MM SS)")}/>
             <FieldFormGroup type="number" name="totalDistanceMeter" labelText={t("Total distance (meters)")}/>
             <FieldFormGroup type="number" name="totalKcal" labelText={t("Total kcal")}/>
