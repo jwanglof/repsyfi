@@ -18,6 +18,7 @@ import {ExerciseHeaderEditCtx} from '../Exercise/ExerciseTypeContainer';
 import {getExerciseDocument} from '../Exercise/ExerciseService';
 import {getDay, getDayDocument} from '../Day/DayService';
 import {getSetsRepsDocument} from './SetsRepsService';
+import {recalculateIndexes} from '../../utils/exercise-utils';
 
 const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRouter & ISetsRepsExerciseContainerProps> = ({router, setsRepsExerciseUid, exerciseUid}) => {
   const { t } = useTranslation();
@@ -109,15 +110,13 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
       const exercises = day.exercises;
       const removedExercise = remove(exercises, e => e.exerciseUid === exerciseUid);
       const removedExerciseIndex = removedExercise[0].index;
-      for (let i = removedExerciseIndex, len = exercises.length; i < len; i++) {
-        exercises[i].index = exercises[i].index - 1;
-      }
+      const recalculatedExercises: any = recalculateIndexes(removedExerciseIndex, exercises);
 
       // More: https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
       const batch = firebase.firestore().batch();
       batch.delete(getSetsRepsDocument(setsRepsExerciseUid));
       batch.delete(getExerciseDocument(exerciseUid));
-      batch.update(getDayDocument(dayUid), {exercises});
+      batch.update(getDayDocument(dayUid), {exercises: recalculatedExercises});
       await batch.commit();
     } catch (e) {
       console.error(e);

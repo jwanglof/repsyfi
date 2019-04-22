@@ -15,6 +15,7 @@ import {getTimeDistanceDocument, getTimeDistanceExercise} from './TimeDistanceSe
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import firebase from '../../config/firebase';
 import {remove} from 'lodash';
+import {recalculateIndexes} from '../../utils/exercise-utils';
 
 const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanceViewProps> = ({router, timeDistanceUid, setEditVisible, exerciseUid}) => {
   const { t } = useTranslation();
@@ -64,15 +65,13 @@ const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanc
       const exercises = day.exercises;
       const removedExercise = remove(exercises, e => e.exerciseUid === exerciseUid);
       const removedExerciseIndex = removedExercise[0].index;
-      for (let i = removedExerciseIndex, len = exercises.length; i < len; i++) {
-        exercises[i].index = exercises[i].index - 1;
-      }
+      const recalculatedExercises: any = recalculateIndexes(removedExerciseIndex, exercises);
 
       // More: https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
       const batch = firebase.firestore().batch();
       batch.delete(getTimeDistanceDocument(timeDistanceUid));
       batch.delete(getExerciseDocument(exerciseUid));
-      batch.update(getDayDocument(dayUid), {exercises});
+      batch.update(getDayDocument(dayUid), {exercises: recalculatedExercises});
       await batch.commit();
     } catch (e) {
       console.error(e);
