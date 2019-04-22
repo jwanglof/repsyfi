@@ -116,7 +116,7 @@ export const deleteSetsRepsExercise = async (setsRepsUid: string): Promise<void>
   return await getSetsRepsDocument(setsRepsUid).delete();
 };
 
-// TOOD The returned value should be DocumentReference ?
+// TODO The returned value should be DocumentReference ?
 export const getSetsRepsDocument = (setsRepsUid: string): any => {
   return firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS)

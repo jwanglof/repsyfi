@@ -8,11 +8,12 @@ import {Router} from 'router5';
 import {RouteNames} from '../../routes';
 import ButtonDropdown from 'reactstrap/lib/ButtonDropdown';
 import {ExerciseHeaderEditCtx} from '../Exercise/ExerciseTypeContainer';
-import {deleteONLYExercise} from '../Exercise/ExerciseService';
-import {removeExerciseFromDayArray} from '../Day/DayService';
+import {getExerciseDocument} from '../Exercise/ExerciseService';
+import {getDay, getDayDocument} from '../Day/DayService';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
-import {deleteTimeDistanceExercise, getTimeDistanceExercise} from './TimeDistanceService';
+import {getTimeDistanceDocument, getTimeDistanceExercise} from './TimeDistanceService';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
+import firebase from '../../config/firebase';
 
 const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanceViewProps> = ({router, timeDistanceUid, setEditVisible, exerciseUid}) => {
   const { t } = useTranslation();
@@ -55,9 +56,15 @@ const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanc
 
     try {
       const dayUid = router.getState().params.uid;
-      await deleteTimeDistanceExercise(timeDistanceUid);
-      await deleteONLYExercise(exerciseUid);
-      await removeExerciseFromDayArray(exerciseUid, dayUid);
+      const day = await getDay(dayUid);
+      const exerciseMapArray = day.exercises.filter(e => e.exerciseUid !== exerciseUid);
+
+      // More: https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
+      const batch = firebase.firestore().batch();
+      batch.delete(getTimeDistanceDocument(timeDistanceUid));
+      batch.delete(getExerciseDocument(exerciseUid));
+      batch.update(getDayDocument(dayUid), {exercises: exerciseMapArray});
+      await batch.commit();
     } catch (e) {
       console.error(e);
       setSubmitErrorMessage(e.message);

@@ -146,17 +146,6 @@ export const addExerciseToDayArray = async (exerciseUid: string, dayUid: string)
     .update({exercises: firebase.firestore.FieldValue.arrayUnion(exerciseData)});
 };
 
-export const removeExerciseFromDayArray = async (exerciseUid: string, dayUid: string): Promise<void> => {
-  const day = await getDay(dayUid);
-  const exerciseMapArray = day.exercises.filter(e => e.exerciseUid === exerciseUid);
-  if (exerciseMapArray.length) {
-    const exerciseMap = exerciseMapArray[0];
-    return await getDayDocument(dayUid).update({exercises: firebase.firestore.FieldValue.arrayRemove(exerciseMap)});
-  } else {
-    throw _getErrorObjectCustomMessage(dayUid, "Day", `Did not find exercise (exercise UID: ${exerciseUid}) on Day!`);
-  }
-};
-
 export const getDayDocument = (dayUid: string): any => {
   return firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
