@@ -9,7 +9,7 @@ import SetsRepsTableRowView from './SetsRepsTableRowView';
 import SetsRepsTableRowForm from './SetsRepsTableRowForm';
 import firebase from '../../config/firebase';
 import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
-import {isEmpty} from 'lodash';
+import {isEmpty, remove} from 'lodash';
 import {withRouter} from 'react-router5';
 import {Router} from 'router5';
 import {RouteNames} from '../../routes';
@@ -103,13 +103,21 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
     try {
       const dayUid = router.getState().params.uid;
       const day = await getDay(dayUid);
-      const exerciseMapArray = day.exercises.filter(e => e.exerciseUid !== exerciseUid);
+
+      // Recalculate the indexes of the remaining exercises
+      // Need this so they keep the order, and when adding a new exercise that an index isn't duplicated
+      const exercises = day.exercises;
+      const removedExercise = remove(exercises, e => e.exerciseUid === exerciseUid);
+      const removedExerciseIndex = removedExercise[0].index;
+      for (let i = removedExerciseIndex, len = exercises.length; i < len; i++) {
+        exercises[i].index = exercises[i].index - 1;
+      }
 
       // More: https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
       const batch = firebase.firestore().batch();
       batch.delete(getSetsRepsDocument(setsRepsExerciseUid));
       batch.delete(getExerciseDocument(exerciseUid));
-      batch.update(getDayDocument(dayUid), {exercises: exerciseMapArray});
+      batch.update(getDayDocument(dayUid), {exercises});
       await batch.commit();
     } catch (e) {
       console.error(e);
