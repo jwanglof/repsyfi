@@ -5,7 +5,7 @@ import defaultTo from 'lodash/defaultTo';
 import toNumber from 'lodash/toNumber';
 import {getHoursMinutesSecondsFromSeconds, getMinutesSecondsFromSeconds} from '../../utils/time-utils';
 
-const DurationFormGroup: FunctionComponent<IDurationFormGroupProps & IDurationFormGroupPropsFormik> = ({formik, labelText, name}) => {
+const DurationFormGroup: FunctionComponent<IDurationFormGroupProps & IDurationFormGroupPropsFormik> = ({formik, labelText, name, autoFocus=false}) => {
   const [hours, setHours] = useState<number>(0);
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
@@ -51,7 +51,7 @@ const DurationFormGroup: FunctionComponent<IDurationFormGroupProps & IDurationFo
   return (<FormGroup row>
     <Label for={name} xs={12}>{labelText}</Label>
     <Col xs={4}>
-      <Input className="text-center" type="number" name="hours" onChange={e => setHours(getNumber(e))} onBlur={onBlur} value={hours} placeholder="Hours" />
+      <Input className="text-center" type="number" name="hours" onChange={e => setHours(getNumber(e))} onBlur={onBlur} value={hours} placeholder="Hours" autoFocus={autoFocus}/>
     </Col>
     <Col xs={4}>
       <Input className="text-center" type="number" name="minutes" onChange={e => setMinutes(getNumber(e))} onBlur={onBlur} value={minutes} placeholder="Minutes" max={MAX_MINUTES_SECONDS}/>
@@ -65,7 +65,8 @@ const DurationFormGroup: FunctionComponent<IDurationFormGroupProps & IDurationFo
 
 interface IDurationFormGroupProps {
   labelText: string,
-  name: string
+  name: string,
+  autoFocus?: boolean
 }
 
 interface IDurationFormGroupPropsFormik {

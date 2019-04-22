@@ -1,6 +1,6 @@
 import './Exercise.scss';
 
-import React, {FunctionComponent, useEffect, useState} from 'react';
+import React, {FunctionComponent, useEffect, useState, createContext} from 'react';
 import {getExercise} from './ExerciseService';
 import {IExerciseModel} from '../../models/IExerciseModel';
 import {Card, CardBody, CardHeader, Col} from 'reactstrap';
@@ -12,9 +12,12 @@ import SetsRepsExerciseContainer from '../SetsReps/SetsRepsExerciseContainer';
 import TimeDistanceExerciseContainer from '../TimeDistance/TimeDistanceExerciseContainer';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 
+export const ExerciseHeaderEditCtx = createContext<any>([false, () => {}]);
+
 const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({ exerciseUid, dayUid=null }) => {
   const [currentExerciseData, setCurrentExerciseData] = useState<IExerciseModel | undefined>(undefined);
   const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
+  const [headerEditVisible, setHeaderEditVisible] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchExerciseData = async () => {
@@ -38,21 +41,21 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({
     return <LoadingAlert componentName="ExerciseTypeContainer"/>;
   }
 
-  return (
+  return (<ExerciseHeaderEditCtx.Provider value={[headerEditVisible, setHeaderEditVisible]}>
     <Col lg={4} xs={12} className="mb-2">
       <Card>
         <CardHeader className="text-center pt-0 pb-0">
-          {dayUid && <ExerciseHeader exerciseData={currentExerciseData} dayUid={dayUid}/>}
-          {!dayUid && <ExerciseHeaderView exerciseData={currentExerciseData}/>}
+          <ExerciseHeader exerciseData={currentExerciseData}/>
+          <ExerciseHeaderView exerciseData={currentExerciseData}/>
         </CardHeader>
 
         <CardBody className="mb-0 p-0">
-          {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS && <SetsRepsExerciseContainer exerciseUid={currentExerciseData.typeUid}/>}
-          {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE && <TimeDistanceExerciseContainer exerciseUid={currentExerciseData.typeUid}/>}
+          {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS && <SetsRepsExerciseContainer setsRepsExerciseUid={currentExerciseData.typeUid} exerciseUid={exerciseUid}/>}
+          {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE && <TimeDistanceExerciseContainer timeDistanceExerciseUid={currentExerciseData.typeUid} exerciseUid={exerciseUid}/>}
         </CardBody>
       </Card>
     </Col>
-  );
+  </ExerciseHeaderEditCtx.Provider>);
 };
 
 interface IExerciseTypeContainerProps {

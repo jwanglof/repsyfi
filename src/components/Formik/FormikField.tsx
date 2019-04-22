@@ -4,7 +4,7 @@ import {Alert, Input, Label} from 'reactstrap';
 import {labelSmSize} from '../../utils/formik-utils';
 import {ErrorMessage, Field} from 'formik';
 
-const FormikField: FunctionComponent<IFormikProps> = ({labelText, name, type="text", labelHidden=false, ...inputProps}) => {
+const FormikField: FunctionComponent<IFormikProps> = ({labelText, name, type="text", labelHidden=false, inputProps}) => {
   return (<>
     {!labelHidden && <Label for={name} sm={labelSmSize}>{labelText}</Label>}
     <Input tag={Field} type={type} component="input" name={name} id={name} placeholder={labelText} {...inputProps} />

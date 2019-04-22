@@ -88,7 +88,7 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
           // render={({ errors, status, touched, isSubmitting }) => (
           render={({ errors, isSubmitting }) => (
             <Form themed>
-              <FieldFormGroup name="exerciseName" labelText={t("Exercise name")}/>
+              <FieldFormGroup name="exerciseName" labelText={t("Exercise name")} inputProps={{autoFocus: true}}/>
               <SelectFormGroup name="type" labelText={t("Exercise type")} options={getExerciseTypes()}/>
 
               <Row>
