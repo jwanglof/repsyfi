@@ -151,11 +151,14 @@ export const removeExerciseFromDayArray = async (exerciseUid: string, dayUid: st
   const exerciseMapArray = day.exercises.filter(e => e.exerciseUid === exerciseUid);
   if (exerciseMapArray.length) {
     const exerciseMap = exerciseMapArray[0];
-    return await firebase.firestore()
-      .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
-      .doc(dayUid)
-      .update({exercises: firebase.firestore.FieldValue.arrayRemove(exerciseMap)});
+    return await getDayDocument(dayUid).update({exercises: firebase.firestore.FieldValue.arrayRemove(exerciseMap)});
   } else {
     throw _getErrorObjectCustomMessage(dayUid, "Day", `Did not find exercise (exercise UID: ${exerciseUid}) on Day!`);
   }
+};
+
+export const getDayDocument = (dayUid: string): any => {
+  return firebase.firestore()
+    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
+    .doc(dayUid);
 };

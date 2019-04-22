@@ -57,10 +57,13 @@ export const deleteExercise = async (exerciseUid: string): Promise<void> => {
 
 
 export const deleteONLYExercise = async (exerciseUid: string): Promise<void> => {
-  return await firebase.firestore()
+  return await getExerciseDocument(exerciseUid).delete();
+};
+
+export const getExerciseDocument = (exerciseUid: string): any => {
+  return firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISES)
     .doc(exerciseUid)
-    .delete();
 };
 
 export const addExerciseAndGetUid = async (exerciseData: IExerciseBasicModel, ownerUid: string): Promise<string> => {

@@ -52,6 +52,7 @@ const SetsRepsTableRowFormEdit: FunctionComponent<ISetsRepsTableRowFormEditProps
     return errors;
   };
 
+  // TODO Merge this Form with the form in SetsRepsTableRowForm!
   return (
     <Formik
       initialValues={initialData}
@@ -64,10 +65,10 @@ const SetsRepsTableRowFormEdit: FunctionComponent<ISetsRepsTableRowFormEditProps
             <tr>
               <th className="align-middle" scope="row">{initialData.index}</th>
               <td>
-                <FormikField name="amountInKg" labelText={t("Amount in KG")} type="number" labelHidden={true} min={0}/>
+                <FormikField name="amountInKg" labelText={t("Amount in KG")} type="number" labelHidden inputProps={{min: 0, autoFocus: true}}/>
               </td>
               <td>
-                <FormikField name="reps" labelText={t("Repetitions")} type="number" labelHidden={true} min={0}/>
+                <FormikField name="reps" labelText={t("Repetitions")} type="number" labelHidden inputProps={{min: 0}}/>
               </td>
             </tr>
             <tr>

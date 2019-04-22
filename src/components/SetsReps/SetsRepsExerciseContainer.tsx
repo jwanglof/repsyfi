@@ -1,7 +1,7 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
+import React, {FunctionComponent, useContext, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ISetsRepsModel} from '../../models/ISetsRepsModel';
-import {Button, Table} from 'reactstrap';
+import {Button, ButtonDropdown, ButtonGroup, DropdownItem, DropdownMenu, DropdownToggle, Table} from 'reactstrap';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {ISetBasicModel} from '../../models/ISetModel';
@@ -9,25 +9,35 @@ import SetsRepsTableRowView from './SetsRepsTableRowView';
 import SetsRepsTableRowForm from './SetsRepsTableRowForm';
 import firebase from '../../config/firebase';
 import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
-import isEmpty from 'lodash/isEmpty';
+import {isEmpty} from 'lodash';
 import {withRouter} from 'react-router5';
 import {Router} from 'router5';
 import {RouteNames} from '../../routes';
 
-const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRouter & ISetsRepsExerciseContainerProps> = ({router, exerciseUid}) => {
+import {ExerciseHeaderEditCtx} from '../Exercise/ExerciseTypeContainer';
+import {getExerciseDocument} from '../Exercise/ExerciseService';
+import {getDay, getDayDocument} from '../Day/DayService';
+import {getSetsRepsDocument} from './SetsRepsService';
+
+const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRouter & ISetsRepsExerciseContainerProps> = ({router, setsRepsExerciseUid, exerciseUid}) => {
   const { t } = useTranslation();
 
   const {name: routeName} = router.getState();
   const detailedDayView: boolean = (routeName === RouteNames.SPECIFIC_DAY);
 
-  if (isEmpty(exerciseUid)) {
+  if (isEmpty(setsRepsExerciseUid)) {
     return <ErrorAlert errorText="Must have the exercises's UID to proceed!" componentName="SetsRepsExerciseContainer"/>;
   }
 
+  const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
+  const [exerciseDeleteStep2Shown, setExerciseDeleteStep2Shown] = useState<boolean>(false);
   const [currentExerciseData, setCurrentExerciseData] = useState<ISetsRepsModel | undefined>(undefined);
   const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
   const [addSetViewVisible, setAddSetViewVisible] = useState<boolean>(false);
   const [lastSetData, setLastSetData] = useState<ISetBasicModel | undefined>(undefined);
+  const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
+
+  const [headerEditVisible, setHeaderEditVisible] = useContext(ExerciseHeaderEditCtx);
 
   // Effect to subscribe on changes on this specific day
   useEffect(() => {
@@ -35,7 +45,7 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
     const unsub = firebase.firestore()
       .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS)
       // .where("ownerUid", "==", uid)
-      .doc(exerciseUid)
+      .doc(setsRepsExerciseUid)
       .onSnapshot({includeMetadataChanges: true}, doc => {
         if (doc.exists && !isEmpty(doc.data())) {
           const snapshotData: any = doc.data();
@@ -58,8 +68,8 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
     };
   }, []);
 
-  if (snapshotErrorData) {
-    return <ErrorAlert errorText={snapshotErrorData} componentName="SetsRepsExerciseContainer"/>;
+  if (snapshotErrorData || submitErrorMessage) {
+    return <ErrorAlert errorText={snapshotErrorData || submitErrorMessage} componentName="SetsRepsExerciseContainer"/>;
   }
 
   if (!currentExerciseData) {
@@ -80,6 +90,31 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
       amountInKg: lastSetData.amountInKg,
       reps: lastSetData.reps
     };
+  };
+
+  const toggleActionDropdown = () => {
+    setExerciseDeleteStep2Shown(false);
+    setDropdownVisible(!dropdownVisible)
+  };
+
+  const delExercise = async () => {
+    setSubmitErrorMessage(undefined);
+
+    try {
+      const dayUid = router.getState().params.uid;
+      const day = await getDay(dayUid);
+      const exerciseMapArray = day.exercises.filter(e => e.exerciseUid !== exerciseUid);
+
+      // More: https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
+      const batch = firebase.firestore().batch();
+      batch.delete(getSetsRepsDocument(setsRepsExerciseUid));
+      batch.delete(getExerciseDocument(exerciseUid));
+      batch.update(getDayDocument(dayUid), {exercises: exerciseMapArray});
+      await batch.commit();
+    } catch (e) {
+      console.error(e);
+      setSubmitErrorMessage(e.message);
+    }
   };
 
   return (
@@ -109,7 +144,23 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
       {detailedDayView && !addSetViewVisible && <tfoot>
       <tr>
         <td colSpan={3}>
-          <Button color="success" block onClick={() => setAddSetViewVisible(!addSetViewVisible)}>{t("Add set")}</Button>
+          <ButtonGroup className="w-100">
+            <Button color="success" block onClick={() => setAddSetViewVisible(!addSetViewVisible)}>{t("Add set")}</Button>
+            <ButtonDropdown isOpen={dropdownVisible} toggle={toggleActionDropdown}>
+              <DropdownToggle caret>
+                {t("Actions")}
+              </DropdownToggle>
+              <DropdownMenu right>
+                <DropdownItem onClick={() => setHeaderEditVisible(true)} disabled={headerEditVisible}>
+                  {`${t("Edit")} ${t("name")}`}
+                </DropdownItem>
+                <DropdownItem toggle={false}>
+                  {!exerciseDeleteStep2Shown && <span onClick={() => setExerciseDeleteStep2Shown(true)}>{t("Delete")} {t("exercise")}</span>}
+                  {exerciseDeleteStep2Shown && <span className="text-danger" onClick={delExercise}>{t("Click again to delete!")}</span>}
+                </DropdownItem>
+              </DropdownMenu>
+            </ButtonDropdown>
+          </ButtonGroup>
         </td>
       </tr>
       <tr>
@@ -122,7 +173,8 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
 };
 
 interface ISetsRepsExerciseContainerProps {
-  exerciseUid: string
+  setsRepsExerciseUid: string
+  exerciseUid: string,
 }
 
 interface ISetsRepsExerciseContainerRouter {

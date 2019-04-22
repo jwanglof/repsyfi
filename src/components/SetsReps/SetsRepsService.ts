@@ -15,7 +15,6 @@ import {
 } from '../../config/FirebaseUtils';
 import {Versions} from '../../models/IBaseModel';
 import {ISetsRepsModel, ISetsRepsModelWithoutUid} from '../../models/ISetsRepsModel';
-import {IDayBasicUpdateModel, IDayUpdateModel} from '../../models/IDayModel';
 
 export const deleteSet = async (setUid: string): Promise<void> => {
   return await firebase.firestore()
@@ -113,11 +112,13 @@ export const getSetsRepsExercise = async (exerciseUid: string): Promise<ISetsRep
   }
 };
 
-export const deleteSetsRepsExercise = async (exerciseUid: string): Promise<void> => {
-  return await firebase.firestore()
-    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS)
-    .doc(exerciseUid)
-    .delete();
+export const deleteSetsRepsExercise = async (setsRepsUid: string): Promise<void> => {
+  return await getSetsRepsDocument(setsRepsUid).delete();
 };
 
-
+// TOOD The returned value should be DocumentReference ?
+export const getSetsRepsDocument = (setsRepsUid: string): any => {
+  return firebase.firestore()
+    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS)
+    .doc(setsRepsUid);
+};

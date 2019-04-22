@@ -50,7 +50,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({
         </CardHeader>
 
         <CardBody className="mb-0 p-0">
-          {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS && <SetsRepsExerciseContainer setsRepsExerciseUid={currentExerciseData.typeUid}/>}
+          {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS && <SetsRepsExerciseContainer setsRepsExerciseUid={currentExerciseData.typeUid} exerciseUid={exerciseUid}/>}
           {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE && <TimeDistanceExerciseContainer timeDistanceExerciseUid={currentExerciseData.typeUid} exerciseUid={exerciseUid}/>}
         </CardBody>
       </Card>
