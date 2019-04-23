@@ -128,6 +128,10 @@ export const updateDay = async (dayUid: string, dayData: IDayBasicUpdateModel) =
     updatedTimestamp: getNowTimestamp(),
     notes: dayData.notes
   };
+  // Remove the entire endTimestamp field if it doesn't have a value
+  if (!dayData.endTimestamp) {
+    data.endTimestamp = firebase.firestore.FieldValue.delete();
+  }
   return await firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
     .doc(dayUid)
