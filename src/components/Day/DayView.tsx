@@ -34,13 +34,11 @@ const DayView: FunctionComponent<IDayViewProps & IDayViewRouter> = ({router, dat
         </Col>
       </Row>
 
-      {collapseIsOpen && <Row className="text-center"><Col>{t("Open detailed view")} {t("to edit")}</Col></Row>}
+      <Row className="text-center mt-1 mb-2"><Col>{t("Open detailed view")} {t("to edit")}</Col></Row>
 
       <Collapse isOpen={collapseIsOpen}>
         <Row>
-          {data.exercises.length && data.exercises.map(e => <ExerciseTypeContainer key={e.exerciseUid} exerciseUid={e.exerciseUid}/>)}
-          {/*{data.exercises.length && data.exercises.map(exerciseUid => <ExerciseTypeContainer key={exerciseUid} exerciseUid={exerciseUid}/>)}*/}
-          {/*{currentData.exercises.length && currentData.exercises.map(exerciseUid => <Exercise key={exerciseUid} exerciseUid={exerciseUid} singleDayView={!isEmpty(dayUid)} dayUid={dayUid}/>)}*/}
+          {collapseIsOpen && data.exercises.length && data.exercises.map(e => <ExerciseTypeContainer key={e.exerciseUid} exerciseUid={e.exerciseUid}/>)}
         </Row>
       </Collapse>
 
