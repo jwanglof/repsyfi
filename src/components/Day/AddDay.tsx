@@ -2,7 +2,7 @@ import React, {FunctionComponent, useEffect, useReducer, useState} from 'react';
 import {Router} from 'router5';
 import {withRoute} from 'react-router5';
 import {useTranslation} from 'react-i18next';
-import {addDay} from './DayService';
+import {addDay, getAllLocations} from './DayService';
 import format from 'date-fns/format';
 import {dateFormat, timeFormat} from '../../utils/formik-utils';
 import {IDayBasicModel} from '../../models/IDayModel';
@@ -35,6 +35,14 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
   const setTimerRunning = useGlobalState('timerRunning')[1];
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      const locations = await getAllLocations();
+      console.log(2222, locations);
+    };
+    fetchLocations();
+  }, []);
 
   if (submitErrorMessage) {
     return <ErrorAlert componentName="AddEditDay" errorText={submitErrorMessage}/>;
