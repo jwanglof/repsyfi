@@ -11,5 +11,6 @@ export interface IFormikProps {
 interface IFormikInputProps {
   disabled?: boolean,
   min?: number,
-  autoFocus?: boolean
+  autoFocus?: boolean,
+  step?: string
 }

@@ -67,10 +67,10 @@ const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistan
             <DurationFormGroup name="totalWarmupSeconds" labelText={t("Total warm-up time (HH MM SS)")}/>
             <FieldFormGroup type="number" name="totalDistanceMeter" labelText={t("Total distance (meters)")}/>
             <FieldFormGroup type="number" name="totalKcal" labelText={t("Total kcal")}/>
-            <FieldFormGroup type="number" name="speedMin" labelText={t("Speed min")}/>
-            <FieldFormGroup type="number" name="speedMax" labelText={t("Speed max")}/>
-            <FieldFormGroup type="number" name="inclineMin" labelText={t("Incline min")}/>
-            <FieldFormGroup type="number" name="inclineMax" labelText={t("Incline max")}/>
+            <FieldFormGroup type="number" name="speedMin" labelText={t("Speed min")} inputProps={{step: "0.1"}}/>
+            <FieldFormGroup type="number" name="speedMax" labelText={t("Speed max")} inputProps={{step: "0.1"}}/>
+            <FieldFormGroup type="number" name="inclineMin" labelText={t("Incline min")} inputProps={{step: "0.5"}}/>
+            <FieldFormGroup type="number" name="inclineMax" labelText={t("Incline max")} inputProps={{step: "0.5"}}/>
             <ButtonGroup className="w-100 m-0 p-0">
               <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t("Save")}</Button>
               <Button color="danger" onClick={() => setEditVisible(false)}>{t("Discard")}</Button>
