@@ -1,5 +1,7 @@
 import i18n from "i18next";
 import {initReactI18next} from "react-i18next";
+import {Col} from 'reactstrap';
+import React from 'react';
 
 // the translations
 // (tip move them in a JSON file and import them)
@@ -71,6 +73,7 @@ const resources = {
       "Actions": "Actions",
       "name": "name",
       "exercise": "exercise",
+      "No exercises added": "No exercises added",
 
       // Features
       "Track your sets and repetitions": "Track your sets and repetitions",
@@ -149,6 +152,7 @@ const resources = {
       "Actions": "Aktioner",
       "name": "namn",
       "exercise": "övning",
+      "No exercises added": "Inga övningar tillagda",
 
       // Features
       "Track your sets and repetitions": "Hålla koll på dina set och repetitioner",

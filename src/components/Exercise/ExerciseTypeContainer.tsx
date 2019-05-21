@@ -30,6 +30,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({
       }
     };
 
+    // noinspection JSIgnoredPromiseFromCall
     fetchExerciseData();
   }, []);
 
