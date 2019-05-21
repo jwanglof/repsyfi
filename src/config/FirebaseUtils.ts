@@ -12,6 +12,7 @@ export enum FirebaseCollectionNames {
   FIRESTORE_COLLECTION_DAYS = "days",
   FIRESTORE_COLLECTION_SETS = "sets",
   FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS = "exercises-sets-reps",
+  FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_SECONDS = "exercises-sets-seconds",
   FIRESTORE_COLLECTION_EXERCISE_TYPE_TIME_DISTANCE = "exercises-time-distance"
 }
 

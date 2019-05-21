@@ -71,8 +71,9 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
   };
 
   const getExerciseTypes = (): Array<ExerciseTypesOptions> => ([
-    {value: ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS, label: t("Sets and reps")},
+    {value: ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS, label: t("Sets with reps")},
     {value: ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE, label: t("Time and distance")},
+    {value: ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS, label: t("Sets with seconds")},
     // {value: ExerciseTypesEnum.EXERCISE_TYPE_NOT_CHOSEN, label: 'Other'},  // TODO Implement
   ]);
 

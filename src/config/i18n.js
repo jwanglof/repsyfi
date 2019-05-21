@@ -53,7 +53,7 @@ const resources = {
       "exercise diary": "exercise diary",
       "This application will help you to": "This application will help you to",
       "Exercise type": "Exercise type",
-      "Sets and reps": "Sets and reps",
+      "Sets with reps": "Sets with reps",
       "Time and distance": "Time and distance",
       "Notes": "Notes",
       "Stop timer": "Stop timer",
@@ -72,6 +72,7 @@ const resources = {
       "name": "name",
       "exercise": "exercise",
       "No exercises added": "No exercises added",
+      "Sets with seconds": "Sets with seconds",
 
       // Features
       "Track your sets and repetitions": "Track your sets and repetitions",
@@ -132,7 +133,7 @@ const resources = {
       "exercise diary": "träningsdagbok",
       "This application will help you to": "Denna applikation hjälper dig att",
       "Exercise type": "Övningstyp",
-      "Sets and reps": "Set och repetitioner",
+      "Sets with reps": "Set med repetitioner",
       "Time and distance": "Flås",
       "Notes": "Noteringar",
       "Stop timer": "Stoppa timern",
@@ -151,6 +152,7 @@ const resources = {
       "name": "namn",
       "exercise": "övning",
       "No exercises added": "Inga övningar tillagda",
+      "Sets with seconds": "Set med sekunder",
 
       // Features
       "Track your sets and repetitions": "Hålla koll på dina set och repetitioner",
