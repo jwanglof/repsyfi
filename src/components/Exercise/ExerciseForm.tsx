@@ -17,6 +17,7 @@ import {addExerciseToDayArray} from '../Day/DayService';
 import {Form} from 'react-formik-ui';
 import {Router} from 'router5';
 import {withRoute} from 'react-router5';
+import {addNewSetsSecondsExerciseAndGetUid} from '../SetsSeconds/SetsSecondsService';
 
 const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> = ({router, setAddExerciseViewVisible}) => {
   const { t } = useTranslation();
@@ -51,6 +52,8 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
         exerciseTypeUid = await addNewSetsRepsExerciseAndGetUid(ownerUid);
       } else if (values.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE) {
         exerciseTypeUid = await addNewTimeDistanceExerciseAndGetUid(ownerUid);
+      } else if (values.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS) {
+        exerciseTypeUid = await addNewSetsSecondsExerciseAndGetUid(ownerUid);
       } else {
         return;
       }

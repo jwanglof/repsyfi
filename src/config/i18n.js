@@ -73,6 +73,7 @@ const resources = {
       "exercise": "exercise",
       "No exercises added": "No exercises added",
       "Sets with seconds": "Sets with seconds",
+      "Seconds": "Seconds",
 
       // Features
       "Track your sets and repetitions": "Track your sets and repetitions",
@@ -153,6 +154,7 @@ const resources = {
       "exercise": "övning",
       "No exercises added": "Inga övningar tillagda",
       "Sets with seconds": "Set med sekunder",
+      "Seconds": "Sekunder",
 
       // Features
       "Track your sets and repetitions": "Hålla koll på dina set och repetitioner",

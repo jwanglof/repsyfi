@@ -11,6 +11,7 @@ import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {FirebaseCollectionNames, getExerciseErrorObject, getNowTimestamp} from '../../config/FirebaseUtils';
 import {Versions} from '../../models/IBaseModel';
 import {deleteTimeDistanceExercise} from '../TimeDistance/TimeDistanceService';
+import {deleteSetsSeconds, deleteSetsSecondsExercise, getSetsSecondsExercise} from '../SetsSeconds/SetsSecondsService';
 
 export const getExercise = async (exerciseUid: string): Promise<IExerciseModel> => {
   const querySnapshot = await firebase.firestore()
@@ -34,6 +35,7 @@ export const getExercise = async (exerciseUid: string): Promise<IExerciseModel> 
 };
 
 export const deleteExercise = async (exerciseUid: string): Promise<void> => {
+  // TODO Make this a batch update/delete! See how in SetsSecondsExerciseContainer#delExercise !!
   const exerciseData = await getExercise(exerciseUid);
 
   if (exerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS) {
@@ -45,6 +47,13 @@ export const deleteExercise = async (exerciseUid: string): Promise<void> => {
     await deleteSetsRepsExercise(setsRepsData.uid);
   } else if (exerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE) {
     await deleteTimeDistanceExercise(exerciseData.typeUid);
+  } else if (exerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS) {
+    const setsRepsData = await getSetsSecondsExercise(exerciseData.typeUid);
+    // Remove all sets that exist on the exercise
+    if (setsRepsData.sets.length) {
+      await Promise.all(setsRepsData.sets.map(setUid => deleteSetsSeconds(setUid)));
+    }
+    await deleteSetsSecondsExercise(setsRepsData.uid);
   } else {
     console.warn(`${exerciseData.type} is not supported to be deleted!`);
   }
