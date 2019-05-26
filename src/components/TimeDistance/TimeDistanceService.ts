@@ -77,8 +77,7 @@ export const updateTimeDistanceExercise = async(exerciseUid: string, timeDistanc
   return await getTimeDistanceDocument(exerciseUid).update(data);
 };
 
-// TODO The returned value should be DocumentReference ?
-export const getTimeDistanceDocument = (timeDistanceUid: string): any => {
+export const getTimeDistanceDocument = (timeDistanceUid: string): firebase.firestore.DocumentReference => {
   return firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_TIME_DISTANCE)
     .doc(timeDistanceUid);

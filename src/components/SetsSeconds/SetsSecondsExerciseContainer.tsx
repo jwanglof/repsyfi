@@ -15,7 +15,7 @@ import SetsSecondsTableRowForm from './SetsSecondsTableRowForm';
 import SetsSecondsTableRowView from './SetsSecondsTableRowView';
 import {ExerciseHeaderEditCtx} from '../Exercise/ExerciseTypeContainer';
 import {recalculateIndexes} from '../../utils/exercise-utils';
-import {getSetsSecondsDocument} from './SetsSecondsService';
+import {getSetsSecondDocument, getSetsSecondsExerciseDocument} from './SetsSecondsService';
 import {getExerciseDocument} from '../Exercise/ExerciseService';
 import {getDay, getDayDocument} from '../Day/DayService';
 
@@ -111,15 +111,13 @@ const SetsSecondsExerciseContainer: FunctionComponent<SetsSecondsExerciseContain
       const removedExerciseIndex = removedExercise[0].index;
       const recalculatedExercises: any = recalculateIndexes(removedExerciseIndex, exercises);
 
-      console.log(exercises, removedExerciseIndex, removedExerciseIndex, recalculatedExercises);
-      // TODO! YOU ARE HERE! Why isn't the sets-seconds removed? Is it the same with the sets??
-
-      // // More: https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
-      // const batch = firebase.firestore().batch();
-      // batch.delete(getSetsSecondsDocument(setsSecondsExerciseUid));
-      // batch.delete(getExerciseDocument(exerciseUid));
-      // batch.update(getDayDocument(dayUid), {exercises: recalculatedExercises});
-      // await batch.commit();
+      // More: https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
+      const batch = firebase.firestore().batch();
+      currentExerciseData.sets.forEach((setUid: string) => batch.delete(getSetsSecondDocument(setUid)));
+      batch.delete(getSetsSecondsExerciseDocument(setsSecondsExerciseUid));
+      batch.delete(getExerciseDocument(exerciseUid));
+      batch.update(getDayDocument(dayUid), {exercises: recalculatedExercises});
+      await batch.commit();
     } catch (e) {
       console.error(e);
       setSubmitErrorMessage(e.message);

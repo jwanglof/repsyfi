@@ -16,40 +16,20 @@ export const deleteSetsSeconds = async (setUid: string): Promise<void> => {
     .doc(setUid)
     .delete();
 };
-//
-// export const getSet = async (setUid: string): Promise<ISetModel> => {
-//   return await firebase.firestore()
-//     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_SETS)
-//     .doc(setUid)
-//     .get()
-//     .then((querySnapshot: any) => {
-//       if (querySnapshot.exists && !isEmpty(querySnapshot.data())) {
-//         const data = querySnapshot.data();
-//         return {
-//           uid: querySnapshot.id,
-//           ownerUid: data.ownerUid,
-//           createdTimestamp: data.createdTimestamp,
-//           index: data.index,
-//           amountInKg: data.amountInKg,
-//           reps: data.reps,
-//           version: data.version
-//         };
-//       } else {
-//         throw getSetErrorObject(setUid);
-//       }
-//     });
-// };
-//
+
+export const getSetsSecondDocument = (setUid: string) => {
+  return firebase.firestore()
+    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_SETS_SECONDS)
+    .doc(setUid);
+};
+
 export const updateSetsSecondsExercise = async (setUid: string, setData: ISetSecondsBasicUpdateModel) => {
   const data: ISetSecondsUpdateModel = {
     amountInKg: setData.amountInKg,
     seconds: setData.seconds,
     updatedTimestamp: getNowTimestamp()
   };
-  return await firebase.firestore()
-    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_SETS_SECONDS)
-    .doc(setUid)
-    .update(data);
+  return await getSetsSecondDocument(setUid).update(data);
 };
 
 export const addNewSetSecondsAndGetUid = async (setData: ISetSecondsBasicModel, ownerUid: string): Promise<string> => {
@@ -107,11 +87,10 @@ export const getSetsSecondsExercise = async (exerciseUid: string): Promise<ISets
 };
 
 export const deleteSetsSecondsExercise = async (setsRepsUid: string): Promise<void> => {
-  return await getSetsSecondsDocument(setsRepsUid).delete();
+  return await getSetsSecondsExerciseDocument(setsRepsUid).delete();
 };
 
-// TODO The returned value should be DocumentReference ?
-export const getSetsSecondsDocument = (setsSecondsUid: string): any => {
+export const getSetsSecondsExerciseDocument = (setsSecondsUid: string): firebase.firestore.DocumentReference => {
   return firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_SECONDS)
     .doc(setsSecondsUid);

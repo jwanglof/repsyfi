@@ -17,7 +17,7 @@ import {RouteNames} from '../../routes';
 import {ExerciseHeaderEditCtx} from '../Exercise/ExerciseTypeContainer';
 import {getExerciseDocument} from '../Exercise/ExerciseService';
 import {getDay, getDayDocument} from '../Day/DayService';
-import {getSetsRepsDocument} from './SetsRepsService';
+import {getSetDocument, getSetsRepsExerciseDocument} from './SetsRepsService';
 import {recalculateIndexes} from '../../utils/exercise-utils';
 
 const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRouter & ISetsRepsExerciseContainerProps> = ({router, setsRepsExerciseUid, exerciseUid}) => {
@@ -114,7 +114,8 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
 
       // More: https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
       const batch = firebase.firestore().batch();
-      batch.delete(getSetsRepsDocument(setsRepsExerciseUid));
+      currentExerciseData.sets.forEach((setUid: string) => batch.delete(getSetDocument(setUid)));
+      batch.delete(getSetsRepsExerciseDocument(setsRepsExerciseUid));
       batch.delete(getExerciseDocument(exerciseUid));
       batch.update(getDayDocument(dayUid), {exercises: recalculatedExercises});
       await batch.commit();

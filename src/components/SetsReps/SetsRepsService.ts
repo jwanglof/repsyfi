@@ -1,18 +1,7 @@
 import firebase from '../../config/firebase';
 import isEmpty from 'lodash/isEmpty';
-import {
-  ISetBasicModel,
-  ISetBasicUpdateModel,
-  ISetModel,
-  ISetModelWithoutUid,
-  ISetUpdateModel
-} from '../../models/ISetModel';
-import {
-  FirebaseCollectionNames,
-  getNowTimestamp,
-  getSetErrorObject,
-  getSetsRepsExerciseErrorObject
-} from '../../config/FirebaseUtils';
+import {ISetBasicModel, ISetBasicUpdateModel, ISetModelWithoutUid, ISetUpdateModel} from '../../models/ISetModel';
+import {FirebaseCollectionNames, getNowTimestamp, getSetsRepsExerciseErrorObject} from '../../config/FirebaseUtils';
 import {Versions} from '../../models/IBaseModel';
 import {ISetsRepsModel, ISetsRepsModelWithoutUid} from '../../models/ISetsRepsModel';
 
@@ -23,27 +12,10 @@ export const deleteSet = async (setUid: string): Promise<void> => {
     .delete();
 };
 
-export const getSet = async (setUid: string): Promise<ISetModel> => {
-  return await firebase.firestore()
+export const getSetDocument = (setUid: string): firebase.firestore.DocumentReference => {
+  return firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_SETS)
-    .doc(setUid)
-    .get()
-    .then((querySnapshot: any) => {
-      if (querySnapshot.exists && !isEmpty(querySnapshot.data())) {
-        const data = querySnapshot.data();
-        return {
-          uid: querySnapshot.id,
-          ownerUid: data.ownerUid,
-          createdTimestamp: data.createdTimestamp,
-          index: data.index,
-          amountInKg: data.amountInKg,
-          reps: data.reps,
-          version: data.version
-        };
-      } else {
-        throw getSetErrorObject(setUid);
-      }
-    });
+    .doc(setUid);
 };
 
 export const updateSetsRepsExercise = async (setUid: string, setData: ISetBasicUpdateModel) => {
@@ -113,11 +85,10 @@ export const getSetsRepsExercise = async (exerciseUid: string): Promise<ISetsRep
 };
 
 export const deleteSetsRepsExercise = async (setsRepsUid: string): Promise<void> => {
-  return await getSetsRepsDocument(setsRepsUid).delete();
+  return await getSetsRepsExerciseDocument(setsRepsUid).delete();
 };
 
-// TODO The returned value should be DocumentReference ?
-export const getSetsRepsDocument = (setsRepsUid: string): any => {
+export const getSetsRepsExerciseDocument = (setsRepsUid: string): firebase.firestore.DocumentReference => {
   return firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS)
     .doc(setsRepsUid);
