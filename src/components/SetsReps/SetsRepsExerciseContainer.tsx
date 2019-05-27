@@ -13,12 +13,16 @@ import {isEmpty, remove} from 'lodash';
 import {withRouter} from 'react-router5';
 import {Router} from 'router5';
 import {RouteNames} from '../../routes';
+import isWithinInterval from 'date-fns/isWithinInterval';
 
 import {ExerciseHeaderEditCtx} from '../Exercise/ExerciseTypeContainer';
 import {getExerciseDocument} from '../Exercise/ExerciseService';
 import {getDay, getDayDocument} from '../Day/DayService';
 import {getSetDocument, getSetsRepsExerciseDocument} from './SetsRepsService';
 import {recalculateIndexes} from '../../utils/exercise-utils';
+import fromUnixTime from "date-fns/fromUnixTime";
+import addSeconds from 'date-fns/addSeconds';
+import subSeconds from 'date-fns/subSeconds';
 
 const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRouter & ISetsRepsExerciseContainerProps> = ({router, setsRepsExerciseUid, exerciseUid}) => {
   const { t } = useTranslation();
@@ -50,6 +54,14 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
       .onSnapshot({includeMetadataChanges: true}, doc => {
         if (doc.exists && !isEmpty(doc.data())) {
           const snapshotData: any = doc.data();
+          // Open a new set if this exercise is not older than 10 seconds, and the sets-array is empty
+          const createdDate = fromUnixTime(snapshotData.createdTimestamp);
+          const nowDate = new Date();
+          const isNewExercise = isWithinInterval(createdDate, {start: subSeconds(nowDate, 10), end: addSeconds(nowDate, 10)});
+          if (isNewExercise && !snapshotData.sets.length) {
+            setAddSetViewVisible(true);
+          }
+
           setCurrentExerciseData({
             version: snapshotData.version,
             createdTimestamp: snapshotData.createdTimestamp,

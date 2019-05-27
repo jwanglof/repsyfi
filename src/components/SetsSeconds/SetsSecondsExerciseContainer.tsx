@@ -19,6 +19,11 @@ import {getSetsSecondDocument, getSetsSecondsExerciseDocument} from './SetsSecon
 import {getExerciseDocument} from '../Exercise/ExerciseService';
 import {getDay, getDayDocument} from '../Day/DayService';
 
+import isWithinInterval from "date-fns/isWithinInterval";
+import fromUnixTime from "date-fns/fromUnixTime";
+import addSeconds from 'date-fns/addSeconds';
+import subSeconds from 'date-fns/subSeconds';
+
 const SetsSecondsExerciseContainer: FunctionComponent<SetsSecondsExerciseContainerRouter & SetsSecondsExerciseContainerProps> = ({router, setsSecondsExerciseUid, exerciseUid}) => {
   const { t } = useTranslation();
 
@@ -49,6 +54,14 @@ const SetsSecondsExerciseContainer: FunctionComponent<SetsSecondsExerciseContain
       .onSnapshot({includeMetadataChanges: true}, doc => {
         if (doc.exists && !isEmpty(doc.data())) {
           const snapshotData: any = doc.data();
+          // Open a new set if this exercise is not older than 10 seconds, and the sets-array is empty
+          const createdDate = fromUnixTime(snapshotData.createdTimestamp);
+          const nowDate = new Date();
+          const isNewExercise = isWithinInterval(createdDate, {start: subSeconds(nowDate, 10), end: addSeconds(nowDate, 10)});
+          if (isNewExercise && !snapshotData.sets.length) {
+            setAddSetViewVisible(true);
+          }
+
           setCurrentExerciseData({
             version: snapshotData.version,
             createdTimestamp: snapshotData.createdTimestamp,
