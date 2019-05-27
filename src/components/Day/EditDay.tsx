@@ -43,10 +43,8 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
       if (res.endTimestamp) {
         data.endTimeFormatted = format(fromUnixTime(res.endTimestamp), timeFormat);
         data.endDateFormatted = format(fromUnixTime(res.endTimestamp), dateFormat);
-      } else {
-        data.endTimeFormatted = format(new Date, timeFormat);
-        data.endDateFormatted = format(new Date, dateFormat);
       }
+
       setInitialData(data);
     });
   }, []);
@@ -84,6 +82,8 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
       };
       if (!isEmpty(values.endTimeFormatted) && !isEmpty(values.endDateFormatted)) {
         data.endTimestamp = getUnixTime(parseISO(`${values.endDateFormatted}T${values.endTimeFormatted}`));
+      } else {
+        data.endTimestamp = undefined;
       }
       await updateDay(dayUid, data);
       router.navigate(RouteNames.SPECIFIC_DAY, {uid: dayUid}, {reload: true});
@@ -125,8 +125,8 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
               <DatepickerFormGroup name="startDateFormatted" labelText={t("Start date")}/>
               <DateTimePickerFormGroup name="startTimeFormatted" labelText={t("Start time")}/>
 
-              <DatepickerFormGroup name="endDateFormatted" labelText={t("End date")}/>
-              <DateTimePickerFormGroup name="endTimeFormatted" labelText={t("End time")}/>
+              {initialData.endTimestamp && <DatepickerFormGroup name="endDateFormatted" labelText={t("End date")}/>}
+              {initialData.endTimestamp && <DateTimePickerFormGroup name="endTimeFormatted" labelText={t("End time")}/>}
 
               <FormGroup row>
                 <Col sm={12}>
@@ -157,6 +157,7 @@ interface IEditDayEditData {
   startDateFormatted: Date | string,
   endTimeFormatted?: string,
   endDateFormatted?: string | Date,
+  endTimestamp?: number | undefined | null,
   location: string,
   muscleGroups: string,
   title: string,
