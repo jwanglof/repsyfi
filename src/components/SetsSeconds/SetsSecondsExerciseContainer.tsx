@@ -1,46 +1,46 @@
 import React, {FunctionComponent, useContext, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {ISetsRepsModel} from '../../models/ISetsRepsModel';
 import {Button, ButtonDropdown, ButtonGroup, DropdownItem, DropdownMenu, DropdownToggle, Table} from 'reactstrap';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
-import LoadingAlert from '../LoadingAlert/LoadingAlert';
-import {ISetBasicModel} from '../../models/ISetModel';
-import SetsRepsTableRowView from './SetsRepsTableRowView';
-import SetsRepsTableRowForm from './SetsRepsTableRowForm';
-import firebase from '../../config/firebase';
-import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
 import {isEmpty, remove} from 'lodash';
 import {withRouter} from 'react-router5';
 import {Router} from 'router5';
 import {RouteNames} from '../../routes';
-import isWithinInterval from 'date-fns/isWithinInterval';
-
+import firebase from '../../config/firebase';
+import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
+import {ISetsSecondsModel} from '../../models/ISetsSecondsModel';
+import LoadingAlert from '../LoadingAlert/LoadingAlert';
+import {ISetSecondsBasicModel} from '../../models/ISetSecondsModel';
+import SetsSecondsTableRowForm from './SetsSecondsTableRowForm';
+import SetsSecondsTableRowView from './SetsSecondsTableRowView';
 import {ExerciseHeaderEditCtx} from '../Exercise/ExerciseTypeContainer';
+import {recalculateIndexes} from '../../utils/exercise-utils';
+import {getSetsSecondDocument, getSetsSecondsExerciseDocument} from './SetsSecondsService';
 import {getExerciseDocument} from '../Exercise/ExerciseService';
 import {getDay, getDayDocument} from '../Day/DayService';
-import {getSetDocument, getSetsRepsExerciseDocument} from './SetsRepsService';
-import {recalculateIndexes} from '../../utils/exercise-utils';
+
+import isWithinInterval from "date-fns/isWithinInterval";
 import fromUnixTime from "date-fns/fromUnixTime";
 import addSeconds from 'date-fns/addSeconds';
 import subSeconds from 'date-fns/subSeconds';
 
-const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRouter & ISetsRepsExerciseContainerProps> = ({router, setsRepsExerciseUid, exerciseUid}) => {
+const SetsSecondsExerciseContainer: FunctionComponent<SetsSecondsExerciseContainerRouter & SetsSecondsExerciseContainerProps> = ({router, setsSecondsExerciseUid, exerciseUid}) => {
   const { t } = useTranslation();
 
   const {name: routeName} = router.getState();
   const detailedDayView: boolean = (routeName === RouteNames.SPECIFIC_DAY);
 
-  if (isEmpty(setsRepsExerciseUid)) {
-    return <ErrorAlert errorText="Must have the exercises's UID to proceed!" componentName="SetsRepsExerciseContainer"/>;
+  if (isEmpty(setsSecondsExerciseUid)) {
+    return <ErrorAlert errorText="Must have the exercises's UID to proceed!" componentName="SetsSecondsExerciseContainer"/>;
   }
 
+  const [currentExerciseData, setCurrentExerciseData] = useState<ISetsSecondsModel | undefined>(undefined);
+  const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
+  const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
+  const [addSetViewVisible, setAddSetViewVisible] = useState<boolean>(false);
+  const [lastSetData, setLastSetData] = useState<ISetSecondsBasicModel | undefined>(undefined);
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const [exerciseDeleteStep2Shown, setExerciseDeleteStep2Shown] = useState<boolean>(false);
-  const [currentExerciseData, setCurrentExerciseData] = useState<ISetsRepsModel | undefined>(undefined);
-  const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
-  const [addSetViewVisible, setAddSetViewVisible] = useState<boolean>(false);
-  const [lastSetData, setLastSetData] = useState<ISetBasicModel | undefined>(undefined);
-  const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
 
   const [headerEditVisible, setHeaderEditVisible] = useContext(ExerciseHeaderEditCtx);
 
@@ -48,9 +48,9 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
   useEffect(() => {
     // TODO Need to verify that a user can't send any UID in here, somehow... That should be specified in the rules!
     const unsub = firebase.firestore()
-      .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS)
+      .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_SECONDS)
       // .where("ownerUid", "==", uid)
-      .doc(setsRepsExerciseUid)
+      .doc(setsSecondsExerciseUid)
       .onSnapshot({includeMetadataChanges: true}, doc => {
         if (doc.exists && !isEmpty(doc.data())) {
           const snapshotData: any = doc.data();
@@ -82,26 +82,26 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
   }, []);
 
   if (snapshotErrorData || submitErrorMessage) {
-    return <ErrorAlert errorText={snapshotErrorData || submitErrorMessage} componentName="SetsRepsExerciseContainer"/>;
+    return <ErrorAlert errorText={snapshotErrorData || submitErrorMessage} componentName="SetsSecondsExerciseContainer"/>;
   }
 
   if (!currentExerciseData) {
-    return <LoadingAlert componentName="SetsRepsExerciseContainer"/>;
+    return <LoadingAlert componentName="SetsSecondsExerciseContainer"/>;
   }
 
   // Return the last set's data so that it can be pre-filled to the new set
-  const getLastSetData = (): ISetBasicModel => {
+  const getLastSetData = (): ISetSecondsBasicModel => {
     if (!lastSetData) {
       return {
         index: 1,
         amountInKg: 0,
-        reps: 0
+        seconds: 0
       }
     }
     return {
       index: (lastSetData.index + 1),
       amountInKg: lastSetData.amountInKg,
-      reps: lastSetData.reps
+      seconds: lastSetData.seconds
     };
   };
 
@@ -126,8 +126,8 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
 
       // More: https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
       const batch = firebase.firestore().batch();
-      currentExerciseData.sets.forEach((setUid: string) => batch.delete(getSetDocument(setUid)));
-      batch.delete(getSetsRepsExerciseDocument(setsRepsExerciseUid));
+      currentExerciseData.sets.forEach((setUid: string) => batch.delete(getSetsSecondDocument(setUid)));
+      batch.delete(getSetsSecondsExerciseDocument(setsSecondsExerciseUid));
       batch.delete(getExerciseDocument(exerciseUid));
       batch.update(getDayDocument(dayUid), {exercises: recalculatedExercises});
       await batch.commit();
@@ -143,7 +143,7 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
       <tr>
         <th style={{width: "10%"}}>#</th>
         <th style={{width: "45%"}}>{t("Amount in KG")}</th>
-        <th style={{width: "45%"}}>{t("Repetitions")}</th>
+        <th style={{width: "45%"}}>{t("Seconds")}</th>
       </tr>
       </thead>
 
@@ -152,12 +152,12 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
       {currentExerciseData.sets.map((setUid, i) => {
         if ((i + 1 ) === currentExerciseData.sets.length) {
           // Pass the setter for the last set to the last set
-          return <SetsRepsTableRowView key={setUid} setUid={setUid} disabled={addSetViewVisible} setLastSetData={setLastSetData}/>;
+          return <SetsSecondsTableRowView key={setUid} setUid={setUid} disabled={addSetViewVisible} setLastSetData={setLastSetData}/>;
         }
-        return <SetsRepsTableRowView key={setUid} setUid={setUid} disabled={addSetViewVisible}/>;
+        return <SetsSecondsTableRowView key={setUid} setUid={setUid} disabled={addSetViewVisible}/>;
       })}
 
-      {addSetViewVisible && <SetsRepsTableRowForm exerciseUid={currentExerciseData.uid} setAddSetViewVisible={setAddSetViewVisible} initialData={getLastSetData()}/>}
+      {addSetViewVisible && <SetsSecondsTableRowForm exerciseUid={currentExerciseData.uid} setAddSetViewVisible={setAddSetViewVisible} initialData={getLastSetData()}/>}
 
       </tbody>
 
@@ -192,13 +192,13 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
   );
 };
 
-interface ISetsRepsExerciseContainerProps {
-  setsRepsExerciseUid: string
+interface SetsSecondsExerciseContainerProps {
+  setsSecondsExerciseUid: string
   exerciseUid: string,
 }
 
-interface ISetsRepsExerciseContainerRouter {
+interface SetsSecondsExerciseContainerRouter {
   router: Router
 }
 
-export default withRouter(SetsRepsExerciseContainer);
+export default withRouter(SetsSecondsExerciseContainer);

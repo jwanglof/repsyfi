@@ -42,7 +42,7 @@ const Footer: FunctionComponent<IFooterRouter & IFooterProps> = ({router}) => {
 
   return (<footer>
     <Navbar color="dark" fixed="bottom" dark>
-      {timerRunning ? <FooterDurationTimer/> : <NavbarBrand href="#" onClick={() => navigateToRoute(RouteNames.ROOT)} className="mr-auto text-white-50">repsify</NavbarBrand>}
+      {timerRunning ? <FooterDurationTimer/> : <NavbarBrand href="#" onClick={() => navigateToRoute(RouteNames.ROOT)} className="mr-auto text-white-50">repsyfi</NavbarBrand>}
       <NavbarToggler onClick={toggleNavbar} className="mr-2" />
       <Collapse isOpen={!collapsed} navbar>
         <Nav navbar>

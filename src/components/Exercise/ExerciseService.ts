@@ -1,11 +1,17 @@
 import {deleteSet, deleteSetsRepsExercise, getSetsRepsExercise} from '../SetsReps/SetsRepsService';
 import firebase from '../../config/firebase';
 import isEmpty from 'lodash/isEmpty';
-import {IExerciseBasicModel, IExerciseModel, IExerciseModelWithoutUid} from '../../models/IExerciseModel';
+import {
+  IExerciseBasicModel,
+  IExerciseHeaderModel,
+  IExerciseModel,
+  IExerciseModelWithoutUid
+} from '../../models/IExerciseModel';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {FirebaseCollectionNames, getExerciseErrorObject, getNowTimestamp} from '../../config/FirebaseUtils';
 import {Versions} from '../../models/IBaseModel';
 import {deleteTimeDistanceExercise} from '../TimeDistance/TimeDistanceService';
+import {deleteSetsSeconds, deleteSetsSecondsExercise, getSetsSecondsExercise} from '../SetsSeconds/SetsSecondsService';
 
 export const getExercise = async (exerciseUid: string): Promise<IExerciseModel> => {
   const querySnapshot = await firebase.firestore()
@@ -29,6 +35,7 @@ export const getExercise = async (exerciseUid: string): Promise<IExerciseModel> 
 };
 
 export const deleteExercise = async (exerciseUid: string): Promise<void> => {
+  // TODO Make this a batch update/delete! See how in SetsSecondsExerciseContainer#delExercise !!
   const exerciseData = await getExercise(exerciseUid);
 
   if (exerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS) {
@@ -40,6 +47,13 @@ export const deleteExercise = async (exerciseUid: string): Promise<void> => {
     await deleteSetsRepsExercise(setsRepsData.uid);
   } else if (exerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE) {
     await deleteTimeDistanceExercise(exerciseData.typeUid);
+  } else if (exerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS) {
+    const setsRepsData = await getSetsSecondsExercise(exerciseData.typeUid);
+    // Remove all sets that exist on the exercise
+    if (setsRepsData.sets.length) {
+      await Promise.all(setsRepsData.sets.map(setUid => deleteSetsSeconds(setUid)));
+    }
+    await deleteSetsSecondsExercise(setsRepsData.uid);
   } else {
     console.warn(`${exerciseData.type} is not supported to be deleted!`);
   }
@@ -48,6 +62,17 @@ export const deleteExercise = async (exerciseUid: string): Promise<void> => {
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISES)
     .doc(exerciseUid)
     .delete();
+};
+
+
+export const deleteONLYExercise = async (exerciseUid: string): Promise<void> => {
+  return await getExerciseDocument(exerciseUid).delete();
+};
+
+export const getExerciseDocument = (exerciseUid: string): any => {
+  return firebase.firestore()
+    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISES)
+    .doc(exerciseUid)
 };
 
 export const addExerciseAndGetUid = async (exerciseData: IExerciseBasicModel, ownerUid: string): Promise<string> => {
@@ -65,11 +90,9 @@ export const addExerciseAndGetUid = async (exerciseData: IExerciseBasicModel, ow
   return exerciseDocRef.id;
 };
 
-export const updateExercise = async(exerciseUid: string, exerciseHeaderData: IExerciseBasicModel): Promise<void> => {
-  const data: IExerciseBasicModel = {
-    exerciseName: exerciseHeaderData.exerciseName,
-    typeUid: exerciseHeaderData.typeUid,
-    type: exerciseHeaderData.type
+export const updateExercise = async(exerciseUid: string, exerciseHeaderData: IExerciseHeaderModel): Promise<void> => {
+  const data: IExerciseHeaderModel = {
+    exerciseName: exerciseHeaderData.exerciseName
   };
   return await firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISES)

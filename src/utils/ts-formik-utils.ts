@@ -5,23 +5,12 @@ export interface IFormikProps {
   name: string,
   type?: InputType,
   labelHidden?: boolean,
-  inputProps?: IFormikInputProps,
-  min?: number
+  inputProps?: IFormikInputProps
 }
 
 interface IFormikInputProps {
   disabled?: boolean,
-  min?: number
+  min?: number,
+  autoFocus?: boolean,
+  step?: string
 }
-
-
-/*FieldFormGroup.propTypes = {
-  inputProps: PropTypes.shape({
-    disabled: PropTypes.bool
-  }),
-  type: PropTypes.string,
-  labelHidden: PropTypes.bool,
-  labelText: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-};
-*/

@@ -10,7 +10,7 @@ import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {IDayModel} from '../../models/IDayModel';
 import {deleteDay, endDayNow} from './DayService';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
-import {Button, ButtonGroup, Col, Row} from 'reactstrap';
+import {Alert, Button, ButtonGroup, Col, Row} from 'reactstrap';
 import {getFormattedDate, getTitle} from './DayUtils';
 import ExerciseForm from '../Exercise/ExerciseForm';
 import ExerciseTypeContainer from '../Exercise/ExerciseTypeContainer';
@@ -116,7 +116,8 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
       {addExerciseViewVisible && <ExerciseForm setAddExerciseViewVisible={setAddExerciseViewVisible}/>}
 
       <Row>
-        {currentData.exercises.length && orderBy(currentData.exercises, 'index', 'desc').map(e => <ExerciseTypeContainer key={e.exerciseUid} exerciseUid={e.exerciseUid} dayUid={dayUid}/>)}
+        {!currentData.exercises.length && <Col xs={12}><Alert color="success">{t("No exercises added")}</Alert></Col>}
+        {currentData.exercises.length > 0 && orderBy(currentData.exercises, 'index', 'desc').map(e => <ExerciseTypeContainer key={e.exerciseUid} exerciseUid={e.exerciseUid} dayUid={dayUid}/>)}
       </Row>
 
       <Row>

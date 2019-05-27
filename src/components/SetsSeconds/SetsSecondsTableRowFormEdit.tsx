@@ -1,7 +1,6 @@
 import React, {FunctionComponent, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
-import {ISetBasicModel, ISetBasicUpdateModel, ISetModel} from '../../models/ISetModel';
 import {Formik, FormikActions} from 'formik';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import FormikField from '../Formik/FormikField';
@@ -10,27 +9,28 @@ import isNumber from 'lodash/isNumber';
 // TODO :(
 // @ts-ignore
 import {Form} from 'react-formik-ui';
-import {updateSetsRepsExercise} from './SetsRepsService';
+import {ISetSecondsBasicModel, ISetSecondsBasicUpdateModel, ISetSecondsModel} from '../../models/ISetSecondsModel';
+import {updateSetsSecondsExercise} from './SetsSecondsService';
 
-const SetsRepsTableRowFormEdit: FunctionComponent<ISetsRepsTableRowFormEditProps> = ({ initialData, setAddSetViewVisible }) => {
+const SetsSecondsTableRowFormEdit: FunctionComponent<ISetsSecondsTableRowFormEditProps> = ({ initialData, setAddSetViewVisible }) => {
   const { t } = useTranslation();
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
 
   if (submitErrorMessage) {
-    return <tr><td colSpan={3}><ErrorAlert errorText={submitErrorMessage} componentName="SetsRepsTableRowAdd"/></td></tr>;
+    return <tr><td colSpan={3}><ErrorAlert errorText={submitErrorMessage} componentName="SetsSecondsTableRowFormEdit"/></td></tr>;
   }
 
-  const onSubmit = async (values: ISetBasicModel, actions: FormikActions<ISetBasicModel>) => {
+  const onSubmit = async (values: ISetSecondsBasicModel, actions: FormikActions<ISetSecondsBasicModel>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
 
     try {
-      const data: ISetBasicUpdateModel = {
+      const data: ISetSecondsBasicUpdateModel = {
         amountInKg: values.amountInKg,
-        reps: values.reps
+        seconds: values.seconds
       };
-      await updateSetsRepsExercise(initialData.uid, data);
+      await updateSetsSecondsExercise(initialData.uid, data);
 
       // Hide this form
       setAddSetViewVisible(false);
@@ -41,18 +41,18 @@ const SetsRepsTableRowFormEdit: FunctionComponent<ISetsRepsTableRowFormEditProps
     actions.setSubmitting(false);
   };
 
-  const validate = (values: ISetsRepsTableRowFormEditValidate): ISetsRepsTableRowFormEditValidate | {} => {
-    const errors: ISetsRepsTableRowFormEditValidateErrors = {};
+  const validate = (values: ISetsSecondsTableRowFormEditValidate): ISetsSecondsTableRowFormEditValidate | {} => {
+    const errors: ISetsSecondsTableRowFormEditValidateErrors = {};
     if (!isNumber(values.amountInKg) || values.amountInKg && values.amountInKg < 0) {
       errors.amountInKg = t("Amount must exist, and be 0 or higher");
     }
-    if (!isNumber(values.reps) || values.reps && values.reps <= 0) {
-      errors.reps = t("Repetitions must exist, and be higher than 0");
+    if (!isNumber(values.seconds) || values.seconds && values.seconds <= 0) {
+      errors.seconds = t("Seconds must exist, and be higher than 0");
     }
     return errors;
   };
 
-  // TODO Merge this Form with the form in SetsRepsTableRowForm!
+  // TODO Merge this Form with the form in SetsSecondsTableRowForm!
   return (
     <Formik
       initialValues={initialData}
@@ -68,7 +68,7 @@ const SetsRepsTableRowFormEdit: FunctionComponent<ISetsRepsTableRowFormEditProps
                 <FormikField name="amountInKg" labelText={t("Amount in KG")} type="number" labelHidden inputProps={{min: 0, autoFocus: true}}/>
               </td>
               <td>
-                <FormikField name="reps" labelText={t("Repetitions")} type="number" labelHidden inputProps={{min: 0}}/>
+                <FormikField name="seconds" labelText={t("Seconds")} type="number" labelHidden inputProps={{min: 0}}/>
               </td>
             </tr>
             <tr>
@@ -88,19 +88,19 @@ const SetsRepsTableRowFormEdit: FunctionComponent<ISetsRepsTableRowFormEditProps
   );
 };
 
-interface ISetsRepsTableRowFormEditProps {
-  initialData: ISetModel,
+interface ISetsSecondsTableRowFormEditProps {
+  initialData: ISetSecondsModel,
   setAddSetViewVisible: ((visible: boolean) => void),
 }
 
-interface ISetsRepsTableRowFormEditValidate {
+interface ISetsSecondsTableRowFormEditValidate {
   amountInKg?: number,
-  reps?: number,
+  seconds?: number,
 }
 
-interface ISetsRepsTableRowFormEditValidateErrors {
+interface ISetsSecondsTableRowFormEditValidateErrors {
   amountInKg?: string,
-  reps?: string,
+  seconds?: string,
 }
 
-export default SetsRepsTableRowFormEdit;
+export default SetsSecondsTableRowFormEdit;

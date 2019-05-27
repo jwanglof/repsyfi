@@ -1,7 +1,6 @@
 import React, {FunctionComponent, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
-import {ISetBasicModel, ISetBasicUpdateModel, ISetModel} from '../../models/ISetModel';
 import {Formik, FormikActions} from 'formik';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import FormikField from '../Formik/FormikField';
@@ -10,27 +9,36 @@ import isNumber from 'lodash/isNumber';
 // TODO :(
 // @ts-ignore
 import {Form} from 'react-formik-ui';
-import {updateSetsRepsExercise} from './SetsRepsService';
+import {ISetSecondsBasicModel} from '../../models/ISetSecondsModel';
+import {addNewSetSecondsAndGetUid, addSetSecondsToSetsSecondsExerciseArray} from './SetsSecondsService';
+import {getCurrentUsersUid} from '../../config/FirebaseUtils';
 
-const SetsRepsTableRowFormEdit: FunctionComponent<ISetsRepsTableRowFormEditProps> = ({ initialData, setAddSetViewVisible }) => {
+const SetsSecondsTableRowForm: FunctionComponent<ISetsSecondsTableRowFormProps> = ({ exerciseUid, initialData, setAddSetViewVisible }) => {
   const { t } = useTranslation();
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
 
   if (submitErrorMessage) {
-    return <tr><td colSpan={3}><ErrorAlert errorText={submitErrorMessage} componentName="SetsRepsTableRowAdd"/></td></tr>;
+    return <tr><td colSpan={3}><ErrorAlert errorText={submitErrorMessage} componentName="SetsSecondsTableRowForm"/></td></tr>;
   }
 
-  const onSubmit = async (values: ISetBasicModel, actions: FormikActions<ISetBasicModel>) => {
+  if (!exerciseUid) {
+    return <tr><td colSpan={3}><ErrorAlert errorText="Need an exercise UID to add a set!" componentName="SetsSecondsTableRowForm"/></td></tr>;
+  }
+
+  const onSubmit = async (values: ISetSecondsBasicModel, actions: FormikActions<ISetSecondsBasicModel>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
 
     try {
-      const data: ISetBasicUpdateModel = {
+      const data: ISetSecondsBasicModel = {
+        index: values.index,
         amountInKg: values.amountInKg,
-        reps: values.reps
+        seconds: values.seconds
       };
-      await updateSetsRepsExercise(initialData.uid, data);
+      const ownerUid = await getCurrentUsersUid();
+      const uid = await addNewSetSecondsAndGetUid(data, ownerUid);
+      await addSetSecondsToSetsSecondsExerciseArray(uid, exerciseUid);
 
       // Hide this form
       setAddSetViewVisible(false);
@@ -41,18 +49,20 @@ const SetsRepsTableRowFormEdit: FunctionComponent<ISetsRepsTableRowFormEditProps
     actions.setSubmitting(false);
   };
 
-  const validate = (values: ISetsRepsTableRowFormEditValidate): ISetsRepsTableRowFormEditValidate | {} => {
-    const errors: ISetsRepsTableRowFormEditValidateErrors = {};
+  const validate = (values: ISetsSecondsTableRowFormValidate): ISetsSecondsTableRowFormValidate | {} => {
+    const errors: ISetsSecondsTableRowFormValidateErrors = {};
     if (!isNumber(values.amountInKg) || values.amountInKg && values.amountInKg < 0) {
       errors.amountInKg = t("Amount must exist, and be 0 or higher");
     }
-    if (!isNumber(values.reps) || values.reps && values.reps <= 0) {
-      errors.reps = t("Repetitions must exist, and be higher than 0");
+    if (!isNumber(values.seconds) || values.seconds && values.seconds <= 0) {
+      errors.seconds = t("Repetitions must exist, and be higher than 0");
+    }
+    if (!isNumber(values.index) || values.index && values.index <= 0) {
+      errors.index = t("Index must exist, and be higher than 0")
     }
     return errors;
   };
 
-  // TODO Merge this Form with the form in SetsRepsTableRowForm!
   return (
     <Formik
       initialValues={initialData}
@@ -68,7 +78,7 @@ const SetsRepsTableRowFormEdit: FunctionComponent<ISetsRepsTableRowFormEditProps
                 <FormikField name="amountInKg" labelText={t("Amount in KG")} type="number" labelHidden inputProps={{min: 0, autoFocus: true}}/>
               </td>
               <td>
-                <FormikField name="reps" labelText={t("Repetitions")} type="number" labelHidden inputProps={{min: 0}}/>
+                <FormikField name="seconds" labelText={t("Seconds")} type="number" labelHidden inputProps={{min: 0}}/>
               </td>
             </tr>
             <tr>
@@ -88,19 +98,22 @@ const SetsRepsTableRowFormEdit: FunctionComponent<ISetsRepsTableRowFormEditProps
   );
 };
 
-interface ISetsRepsTableRowFormEditProps {
-  initialData: ISetModel,
+interface ISetsSecondsTableRowFormProps {
+  exerciseUid: string,
+  initialData: ISetSecondsBasicModel,
   setAddSetViewVisible: ((visible: boolean) => void),
 }
 
-interface ISetsRepsTableRowFormEditValidate {
+interface ISetsSecondsTableRowFormValidate {
   amountInKg?: number,
-  reps?: number,
+  seconds?: number,
+  index?: number
 }
 
-interface ISetsRepsTableRowFormEditValidateErrors {
+interface ISetsSecondsTableRowFormValidateErrors {
   amountInKg?: string,
-  reps?: string,
+  seconds?: string,
+  index?: string
 }
 
-export default SetsRepsTableRowFormEdit;
+export default SetsSecondsTableRowForm;

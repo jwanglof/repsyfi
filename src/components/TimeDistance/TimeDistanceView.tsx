@@ -1,59 +1,148 @@
-import React, {FunctionComponent} from 'react';
+import React, {FunctionComponent, useContext, useEffect, useState} from 'react';
 import {ITimeDistanceModel} from '../../models/ITimeDistanceModel';
-import {Button, Table} from 'reactstrap';
+import {Button, ButtonGroup, DropdownItem, DropdownMenu, DropdownToggle, Table} from 'reactstrap';
 import {useTranslation} from 'react-i18next';
 import {formatSecondsToPrettyPrint} from '../../utils/time-utils';
 import {withRouter} from 'react-router5';
 import {Router} from 'router5';
 import {RouteNames} from '../../routes';
+import ButtonDropdown from 'reactstrap/lib/ButtonDropdown';
+import {ExerciseHeaderEditCtx} from '../Exercise/ExerciseTypeContainer';
+import {getExerciseDocument} from '../Exercise/ExerciseService';
+import {getDay, getDayDocument} from '../Day/DayService';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
+import {getTimeDistanceDocument, getTimeDistanceExercise} from './TimeDistanceService';
+import LoadingAlert from '../LoadingAlert/LoadingAlert';
+import firebase from '../../config/firebase';
+import {remove} from 'lodash';
+import {recalculateIndexes} from '../../utils/exercise-utils';
 
-const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanceViewProps> = ({router, currentExerciseData, setEditVisible}) => {
+const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanceViewProps> = ({router, timeDistanceUid, setEditVisible, exerciseUid}) => {
   const { t } = useTranslation();
+
+  const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
+  const [exerciseDeleteStep2Shown, setExerciseDeleteStep2Shown] = useState<boolean>(false);
+  const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
+  const [timeDistanceData, setTimeDistanceDataData] = useState<ITimeDistanceModel | undefined>(undefined);
+  const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
+
+  const [headerEditVisible, setHeaderEditVisible] = useContext(ExerciseHeaderEditCtx);
+
   const {name: routeName} = router.getState();
   const detailedDayView = (routeName === RouteNames.SPECIFIC_DAY);
+
+  useEffect(() => {
+    const fetchExerciseData = async () => {
+      try {
+        const res = await getTimeDistanceExercise(timeDistanceUid);
+        setTimeDistanceDataData(res);
+      } catch (e) {
+        console.error(e);
+        setFetchDataError(e.message);
+      }
+    };
+
+    fetchExerciseData();
+  }, []);
+
+  if (fetchDataError) {
+    return <ErrorAlert errorText={fetchDataError} componentName="TimeDistanceView"/>;
+  }
+
+  if (!timeDistanceData) {
+    return <LoadingAlert componentName="TimeDistanceView"/>;
+  }
+
+  const delExercise = async () => {
+    setSubmitErrorMessage(undefined);
+
+    try {
+      const dayUid = router.getState().params.uid;
+      const day = await getDay(dayUid);
+
+      // Recalculate the indexes of the remaining exercises
+      // Need this so they keep the order, and when adding a new exercise that an index isn't duplicated
+      const exercises = day.exercises;
+      const removedExercise = remove(exercises, e => e.exerciseUid === exerciseUid);
+      const removedExerciseIndex = removedExercise[0].index;
+      const recalculatedExercises: any = recalculateIndexes(removedExerciseIndex, exercises);
+
+      // More: https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
+      const batch = firebase.firestore().batch();
+      batch.delete(getTimeDistanceDocument(timeDistanceUid));
+      batch.delete(getExerciseDocument(exerciseUid));
+      batch.update(getDayDocument(dayUid), {exercises: recalculatedExercises});
+      await batch.commit();
+    } catch (e) {
+      console.error(e);
+      setSubmitErrorMessage(e.message);
+    }
+  };
+
+  const toggleActionDropdown = () => {
+    setExerciseDeleteStep2Shown(false);
+    setDropdownVisible(!dropdownVisible)
+  };
 
   return (<Table size="sm" className="mb-0">
     <tbody>
     <tr>
-      <td>{t("Total time")}</td>
-      <td>{formatSecondsToPrettyPrint(currentExerciseData.totalTimeSeconds)}</td>
+      <td>{t("Exercise time")}</td>
+      <td>{formatSecondsToPrettyPrint(timeDistanceData.totalTimeSeconds)}</td>
     </tr>
     <tr>
-      <td>{t("Total warm-up")}</td>
-      <td>{formatSecondsToPrettyPrint(currentExerciseData.totalWarmupSeconds)}</td>
+      <td>{t("Warm-up time")}</td>
+      <td>{formatSecondsToPrettyPrint(timeDistanceData.totalWarmupSeconds)}</td>
     </tr>
 
     <tr>
-      <td>{t("Total distance")}</td>
-      <td>{currentExerciseData.totalDistanceMeter}m</td>
+      <td>{t("Distance (meters)")}</td>
+      <td>{timeDistanceData.totalDistanceMeter}m</td>
     </tr>
     <tr>
-      <td>{t("Total kcal")}</td>
-      <td>{currentExerciseData.totalKcal}</td>
+      <td>{t("Kcal")}</td>
+      <td>{timeDistanceData.totalKcal}</td>
     </tr>
 
     <tr>
       <td>{t("Speed min")}</td>
-      <td>{currentExerciseData.speedMin}</td>
+      <td>{timeDistanceData.speedMin}</td>
     </tr>
     <tr>
       <td>{t("Speed max")}</td>
-      <td>{currentExerciseData.speedMax}</td>
+      <td>{timeDistanceData.speedMax}</td>
     </tr>
 
     <tr>
       <td>{t("Incline min")}</td>
-      <td>{currentExerciseData.inclineMin}</td>
+      <td>{timeDistanceData.inclineMin}</td>
     </tr>
     <tr>
       <td>{t("Incline max")}</td>
-      <td>{currentExerciseData.inclineMax}</td>
+      <td>{timeDistanceData.inclineMax}</td>
     </tr>
     </tbody>
     {detailedDayView && <tfoot>
+    {submitErrorMessage && <tr><td colSpan={2}><ErrorAlert errorText={submitErrorMessage}/></td></tr>}
     <tr>
       <td colSpan={2}>
-        <Button color="success" block onClick={() => setEditVisible(true)}>{t("Edit")}</Button>
+        <ButtonGroup className="w-100">
+          <Button color="success" onClick={() => setEditVisible(true)}>{t("Edit")}</Button>
+          <ButtonDropdown isOpen={dropdownVisible} toggle={toggleActionDropdown}>
+            <DropdownToggle caret>
+              {t("Actions")}
+            </DropdownToggle>
+            <DropdownMenu right>
+              <DropdownItem onClick={() => setHeaderEditVisible(true)} disabled={headerEditVisible}>
+                {`${t("Edit")} ${t("name")}`}
+              </DropdownItem>
+              <DropdownItem toggle={false}>
+                {!exerciseDeleteStep2Shown && <span onClick={() => setExerciseDeleteStep2Shown(true)}>{t("Delete")} {t("exercise")}</span>}
+                {exerciseDeleteStep2Shown && <span className="text-danger" onClick={delExercise}>{t("Click again to delete!")}</span>}
+              </DropdownItem>
+            </DropdownMenu>
+          </ButtonDropdown>
+        </ButtonGroup>
       </td>
     </tr>
     </tfoot>}
@@ -61,8 +150,9 @@ const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanc
 };
 
 interface ITimeDistanceViewProps {
-  currentExerciseData: ITimeDistanceModel,
-  setEditVisible: ((visible: boolean) => void)
+  timeDistanceUid: string,
+  setEditVisible: ((visible: boolean) => void),
+  exerciseUid: string
 }
 
 interface ITimeDistanceViewRouter {
