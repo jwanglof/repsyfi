@@ -20,6 +20,14 @@ interface IDayServiceCache {
 }
 const dayServiceCache: IDayServiceCache = {locations: []};
 
+export const addLocationToCache = (location: string) => {
+  if (dayServiceCache.locations.length > 0) {
+    if (dayServiceCache.locations.indexOf(location) === -1) {
+      dayServiceCache.locations.push(location);
+    }
+  }
+};
+
 export const getDay = async (dayUid: string): Promise<IDayModel> => {
   return firebase
     .firestore()
@@ -151,9 +159,9 @@ export const addExerciseToDayArray = async (exerciseUid: string, dayUid: string)
     .update({exercises: firebase.firestore.FieldValue.arrayUnion(exerciseData)});
 };
 
-export const getAllLocations = async (): Promise<IDayServiceCache> => {
+export const getAllLocations = async (): Promise<IDayServiceCache['locations']> => {
   if (dayServiceCache.locations.length > 0) {
-    return dayServiceCache;
+    return dayServiceCache.locations;
   }
 
   const ownerUid = await getCurrentUsersUid();
@@ -205,7 +213,7 @@ export const getAllLocations = async (): Promise<IDayServiceCache> => {
 
   dayServiceCache.locations = locations;
 
-  return dayServiceCache;
+  return dayServiceCache.locations;
 };
 
 export const getDayDocument = (dayUid: string): any => {

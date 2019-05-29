@@ -2,7 +2,7 @@ import React, {FunctionComponent, useEffect, useReducer, useState} from 'react';
 import {Router} from 'router5';
 import {withRoute} from 'react-router5';
 import {useTranslation} from 'react-i18next';
-import {addDay, getAllLocations} from './DayService';
+import {addDay, addLocationToCache, getAllLocations} from './DayService';
 import format from 'date-fns/format';
 import {dateFormat, timeFormat} from '../../utils/formik-utils';
 import {IDayBasicModel} from '../../models/IDayModel';
@@ -20,6 +20,7 @@ import isDate from 'date-fns/isDate';
 import {RouteNames} from '../../routes';
 import FieldFormGroup from '../Formik/FieldFormGroup';
 import {useGlobalState} from '../../state';
+import AutocompleteFormGroup from '../Formik/AutocompleteFormGroup';
 
 const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
   const { t } = useTranslation();
@@ -34,13 +35,15 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
   };
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
+  const [locations, setLocations] = useState<Array<string>>([]);
   const setTimerRunning = useGlobalState('timerRunning')[1];
 
   useEffect(() => {
     const fetchLocations = async () => {
       const locations = await getAllLocations();
-      console.log(2222, locations);
+      setLocations(locations);
     };
+    // noinspection JSIgnoredPromiseFromCall
     fetchLocations();
   }, []);
 
@@ -69,6 +72,10 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
       };
       const newUid = await addDay(data, ownerUid);
       setTimerRunning(true);
+
+      // Add the location to the cache
+      addLocationToCache(values.location);
+
       router.navigate(RouteNames.SPECIFIC_DAY, {uid: newUid}, {reload: true});
     } catch (e) {
       console.error(e);
@@ -97,8 +104,8 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
           validate={validate}
           // render={({ errors, status, touched, isSubmitting }) => (
           render={({ errors, isSubmitting }) => (
-            <Form>
-              <FieldFormGroup name="location" labelText={t("Workout location")}/>
+            <Form mode='structured'>
+              <AutocompleteFormGroup name="location" labelText={t("Workout location")} suggestions={locations}/>
               <FieldFormGroup name="muscleGroups" labelText={t("Muscle groups")}/>
               <FieldFormGroup name="title" labelText={t("Title")}/>
               <FieldFormGroup name="notes" labelText={t("Notes")}/>

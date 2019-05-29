@@ -5,6 +5,7 @@ export interface IFormikProps {
   name: string,
   type?: InputType,
   labelHidden?: boolean,
+  suggestions?: string[],
   inputProps?: IFormikInputProps
 }
 
