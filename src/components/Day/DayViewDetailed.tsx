@@ -58,8 +58,14 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
             exercises: snapshotData.exercises,
             startTimestamp: snapshotData.startTimestamp,
             endTimestamp: snapshotData.endTimestamp,
-            version: snapshotData.version
+            version: snapshotData.version,
+            questionnaire: snapshotData.questionnaire
           });
+
+          // Show the questionnaire if the user have ended the day
+          if (snapshotData.endTimestamp) {
+            setShowQuestionnaire(true);
+          }
         }
       }, err => {
         console.error('error:', err);
@@ -144,7 +150,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
         </Col>
       </Row>
 
-      <DayQuestionnaire show={!showQuestionnaire}/>
+      <DayQuestionnaire dayData={currentData} show={showQuestionnaire}/>
     </>
   );
 };
