@@ -14,6 +14,20 @@ import getUnixTime from 'date-fns/getUnixTime';
 import subDays from 'date-fns/subDays';
 import {Versions} from '../../models/IBaseModel';
 
+// "Cache"
+interface IDayServiceCache {
+  locations: Array<string>
+}
+const dayServiceCache: IDayServiceCache = {locations: []};
+
+export const addLocationToCache = (location: string) => {
+  if (dayServiceCache.locations.length > 0) {
+    if (dayServiceCache.locations.indexOf(location) === -1) {
+      dayServiceCache.locations.push(location);
+    }
+  }
+};
+
 export const getDay = async (dayUid: string): Promise<IDayModel> => {
   return firebase
     .firestore()
@@ -143,6 +157,63 @@ export const addExerciseToDayArray = async (exerciseUid: string, dayUid: string)
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
     .doc(dayUid)
     .update({exercises: firebase.firestore.FieldValue.arrayUnion(exerciseData)});
+};
+
+export const getAllLocations = async (): Promise<IDayServiceCache['locations']> => {
+  if (dayServiceCache.locations.length > 0) {
+    return dayServiceCache.locations;
+  }
+
+  const ownerUid = await getCurrentUsersUid();
+
+  const locations: Array<string> = [];
+
+  await firebase.firestore()
+    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
+    .orderBy("createdTimestamp", "desc")
+    .where("ownerUid", "==", ownerUid)
+    .limit(1)
+    .get()
+    .then(res => {
+      let firstDayLocation = '';
+      res.forEach((d: any) => {
+        firstDayLocation = d.data().location;
+      });
+      locations.push(firstDayLocation);
+      return firstDayLocation;
+    });
+
+  await firebase.firestore()
+    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
+    .where("location", "<", locations[0])
+    .where("ownerUid", "==", ownerUid)
+    .limit(10)
+    .get()
+    .then(res => {
+      res.forEach((d: any) => {
+        if (locations.indexOf(d.data().location) === -1) {
+          locations.push(d.data().location);
+        }
+      });
+    });
+
+  await firebase.firestore()
+    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
+    .where("location", ">", locations[0])
+    .where("ownerUid", "==", ownerUid)
+    .limit(10)
+    .get()
+    .then(res => {
+      res.forEach((d: any) => {
+        if (locations.indexOf(d.data().location) === -1) {
+          locations.push(d.data().location);
+        }
+      });
+    });
+
+  dayServiceCache.locations = locations;
+
+  return dayServiceCache.locations;
 };
 
 export const getDayDocument = (dayUid: string): any => {
