@@ -2,12 +2,15 @@ import React, {FunctionComponent, useContext, useState} from 'react';
 import {IExerciseHeaderModel, IExerciseModel} from '../../models/IExerciseModel';
 import {useTranslation} from 'react-i18next';
 import {updateExercise} from './ExerciseService';
-import {Form, Formik, FormikActions} from 'formik';
+import {Formik, FormikActions} from 'formik';
 import {Button, ButtonGroup} from 'reactstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import FormikField from '../Formik/FormikField';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {ExerciseHeaderEditCtx} from './ExerciseTypeContainer';
+// TODO :(
+// @ts-ignore
+import {Form} from 'react-formik-ui';
 
 const ExerciseHeader: FunctionComponent<IExerciseHeaderProps> = ({exerciseData}) => {
   const { t } = useTranslation();
@@ -53,7 +56,7 @@ const ExerciseHeader: FunctionComponent<IExerciseHeaderProps> = ({exerciseData})
           {submitErrorMessage && <ErrorAlert errorText={submitErrorMessage} componentName="ExerciseHeader"/>}
           {isSubmitting && <FontAwesomeIcon icon="spinner" spin/>}
           {!isSubmitting && <>
-            <Form>
+            <Form mode='structured' themed>
               <FormikField labelText="Exercise name" name="exerciseName" labelHidden inputProps={{autoFocus: true}}/>
               <ButtonGroup className="w-100">
                 <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t("Save")}</Button>

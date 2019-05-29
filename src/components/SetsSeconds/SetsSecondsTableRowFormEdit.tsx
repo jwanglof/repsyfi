@@ -73,7 +73,7 @@ const SetsSecondsTableRowFormEdit: FunctionComponent<ISetsSecondsTableRowFormEdi
             </tr>
             <tr>
               <td colSpan={3}>
-                <Form>
+                <Form mode='structured' themed>
                   <ButtonGroup className="w-100">
                     <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t("Save set")}</Button>
                     <Button color="danger" onClick={() => setAddSetViewVisible(false)}>{t("Discard set")}</Button>

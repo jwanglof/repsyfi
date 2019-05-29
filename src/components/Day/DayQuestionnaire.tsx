@@ -125,7 +125,7 @@ const DayQuestionnaire: FunctionComponent<IDayQuestionnaireRouter & IDayQuestion
       render={({errors, isSubmitting}) => (
         <>
           {isSubmitting && <div className="text-center"><FontAwesomeIcon icon="spinner" spin/></div>}
-          {!isSubmitting && <Form>
+          {!isSubmitting && <Form mode='structured' themed>
             <Row>
               <Col className="mt-3" xs={12}>
                 <Card>

@@ -104,7 +104,7 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
           validate={validate}
           // render={({ errors, status, touched, isSubmitting }) => (
           render={({ errors, isSubmitting }) => (
-            <Form mode='structured'>
+            <Form mode='structured' themed>
               <AutocompleteFormGroup name="location" labelText={t("Workout location")} suggestions={locations}/>
               <FieldFormGroup name="muscleGroups" labelText={t("Muscle groups")}/>
               <FieldFormGroup name="title" labelText={t("Title")}/>

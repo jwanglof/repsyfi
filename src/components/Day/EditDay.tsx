@@ -116,7 +116,7 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
           validate={validate}
           // render={({ errors, status, touched, isSubmitting }) => (
           render={({ errors, isSubmitting }) => (
-            <Form>
+            <Form mode='structured' themed>
               <FieldFormGroup name="location" labelText={t("Workout location")}/>
               <FieldFormGroup name="muscleGroups" labelText={t("Muscle groups")}/>
               <FieldFormGroup name="title" labelText={t("Title")}/>
