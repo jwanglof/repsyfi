@@ -8,7 +8,8 @@ export interface IDayBasicModel {
   muscleGroups: string,
   title: string,
   notes: string,
-  exercises: Array<IDayExercisesArray>  // IExerciseModel
+  exercises: Array<IDayExercisesArray>,  // IExerciseModel
+  questionnaire?: string
 }
 
 export interface IDayExercisesArray {
@@ -25,7 +26,8 @@ export interface IDayBasicUpdateModel {
   location?: string,
   muscleGroups?: string,
   title?: string,
-  notes?: string
+  notes?: string,
+  questionnaire?: string
 }
 
 export interface IDayUpdateModel extends IDayBasicUpdateModel, IBaseModelUpdating {}

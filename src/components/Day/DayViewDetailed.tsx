@@ -18,6 +18,7 @@ import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
 import firebase from '../../config/firebase';
 import {RouteNames} from '../../routes';
 import {useGlobalState} from '../../state';
+import DayQuestionnaire from './DayQuestionnaire';
 
 const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetailedProps> = ({router, dayUid}) => {
   const { t } = useTranslation();
@@ -32,6 +33,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
   const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
   const [addExerciseViewVisible, setAddExerciseViewVisible] = useState(false);
   const [dayDeleteStep2Shown, setDayDeleteStep2Shown] = useState<boolean>(false);
+  const [showQuestionnaire, setShowQuestionnaire] = useState<boolean>(false);
 
   const setTimerRunning = useGlobalState('timerRunning')[1];
 
@@ -56,8 +58,14 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
             exercises: snapshotData.exercises,
             startTimestamp: snapshotData.startTimestamp,
             endTimestamp: snapshotData.endTimestamp,
-            version: snapshotData.version
+            version: snapshotData.version,
+            questionnaire: snapshotData.questionnaire
           });
+
+          // Show the questionnaire if the user have ended the day
+          if (snapshotData.endTimestamp) {
+            setShowQuestionnaire(true);
+          }
         }
       }, err => {
         console.error('error:', err);
@@ -82,6 +90,9 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
     try {
       await endDayNow(dayUid);
       setTimerRunning(false);
+
+      // Show questionnaire when day ends
+      setShowQuestionnaire(true);
     } catch (e) {
       setUpdateErrorData(e.message);
     }
@@ -138,6 +149,8 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
           </ButtonGroup>
         </Col>
       </Row>
+
+      <DayQuestionnaire dayData={currentData} show={showQuestionnaire}/>
     </>
   );
 };

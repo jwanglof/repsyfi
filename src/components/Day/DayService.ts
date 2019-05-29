@@ -9,12 +9,7 @@ import {
 import firebase, {getCurrentUsersUid} from '../../config/firebase';
 import {deleteExercise} from '../Exercise/ExerciseService';
 import isEmpty from 'lodash/isEmpty';
-import {
-  _getErrorObjectCustomMessage,
-  FirebaseCollectionNames,
-  getDayErrorObject,
-  getNowTimestamp
-} from '../../config/FirebaseUtils';
+import {FirebaseCollectionNames, getDayErrorObject, getNowTimestamp} from '../../config/FirebaseUtils';
 import getUnixTime from 'date-fns/getUnixTime';
 import subDays from 'date-fns/subDays';
 import {Versions} from '../../models/IBaseModel';
