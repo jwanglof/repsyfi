@@ -10,7 +10,7 @@ import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {IDayModel} from '../../models/IDayModel';
 import {deleteDay, endDayNow} from './DayService';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
-import {Button, ButtonGroup, Col, Row} from 'reactstrap';
+import {Alert, Button, ButtonGroup, Col, Row} from 'reactstrap';
 import {getFormattedDate, getTitle} from './DayUtils';
 import ExerciseForm from '../Exercise/ExerciseForm';
 import ExerciseTypeContainer from '../Exercise/ExerciseTypeContainer';
@@ -18,6 +18,7 @@ import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
 import firebase from '../../config/firebase';
 import {RouteNames} from '../../routes';
 import {useGlobalState} from '../../state';
+import DayQuestionnaire from './DayQuestionnaire';
 
 const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetailedProps> = ({router, dayUid}) => {
   const { t } = useTranslation();
@@ -32,6 +33,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
   const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
   const [addExerciseViewVisible, setAddExerciseViewVisible] = useState(false);
   const [dayDeleteStep2Shown, setDayDeleteStep2Shown] = useState<boolean>(false);
+  const [showQuestionnaire, setShowQuestionnaire] = useState<boolean>(false);
 
   const setTimerRunning = useGlobalState('timerRunning')[1];
 
@@ -56,8 +58,14 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
             exercises: snapshotData.exercises,
             startTimestamp: snapshotData.startTimestamp,
             endTimestamp: snapshotData.endTimestamp,
-            version: snapshotData.version
+            version: snapshotData.version,
+            questionnaire: snapshotData.questionnaire
           });
+
+          // Show the questionnaire if the user have ended the day
+          if (snapshotData.endTimestamp) {
+            setShowQuestionnaire(true);
+          }
         }
       }, err => {
         console.error('error:', err);
@@ -82,6 +90,9 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
     try {
       await endDayNow(dayUid);
       setTimerRunning(false);
+
+      // Show questionnaire when day ends
+      setShowQuestionnaire(true);
     } catch (e) {
       setUpdateErrorData(e.message);
     }
@@ -111,7 +122,8 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
       {addExerciseViewVisible && <ExerciseForm setAddExerciseViewVisible={setAddExerciseViewVisible}/>}
 
       <Row>
-        {currentData.exercises.length && orderBy(currentData.exercises, 'index', 'desc').map(e => <ExerciseTypeContainer key={e.exerciseUid} exerciseUid={e.exerciseUid} dayUid={dayUid}/>)}
+        {!currentData.exercises.length && <Col xs={12}><Alert color="success">{t("No exercises added")}</Alert></Col>}
+        {currentData.exercises.length > 0 && orderBy(currentData.exercises, 'index', 'desc').map(e => <ExerciseTypeContainer key={e.exerciseUid} exerciseUid={e.exerciseUid} dayUid={dayUid}/>)}
       </Row>
 
       <Row>
@@ -137,6 +149,8 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
           </ButtonGroup>
         </Col>
       </Row>
+
+      <DayQuestionnaire dayData={currentData} show={showQuestionnaire}/>
     </>
   );
 };

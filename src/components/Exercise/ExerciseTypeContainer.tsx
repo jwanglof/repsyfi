@@ -11,6 +11,7 @@ import ExerciseHeaderView from './ExerciseHeaderView';
 import SetsRepsExerciseContainer from '../SetsReps/SetsRepsExerciseContainer';
 import TimeDistanceExerciseContainer from '../TimeDistance/TimeDistanceExerciseContainer';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
+import SetsSecondsExerciseContainer from '../SetsSeconds/SetsSecondsExerciseContainer';
 
 export const ExerciseHeaderEditCtx = createContext<any>([false, () => {}]);
 
@@ -30,6 +31,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({
       }
     };
 
+    // noinspection JSIgnoredPromiseFromCall
     fetchExerciseData();
   }, []);
 
@@ -52,6 +54,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({
         <CardBody className="mb-0 p-0">
           {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS && <SetsRepsExerciseContainer setsRepsExerciseUid={currentExerciseData.typeUid} exerciseUid={exerciseUid}/>}
           {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE && <TimeDistanceExerciseContainer timeDistanceExerciseUid={currentExerciseData.typeUid} exerciseUid={exerciseUid}/>}
+          {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS && <SetsSecondsExerciseContainer setsSecondsExerciseUid={currentExerciseData.typeUid} exerciseUid={exerciseUid}/>}
         </CardBody>
       </Card>
     </Col>
