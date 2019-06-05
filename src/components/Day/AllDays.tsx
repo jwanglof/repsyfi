@@ -7,7 +7,7 @@ import orderBy from 'lodash/orderBy';
 import {getAllDays10DaysBackInTime} from './DayService';
 import {IDayModel} from '../../models/IDayModel';
 import {Col, Row} from 'reactstrap';
-import TSDayView from './DayView';
+import DayView from './DayView';
 import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
 
 const AllDays: FunctionComponent<IAllDaysProps> = () => {
@@ -30,7 +30,7 @@ const AllDays: FunctionComponent<IAllDaysProps> = () => {
   return (
     <Row>
       <Col xs={12}>
-        {allDays.map(d => <TSDayView key={d.uid} data={d}/>)}
+        {allDays.map(d => <DayView key={d.uid} data={d}/>)}
       </Col>
     </Row>
   );
