@@ -12,6 +12,8 @@ import {RouteNames} from './routes';
 import {Router, State} from 'router5';
 import {GlobalStateProvider} from './state';
 import Faq from './components/Faq/Faq';
+import SettingsPolarLink from './components/Settings/SettingsPolarLink';
+import SettingsMenu from './components/Settings/SettingsMenu';
 
 const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
   const topRouteName: string = route.name.split('.')[0];
@@ -28,6 +30,7 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
       await initializeFirebase();
       setFirebaseIsInitialized(true);
     };
+    // noinspection JSIgnoredPromiseFromCall
     initFirebase();
   }, []);
 
@@ -89,6 +92,15 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
     case RouteNames.DASHBOARD:
       shownComponent = signInReq(<Dashboard/>);
       break;
+    case RouteNames.SETTINGS:
+      shownComponent = signInReq(<SettingsMenu/>);
+      break;
+    case RouteNames.SETTINGS_POLAR_LINK:
+      shownComponent = signInReq(<SettingsPolarLink/>);
+      break;
+    case RouteNames.POLAR_LINK_REDIRECT:
+      shownComponent = <div>POLAR LINK REDIRECT!!!!</div>;
+      break;
     case RouteNames.FAQ:
       shownComponent = <Faq/>;
       break;
@@ -112,5 +124,3 @@ interface IAppRouter {
 }
 
 export default routeNode<any>('app')(withRouter(App));
-
-// export default withRouter(App);

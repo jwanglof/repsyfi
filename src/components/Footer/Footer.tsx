@@ -86,6 +86,11 @@ const Footer: FunctionComponent<IFooterRouter & IFooterProps> = ({router}) => {
                 </NavLink>
               </Col>
               <Col>
+                <NavLink href="#" onClick={() => navigateToRoute(RouteNames.SETTINGS)}>
+                  <FontAwesomeIcon icon="user-cog"/>
+                </NavLink>
+              </Col>
+              <Col>
                 <NavLink href="#" onClick={signOut}>
                   <FontAwesomeIcon icon="sign-out-alt"/> {t("Sign out")}
                 </NavLink>

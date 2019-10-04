@@ -21,10 +21,8 @@ interface IDayServiceCache {
 const dayServiceCache: IDayServiceCache = {locations: []};
 
 export const addLocationToCache = (location: string) => {
-  if (dayServiceCache.locations.length > 0) {
-    if (dayServiceCache.locations.indexOf(location) === -1) {
-      dayServiceCache.locations.push(location);
-    }
+  if (dayServiceCache.locations.length > 0 && dayServiceCache.locations.indexOf(location) === -1) {
+    dayServiceCache.locations.push(location);
   }
 };
 

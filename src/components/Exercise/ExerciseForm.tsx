@@ -1,23 +1,24 @@
-import React, {FunctionComponent, useState} from 'react';
+import React, {FunctionComponent, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {getCurrentUsersUid} from '../../config/FirebaseUtils';
 import {Formik, FormikActions} from 'formik';
 import isEmpty from 'lodash/isEmpty';
-import {addExerciseAndGetUid} from './ExerciseService';
+import {addExerciseAndGetUid, addExerciseNameToCache, getLatest30ExerciseNames} from './ExerciseService';
 import {IExerciseBasicModel} from '../../models/IExerciseModel';
 import {Button, ButtonGroup, Col, FormGroup, Row} from 'reactstrap';
 import FieldFormGroup from '../Formik/FieldFormGroup';
 import SelectFormGroup from '../Formik/SelectFormGroup';
 import {addNewTimeDistanceExerciseAndGetUid} from '../TimeDistance/TimeDistanceService';
 import {addNewSetsRepsExerciseAndGetUid} from '../SetsReps/SetsRepsService';
-import {addExerciseToDayArray} from '../Day/DayService';
+import {addExerciseToDayArray, getAllLocations} from '../Day/DayService';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 import {Router} from 'router5';
 import {withRoute} from 'react-router5';
 import {addNewSetsSecondsExerciseAndGetUid} from '../SetsSeconds/SetsSecondsService';
+import AutocompleteFormGroup from '../Formik/AutocompleteFormGroup';
 
 const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> = ({router, setAddExerciseViewVisible}) => {
   const { t } = useTranslation();
@@ -28,6 +29,16 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
   }
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
+  const [exerciseNames, setExerciseNames] = useState<Array<string>>([]);
+
+  useEffect(() => {
+    const fetchExerciseNames = async () => {
+      const exerciseNames = await getLatest30ExerciseNames();
+      setExerciseNames(exerciseNames);
+    };
+    // noinspection JSIgnoredPromiseFromCall
+    fetchExerciseNames();
+  }, []);
 
   if (submitErrorMessage) {
     return <ErrorAlert errorText={submitErrorMessage} componentName="AddExerciseForm"/>;
@@ -65,6 +76,10 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
       };
       const exerciseUid = await addExerciseAndGetUid(exerciseData, ownerUid);
       await addExerciseToDayArray(exerciseUid, dayUid);
+
+      // Add the exercise name to the cache
+      addExerciseNameToCache(values.exerciseName);
+
       setAddExerciseViewVisible(false);
     } catch (e) {
       console.error(e);
@@ -91,8 +106,9 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
           validate={validate}
           // render={({ errors, status, touched, isSubmitting }) => (
           render={({ errors, isSubmitting }) => (
-            <Form themed>
-              <FieldFormGroup name="exerciseName" labelText={t("Exercise name")} inputProps={{autoFocus: true}}/>
+            <Form mode='structured' themed>
+              {/*<FieldFormGroup name="exerciseName" labelText={t("Exercise name")} inputProps={{autoFocus: true}}/>*/}
+              <AutocompleteFormGroup name="exerciseName" labelText={t("Exercise name")} suggestions={exerciseNames}  inputProps={{autoFocus: true}}/>
               <SelectFormGroup name="type" labelText={t("Exercise type")} options={getExerciseTypes()}/>
 
               <Row>

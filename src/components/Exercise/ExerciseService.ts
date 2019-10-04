@@ -1,5 +1,5 @@
 import {deleteSet, deleteSetsRepsExercise, getSetsRepsExercise} from '../SetsReps/SetsRepsService';
-import firebase from '../../config/firebase';
+import firebase, {getCurrentUsersUid} from '../../config/firebase';
 import isEmpty from 'lodash/isEmpty';
 import {
   IExerciseBasicModel,
@@ -12,6 +12,18 @@ import {FirebaseCollectionNames, getExerciseErrorObject, getNowTimestamp} from '
 import {Versions} from '../../models/IBaseModel';
 import {deleteTimeDistanceExercise} from '../TimeDistance/TimeDistanceService';
 import {deleteSetsSeconds, deleteSetsSecondsExercise, getSetsSecondsExercise} from '../SetsSeconds/SetsSecondsService';
+
+// "Cache"
+interface IExerciseServiceCache {
+  exerciseNames: Array<string>
+}
+const exerciseServiceCache: IExerciseServiceCache = {exerciseNames: []};
+
+export const addExerciseNameToCache = (exerciseName: string) => {
+  if (exerciseServiceCache.exerciseNames.length > 0 && exerciseServiceCache.exerciseNames.indexOf(exerciseName) === -1) {
+    exerciseServiceCache.exerciseNames.push(exerciseName);
+  }
+};
 
 export const getExercise = async (exerciseUid: string): Promise<IExerciseModel> => {
   const querySnapshot = await firebase.firestore()
@@ -98,4 +110,65 @@ export const updateExercise = async(exerciseUid: string, exerciseHeaderData: IEx
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISES)
     .doc(exerciseUid)
     .update(data);
+};
+
+export const getLatest30ExerciseNames = async (): Promise<IExerciseServiceCache['exerciseNames']> => {
+  if (exerciseServiceCache.exerciseNames.length > 0) {
+    return exerciseServiceCache.exerciseNames;
+  }
+
+  const ownerUid = await getCurrentUsersUid();
+
+  const exerciseNames: Array<string> = [];
+
+  await firebase.firestore()
+    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISES)
+    .orderBy("createdTimestamp", "desc")
+    .where("ownerUid", "==", ownerUid)
+    .limit(1)
+    .get()
+    .then(res => {
+      let firstDayExerciseName = '';
+      res.forEach((d: any) => {
+        firstDayExerciseName = d.data().exerciseName;
+      });
+      exerciseNames.push(firstDayExerciseName);
+      return firstDayExerciseName;
+    });
+
+  await firebase.firestore()
+    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISES)
+    .where("location", "<", exerciseNames[0])
+    .where("ownerUid", "==", ownerUid)
+    .limit(30)
+    .get()
+    .then(res => {
+      res.forEach((d: any) => {
+        console.log(1111, d, d.data());
+        if (exerciseNames.indexOf(d.data().location) === -1) {
+          exerciseNames.push(d.data().location);
+        }
+      });
+    });
+
+  await firebase.firestore()
+    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISES)
+    .where("location", ">", exerciseNames[0])
+    .where("ownerUid", "==", ownerUid)
+    .limit(30)
+    .get()
+    .then(res => {
+      res.forEach((d: any) => {
+        console.log(2222, d, d.data());
+        if (exerciseNames.indexOf(d.data().location) === -1) {
+          exerciseNames.push(d.data().location);
+        }
+      });
+    });
+
+  console.log(exerciseNames);
+
+  exerciseServiceCache.exerciseNames = exerciseNames;
+
+  return exerciseServiceCache.exerciseNames;
 };

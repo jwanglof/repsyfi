@@ -17,7 +17,8 @@ import {
   faHome,
   faPlusCircle,
   faSignOutAlt,
-  faSpinner
+  faSpinner,
+  faUserCog
 } from '@fortawesome/free-solid-svg-icons'
 import './config/i18n';
 
@@ -33,7 +34,7 @@ router.usePlugin(
   })
 );
 
-library.add(faHome, faPlusCircle, faSpinner, faSignOutAlt, faExternalLinkAlt, faEdit, faCaretUp, faCaretDown);
+library.add(faHome, faPlusCircle, faSpinner, faSignOutAlt, faExternalLinkAlt, faEdit, faCaretUp, faCaretDown, faUserCog);
 
 router.start(() => {
   ReactDOM.render((
