@@ -24,10 +24,6 @@ import {RouteNames} from '../../routes';
 const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, dayUid}) => {
   const { t } = useTranslation();
 
-  if (isEmpty(dayUid)) {
-    return <ErrorAlert errorText="Must have the day's UID to proceed!" componentName="EditDay"/>;
-  }
-
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
   const [initialData, setInitialData] = useState<IEditDayEditData | undefined>(undefined);
 
@@ -48,6 +44,10 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
       setInitialData(data);
     });
   }, []);
+
+  if (isEmpty(dayUid)) {
+    return <ErrorAlert errorText="Must have the day's UID to proceed!" componentName="EditDay"/>;
+  }
 
   if (!initialData) {
     return <LoadingAlert componentName="EditDay"/>

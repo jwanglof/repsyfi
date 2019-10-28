@@ -16,11 +16,11 @@ import {RouteNames} from '../../routes';
 const DayView: FunctionComponent<IDayViewProps & IDayViewRouter> = ({router, data}) => {
   const { t } = useTranslation();
 
+  const [collapseIsOpen, setCollapseIsOpen] = useState<boolean>(false);
+
   if (isEmpty(data)) {
     return <ErrorAlert errorText="Must have data to show anything for the day!" componentName="DayView"/>;
   }
-
-  const [collapseIsOpen, setCollapseIsOpen] = useState<boolean>(false);
 
   const toggle = () => setCollapseIsOpen(!collapseIsOpen);
 

@@ -23,11 +23,11 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
   const { t } = useTranslation();
   const dayUid = router.getState().params.uid;
 
+  const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
+
   if (!dayUid) {
     return <ErrorAlert errorText="Need a day UID to add an exercise!" componentName="ExerciseForm"/>;
   }
-
-  const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
 
   if (submitErrorMessage) {
     return <ErrorAlert errorText={submitErrorMessage} componentName="AddExerciseForm"/>;

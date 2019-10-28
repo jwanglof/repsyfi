@@ -23,10 +23,6 @@ import DayQuestionnaire from './DayQuestionnaire';
 const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetailedProps> = ({router, dayUid}) => {
   const { t } = useTranslation();
 
-  if (isEmpty(dayUid)) {
-    return <ErrorAlert errorText="Must have the day's UID to proceed!" componentName="DayViewDetailed"/>;
-  }
-
   const [currentData, setCurrentData] = useState<IDayModel | undefined>(undefined);
   const [deleteErrorData, setDeleteErrorData] = useState<string | undefined>(undefined);
   const [updateErrorData, setUpdateErrorData] = useState<string | undefined>(undefined);
@@ -77,6 +73,10 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
       unsub();
     };
   }, []);
+
+  if (isEmpty(dayUid)) {
+    return <ErrorAlert errorText="Must have the day's UID to proceed!" componentName="DayViewDetailed"/>;
+  }
 
   if (deleteErrorData || updateErrorData || snapshotErrorData) {
     return <ErrorAlert errorText={deleteErrorData || updateErrorData || snapshotErrorData} componentName="DayDetailedView" uid={dayUid}/>

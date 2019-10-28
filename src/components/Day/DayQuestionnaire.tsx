@@ -18,7 +18,6 @@ import {isEmpty} from 'lodash';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 
 const DayQuestionnaire: FunctionComponent<IDayQuestionnaireRouter & IDayQuestionnaireProps> = ({router, show, dayData}) => {
-  if (!show) return null;
 
   const { t } = useTranslation();
 
@@ -62,6 +61,8 @@ const DayQuestionnaire: FunctionComponent<IDayQuestionnaireRouter & IDayQuestion
       };
     }
   }, []);
+
+  if (!show) return null;
 
   if (!isEmpty(dayData.questionnaire) && !currentData) {
     return <LoadingAlert componentName="DayQuestionnaire"/>;

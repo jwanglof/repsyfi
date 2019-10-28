@@ -30,10 +30,6 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
   const {name: routeName} = router.getState();
   const detailedDayView: boolean = (routeName === RouteNames.SPECIFIC_DAY);
 
-  if (isEmpty(setsRepsExerciseUid)) {
-    return <ErrorAlert errorText="Must have the exercises's UID to proceed!" componentName="SetsRepsExerciseContainer"/>;
-  }
-
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const [exerciseDeleteStep2Shown, setExerciseDeleteStep2Shown] = useState<boolean>(false);
   const [currentExerciseData, setCurrentExerciseData] = useState<ISetsRepsModel | undefined>(undefined);
@@ -80,6 +76,10 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
       unsub();
     };
   }, []);
+
+  if (isEmpty(setsRepsExerciseUid)) {
+    return <ErrorAlert errorText="Must have the exercises's UID to proceed!" componentName="SetsRepsExerciseContainer"/>;
+  }
 
   if (snapshotErrorData || submitErrorMessage) {
     return <ErrorAlert errorText={snapshotErrorData || submitErrorMessage} componentName="SetsRepsExerciseContainer"/>;
