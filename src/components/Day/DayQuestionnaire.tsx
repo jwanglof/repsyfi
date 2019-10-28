@@ -2,7 +2,7 @@ import React, {FunctionComponent, useEffect, useState} from 'react';
 import {Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, CardTitle, Col, Row} from 'reactstrap';
 import {useTranslation} from 'react-i18next';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {Formik, FormikActions} from 'formik';
+import {Formik, FormikHelpers} from 'formik';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 import DurationFormGroup from '../Formik/DurationFormGroup';
@@ -72,7 +72,7 @@ const DayQuestionnaire: FunctionComponent<IDayQuestionnaireRouter & IDayQuestion
     return <ErrorAlert componentName="DayQuestionnaire" errorText={submitErrorMessage || snapshotErrorData}/>;
   }
 
-  const onSubmit = async (values: any, actions: FormikActions<any>) => {
+  const onSubmit = async (values: any, actions: FormikHelpers<any>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
 
@@ -126,7 +126,7 @@ const DayQuestionnaire: FunctionComponent<IDayQuestionnaireRouter & IDayQuestion
       render={({errors, isSubmitting}) => (
         <>
           {isSubmitting && <div className="text-center"><FontAwesomeIcon icon="spinner" spin/></div>}
-          {!isSubmitting && <Form mode='structured' themed>
+          {!isSubmitting && <Form mode='structured'>
             <Row>
               <Col className="mt-3" xs={12}>
                 <Card>

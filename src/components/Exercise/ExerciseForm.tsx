@@ -3,7 +3,7 @@ import {useTranslation} from 'react-i18next';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {getCurrentUsersUid} from '../../config/FirebaseUtils';
-import {Formik, FormikActions} from 'formik';
+import {Formik, FormikHelpers} from 'formik';
 import isEmpty from 'lodash/isEmpty';
 import {addExerciseAndGetUid} from './ExerciseService';
 import {IExerciseBasicModel} from '../../models/IExerciseModel';
@@ -41,7 +41,7 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
     return errors;
   };
 
-  const onSubmit = async (values: IExerciseForm, actions: FormikActions<IExerciseFormSubmitValues>) => {
+  const onSubmit = async (values: IExerciseForm, actions: FormikHelpers<IExerciseFormSubmitValues>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
     try {
@@ -91,7 +91,7 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
           validate={validate}
           // render={({ errors, status, touched, isSubmitting }) => (
           render={({ errors, isSubmitting }) => (
-            <Form themed>
+            <Form>
               <FieldFormGroup name="exerciseName" labelText={t("Exercise name")} inputProps={{autoFocus: true}}/>
               <SelectFormGroup name="type" labelText={t("Exercise type")} options={getExerciseTypes()}/>
 

@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect, useReducer, useState} from 'react';
+import React, {FunctionComponent, useEffect, useState} from 'react';
 import {Router} from 'router5';
 import {withRoute} from 'react-router5';
 import {useTranslation} from 'react-i18next';
@@ -9,7 +9,7 @@ import {IDayBasicModel} from '../../models/IDayModel';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import getUnixTime from 'date-fns/getUnixTime';
 import parseISO from 'date-fns/parseISO';
-import {Formik, FormikActions} from 'formik';
+import {Formik, FormikHelpers} from 'formik';
 import {getCurrentUsersUid} from '../../config/FirebaseUtils';
 import {Button, Col, FormGroup, Row} from 'reactstrap';
 import DateTimePickerFormGroup from '../Formik/DateTimePickerFormGroup';
@@ -51,7 +51,7 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
     return <ErrorAlert componentName="AddEditDay" errorText={submitErrorMessage}/>;
   }
 
-  const onSubmit = async (values: IAddDayEditData, actions: FormikActions<IAddDayEditData>) => {
+  const onSubmit = async (values: IAddDayEditData, actions: FormikHelpers<IAddDayEditData>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
     try {
@@ -104,7 +104,7 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
           validate={validate}
           // render={({ errors, status, touched, isSubmitting }) => (
           render={({ errors, isSubmitting }) => (
-            <Form mode='structured' themed>
+            <Form mode='structured'>
               <AutocompleteFormGroup name="location" labelText={t("Workout location")} suggestions={locations}/>
               <FieldFormGroup name="muscleGroups" labelText={t("Muscle groups")}/>
               <FieldFormGroup name="title" labelText={t("Title")}/>

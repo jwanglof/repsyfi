@@ -3,7 +3,7 @@ import {useTranslation} from 'react-i18next';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {addNewSetAndGetUid, addSetToSetsRepsExerciseArray} from './SetsRepsService';
 import {ISetBasicModel} from '../../models/ISetModel';
-import {Formik, FormikActions} from 'formik';
+import {Formik, FormikHelpers} from 'formik';
 import {getCurrentUsersUid} from '../../config/FirebaseUtils';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import FormikField from '../Formik/FormikField';
@@ -26,7 +26,7 @@ const SetsRepsTableRowForm: FunctionComponent<ISetsRepsTableRowFormProps> = ({ e
     return <tr><td colSpan={3}><ErrorAlert errorText="Need an exercise UID to add a set!" componentName="SetsRepsTableRowAdd"/></td></tr>;
   }
 
-  const onSubmit = async (values: ISetBasicModel, actions: FormikActions<ISetBasicModel>) => {
+  const onSubmit = async (values: ISetBasicModel, actions: FormikHelpers<ISetBasicModel>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
 
@@ -83,7 +83,7 @@ const SetsRepsTableRowForm: FunctionComponent<ISetsRepsTableRowFormProps> = ({ e
             </tr>
             <tr>
               <td colSpan={3}>
-                <Form mode='structured' themed>
+                <Form mode='structured'>
                   <ButtonGroup className="w-100">
                     <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t("Save set")}</Button>
                     <Button color="danger" onClick={() => setAddSetViewVisible(false)}>{t("Discard set")}</Button>

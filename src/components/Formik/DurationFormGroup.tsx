@@ -1,6 +1,6 @@
 import React, {ChangeEvent, FunctionComponent, useEffect, useState} from 'react';
 import {Alert, Col, FormGroup, Input, Label} from 'reactstrap';
-import {connect, ErrorMessage, FormikContext} from 'formik';
+import {connect, ErrorMessage, FormikContextType} from 'formik';
 import defaultTo from 'lodash/defaultTo';
 import toNumber from 'lodash/toNumber';
 import {getHoursMinutesSecondsFromSeconds, getMinutesSecondsFromSeconds} from '../../utils/time-utils';
@@ -70,7 +70,7 @@ interface IDurationFormGroupProps {
 }
 
 interface IDurationFormGroupPropsFormik {
-  formik: FormikContext<any>
+  formik: FormikContextType<any>
 }
 
 export default connect<any, any>(DurationFormGroup);

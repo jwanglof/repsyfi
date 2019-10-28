@@ -11,7 +11,7 @@ import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {isEmpty} from 'lodash';
 import getUnixTime from 'date-fns/getUnixTime';
 import parseISO from 'date-fns/parseISO';
-import {Formik, FormikActions} from 'formik';
+import {Formik, FormikHelpers} from 'formik';
 import {Button, ButtonGroup, Col, FormGroup, Row} from 'reactstrap';
 import FieldFormGroup from '../Formik/FieldFormGroup';
 import DateTimePickerFormGroup from '../Formik/DateTimePickerFormGroup';
@@ -57,7 +57,7 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
     return <ErrorAlert componentName="EditDay" errorText={submitErrorMessage}/>;
   }
 
-  const onUpdate = async (values: IEditDayEditData, actions: FormikActions<IEditDayEditData>) => {
+  const onUpdate = async (values: IEditDayEditData, actions: FormikHelpers<IEditDayEditData>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
 
@@ -116,7 +116,7 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
           validate={validate}
           // render={({ errors, status, touched, isSubmitting }) => (
           render={({ errors, isSubmitting }) => (
-            <Form mode='structured' themed>
+            <Form mode='structured'>
               <FieldFormGroup name="location" labelText={t("Workout location")}/>
               <FieldFormGroup name="muscleGroups" labelText={t("Muscle groups")}/>
               <FieldFormGroup name="title" labelText={t("Title")}/>
