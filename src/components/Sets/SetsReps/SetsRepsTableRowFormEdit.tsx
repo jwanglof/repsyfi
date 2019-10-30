@@ -2,15 +2,9 @@ import React, {FunctionComponent, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import ErrorAlert from '../../ErrorAlert/ErrorAlert';
 import {ISetBasicModel, ISetBasicUpdateModel, ISetModel} from '../../../models/ISetModel';
-import {Formik, FormikHelpers} from 'formik';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import FormikField from '../../Formik/FormikField';
-import {Button, ButtonGroup} from 'reactstrap';
-// TODO :(
-// @ts-ignore
-import {Form} from 'react-formik-ui';
+import {FormikHelpers} from 'formik';
 import {updateSetsRepsExercise} from './SetsRepsService';
-import {setsValidation} from '../SetsHelpers';
+import SetsRepsTableRowFormRender from './SetsRepsTableRowFormRender';
 
 const SetsRepsTableRowFormEdit: FunctionComponent<ISetsRepsTableRowFormEditProps> = ({ initialData, setAddSetViewVisible }) => {
   const { t } = useTranslation();
@@ -21,7 +15,7 @@ const SetsRepsTableRowFormEdit: FunctionComponent<ISetsRepsTableRowFormEditProps
     return <tr><td colSpan={3}><ErrorAlert errorText={submitErrorMessage} componentName="SetsRepsTableRowAdd"/></td></tr>;
   }
 
-  const onSubmit = async (values: ISetBasicModel, actions: FormikHelpers<ISetModel>) => {
+  const onSubmit = async (values: ISetBasicModel, actions: FormikHelpers<ISetBasicModel>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
 
@@ -41,42 +35,7 @@ const SetsRepsTableRowFormEdit: FunctionComponent<ISetsRepsTableRowFormEditProps
     actions.setSubmitting(false);
   };
 
-  // TODO Merge this Form with the form in SetsRepsTableRowForm!
-  return (
-    <Formik
-      initialValues={initialData}
-      onSubmit={onSubmit}
-      validate={(values: any) => {
-        return setsValidation(values, t);
-      }}
-      render={({errors, isSubmitting}) => (
-        <>
-          {isSubmitting && <tr><td colSpan={3} className="text-center"><FontAwesomeIcon icon="spinner" spin/></td></tr>}
-          {!isSubmitting && <>
-            <tr>
-              <th className="align-middle" scope="row">{initialData.index}</th>
-              <td>
-                <FormikField name="amountInKg" labelText={t("Amount in KG")} type="number" labelHidden inputProps={{min: 0, autoFocus: true}}/>
-              </td>
-              <td>
-                <FormikField name="reps" labelText={t("Repetitions")} type="number" labelHidden inputProps={{min: 0}}/>
-              </td>
-            </tr>
-            <tr>
-              <td colSpan={3}>
-                <Form mode='structured'>
-                  <ButtonGroup className="w-100">
-                    <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t("Save set")}</Button>
-                    <Button color="danger" onClick={() => setAddSetViewVisible(false)}>{t("Discard set")}</Button>
-                  </ButtonGroup>
-                </Form>
-              </td>
-            </tr>
-          </>}
-        </>
-      )}
-    />
-  );
+  return <SetsRepsTableRowFormRender initialData={initialData} onSubmit={onSubmit} t={t} setAddSetViewVisible={setAddSetViewVisible}/>;
 };
 
 interface ISetsRepsTableRowFormEditProps {

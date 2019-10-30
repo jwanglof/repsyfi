@@ -3,15 +3,11 @@ import {useTranslation} from 'react-i18next';
 import ErrorAlert from '../../ErrorAlert/ErrorAlert';
 import {addNewSetAndGetUid, addSetToSetsRepsExerciseArray} from './SetsRepsService';
 import {ISetBasicModel} from '../../../models/ISetModel';
-import {Formik, FormikHelpers} from 'formik';
+import {FormikHelpers} from 'formik';
 import {getCurrentUsersUid} from '../../../config/FirebaseUtils';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import FormikField from '../../Formik/FormikField';
-import {Button, ButtonGroup} from 'reactstrap';
 // TODO :(
 // @ts-ignore
-import {Form} from 'react-formik-ui';
-import {setsValidation} from '../SetsHelpers';
+import SetsRepsTableRowFormRender from './SetsRepsTableRowFormRender';
 
 const SetsRepsTableRowForm: FunctionComponent<ISetsRepsTableRowFormProps> = ({ exerciseUid, initialData, setAddSetViewVisible }) => {
   const { t } = useTranslation();
@@ -49,41 +45,7 @@ const SetsRepsTableRowForm: FunctionComponent<ISetsRepsTableRowFormProps> = ({ e
     actions.setSubmitting(false);
   };
 
-  return (
-    <Formik
-      initialValues={initialData}
-      onSubmit={onSubmit}
-      validate={(values: any) => {
-        return setsValidation(values, t);
-      }}
-      render={({errors, isSubmitting}) => (
-        <>
-          {isSubmitting && <tr><td colSpan={3} className="text-center"><FontAwesomeIcon icon="spinner" spin/></td></tr>}
-          {!isSubmitting && <>
-            <tr>
-              <th className="align-middle" scope="row">{initialData.index}</th>
-              <td>
-                <FormikField name="amountInKg" labelText={t("Amount in KG")} type="number" labelHidden inputProps={{min: 0, autoFocus: true}}/>
-              </td>
-              <td>
-                <FormikField name="reps" labelText={t("Repetitions")} type="number" labelHidden inputProps={{min: 0}}/>
-              </td>
-            </tr>
-            <tr>
-              <td colSpan={3}>
-                <Form mode='structured'>
-                  <ButtonGroup className="w-100">
-                    <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t("Save set")}</Button>
-                    <Button color="danger" onClick={() => setAddSetViewVisible(false)}>{t("Discard set")}</Button>
-                  </ButtonGroup>
-                </Form>
-              </td>
-            </tr>
-          </>}
-        </>
-      )}
-    />
-  );
+  return <SetsRepsTableRowFormRender initialData={initialData} onSubmit={onSubmit} t={t} setAddSetViewVisible={setAddSetViewVisible}/>
 };
 
 interface ISetsRepsTableRowFormProps {
