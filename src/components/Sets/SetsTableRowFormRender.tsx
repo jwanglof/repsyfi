@@ -56,7 +56,7 @@ interface ISetsTableRowFormRender {
   onSubmit: ((values: ISetBasicModel, actions: FormikHelpers<ISetBasicModel>) => void),
   t: i18next.TFunction,
   setAddSetViewVisible: ((visible: boolean) => void),
-  setTypeShown: SetTypesEnum
+  setTypeShown: SetTypesEnum,
 }
 
 export default SetsTableRowFormRender;

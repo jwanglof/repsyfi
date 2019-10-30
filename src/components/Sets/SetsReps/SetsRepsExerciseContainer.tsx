@@ -5,7 +5,6 @@ import {Table} from 'reactstrap';
 import ErrorAlert from '../../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../../LoadingAlert/LoadingAlert';
 import {ISetBasicModel} from '../../../models/ISetModel';
-import SetsRepsTableRowView from './SetsRepsTableRowView';
 import SetsRepsTableRowForm from './SetsRepsTableRowForm';
 import firebase from '../../../config/firebase';
 import {FirebaseCollectionNames} from '../../../config/FirebaseUtils';
@@ -22,6 +21,8 @@ import fromUnixTime from 'date-fns/fromUnixTime';
 import addSeconds from 'date-fns/addSeconds';
 import subSeconds from 'date-fns/subSeconds';
 import ExerciseContainerFooter from '../ExerciseContainerFooter';
+import SetsTableRowView from '../SetsTableRowView';
+import {SetTypesEnum} from '../../../enums/SetTypesEnum';
 
 const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRouter & ISetsRepsExerciseContainerProps> = ({router, setsRepsExerciseUid, exerciseUid}) => {
   const { t } = useTranslation();
@@ -148,9 +149,9 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
       {currentExerciseData.sets.map((setUid, i) => {
         if ((i + 1 ) === currentExerciseData.sets.length) {
           // Pass the setter for the last set to the last set
-          return <SetsRepsTableRowView key={setUid} setUid={setUid} disabled={addSetViewVisible} setLastSetData={setLastSetData}/>;
+          return <SetsTableRowView key={setUid} setUid={setUid} disabled={addSetViewVisible} setLastSetData={setLastSetData} setTypeShown={SetTypesEnum.SET_TYPE_REPS}/>;
         }
-        return <SetsRepsTableRowView key={setUid} setUid={setUid} disabled={addSetViewVisible}/>;
+        return <SetsTableRowView key={setUid} setUid={setUid} disabled={addSetViewVisible} setTypeShown={SetTypesEnum.SET_TYPE_REPS}/>;
       })}
 
       {addSetViewVisible && <SetsRepsTableRowForm exerciseUid={currentExerciseData.uid} setAddSetViewVisible={setAddSetViewVisible} initialData={getLastSetData()}/>}

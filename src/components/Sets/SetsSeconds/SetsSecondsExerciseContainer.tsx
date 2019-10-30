@@ -11,7 +11,6 @@ import {FirebaseCollectionNames} from '../../../config/FirebaseUtils';
 import {ISetsSecondsModel} from '../../../models/ISetsSecondsModel';
 import LoadingAlert from '../../LoadingAlert/LoadingAlert';
 import SetsSecondsTableRowForm from './SetsSecondsTableRowForm';
-import SetsSecondsTableRowView from './SetsSecondsTableRowView';
 import {recalculateIndexes} from '../../../utils/exercise-utils';
 import {getSetsSecondDocument, getSetsSecondsExerciseDocument} from './SetsSecondsService';
 import {getExerciseDocument} from '../../Exercise/ExerciseService';
@@ -23,6 +22,8 @@ import addSeconds from 'date-fns/addSeconds';
 import subSeconds from 'date-fns/subSeconds';
 import ExerciseContainerFooter from '../ExerciseContainerFooter';
 import {ISetBasicModel} from '../../../models/ISetModel';
+import SetsTableRowView from '../SetsTableRowView';
+import {SetTypesEnum} from '../../../enums/SetTypesEnum';
 
 const SetsSecondsExerciseContainer: FunctionComponent<SetsSecondsExerciseContainerRouter & SetsSecondsExerciseContainerProps> = ({router, setsSecondsExerciseUid, exerciseUid}) => {
   const { t } = useTranslation();
@@ -149,9 +150,9 @@ const SetsSecondsExerciseContainer: FunctionComponent<SetsSecondsExerciseContain
       {currentExerciseData.sets.map((setUid, i) => {
         if ((i + 1 ) === currentExerciseData.sets.length) {
           // Pass the setter for the last set to the last set
-          return <SetsSecondsTableRowView key={setUid} setUid={setUid} disabled={addSetViewVisible} setLastSetData={setLastSetData}/>;
+          return <SetsTableRowView key={setUid} setUid={setUid} disabled={addSetViewVisible} setLastSetData={setLastSetData} setTypeShown={SetTypesEnum.SET_TYPE_SECONDS}/>;
         }
-        return <SetsSecondsTableRowView key={setUid} setUid={setUid} disabled={addSetViewVisible}/>;
+        return <SetsTableRowView key={setUid} setUid={setUid} disabled={addSetViewVisible} setTypeShown={SetTypesEnum.SET_TYPE_SECONDS}/>;
       })}
 
       {addSetViewVisible && <SetsSecondsTableRowForm exerciseUid={currentExerciseData.uid} setAddSetViewVisible={setAddSetViewVisible} initialData={getLastSetData()}/>}

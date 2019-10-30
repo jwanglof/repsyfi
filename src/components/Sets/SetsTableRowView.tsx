@@ -1,23 +1,34 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
-import {ISetBasicModel, ISetModel} from '../../../models/ISetModel';
-import ErrorAlert from '../../ErrorAlert/ErrorAlert';
-import LoadingAlert from '../../LoadingAlert/LoadingAlert';
+import {ISetBasicModel, ISetModel} from '../../models/ISetModel';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
+import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import classnames from 'classnames';
-import SetsRepsTableRowFormEdit from './SetsRepsTableRowFormEdit';
-import firebase from '../../../config/firebase';
-import {FirebaseCollectionNames} from '../../../config/FirebaseUtils';
+import SetsRepsTableRowFormEdit from './SetsReps/SetsRepsTableRowFormEdit';
+import firebase from '../../config/firebase';
+import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
 import isEmpty from 'lodash/isEmpty';
+import {SetTypesEnum} from '../../enums/SetTypesEnum';
+import SetsSecondsTableRowFormEdit from './SetsSeconds/SetsSecondsTableRowFormEdit';
 
-const SetsRepsTableRowView: FunctionComponent<ISetsRepsTableRowViewProps> = ({ setUid, disabled, setLastSetData }) => {
+const SetsTableRowView: FunctionComponent<ISetsTableRowView> = ({ setUid, disabled, setLastSetData, setTypeShown }) => {
   const [currentData, setCurrentData] = useState<ISetModel | undefined>(undefined);
   const [editRow, setEditRow] = useState<boolean>(false);
   const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
 
   // Effect to subscribe on changes on this specific set
   useEffect(() => {
+    let collectionName: string;
+    if (setTypeShown === SetTypesEnum.SET_TYPE_SECONDS) {
+      collectionName = FirebaseCollectionNames.FIRESTORE_COLLECTION_SETS_SECONDS;
+    } else if (setTypeShown === SetTypesEnum.SET_TYPE_REPS) {
+      collectionName = FirebaseCollectionNames.FIRESTORE_COLLECTION_SETS;
+    } else {
+      throw new Error("Invalid set type!");
+    }
+
     // TODO Need to verify that a user can't send any UID in here, somehow... That should be specified in the rules!
     const unsub = firebase.firestore()
-      .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_SETS)
+      .collection(collectionName)
       // .where("ownerUid", "==", uid)
       .doc(setUid)
       .onSnapshot({includeMetadataChanges: true}, doc => {
@@ -29,6 +40,7 @@ const SetsRepsTableRowView: FunctionComponent<ISetsRepsTableRowViewProps> = ({ s
             createdTimestamp: snapshotData.createdTimestamp,
             version: snapshotData.version,
             reps: snapshotData.reps,
+            seconds: snapshotData.seconds,
             amountInKg: snapshotData.amountInKg,
             index: snapshotData.index
           };
@@ -61,19 +73,22 @@ const SetsRepsTableRowView: FunctionComponent<ISetsRepsTableRowViewProps> = ({ s
   });
 
   return (<>
-    {editRow && !disabled && <SetsRepsTableRowFormEdit setAddSetViewVisible={setEditRow} initialData={currentData}/>}
+    {editRow && !disabled && setTypeShown === SetTypesEnum.SET_TYPE_REPS && <SetsRepsTableRowFormEdit setAddSetViewVisible={setEditRow} initialData={currentData}/>}
+    {editRow && !disabled && setTypeShown === SetTypesEnum.SET_TYPE_SECONDS && <SetsSecondsTableRowFormEdit setAddSetViewVisible={setEditRow} initialData={currentData}/>}
     {!editRow && <tr className={classNames} onClick={() => setEditRow(true)}>
       <th scope="row">{currentData.index}</th>
       <td>{currentData.amountInKg}</td>
-      <td>{currentData.reps}</td>
+      {setTypeShown === SetTypesEnum.SET_TYPE_REPS && <td>{currentData.reps}</td>}
+      {setTypeShown === SetTypesEnum.SET_TYPE_SECONDS && <td>{currentData.seconds}</td>}
     </tr>}
   </>);
 };
 
-interface ISetsRepsTableRowViewProps {
+interface ISetsTableRowView {
   setUid: string,
   disabled: boolean,
-  setLastSetData?: ((lastSetData: ISetBasicModel) => void)
+  setLastSetData?: ((lastSetData: ISetBasicModel) => void),
+  setTypeShown: SetTypesEnum,
 }
 
-export default SetsRepsTableRowView;
+export default SetsTableRowView;
