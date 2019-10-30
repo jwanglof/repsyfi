@@ -30,17 +30,16 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
   const {name: routeName} = router.getState();
   const detailedDayView: boolean = (routeName === RouteNames.SPECIFIC_DAY);
 
-  const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
-  const [exerciseDeleteStep2Shown, setExerciseDeleteStep2Shown] = useState<boolean>(false);
   const [currentExerciseData, setCurrentExerciseData] = useState<ISetsRepsModel | undefined>(undefined);
   const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
+  const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
   const [addSetViewVisible, setAddSetViewVisible] = useState<boolean>(false);
   const [lastSetData, setLastSetData] = useState<ISetBasicModel | undefined>(undefined);
-  const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
+  const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
+  const [exerciseDeleteStep2Shown, setExerciseDeleteStep2Shown] = useState<boolean>(false);
 
   const [headerEditVisible, setHeaderEditVisible] = useContext(ExerciseHeaderEditCtx);
 
-  // Effect to subscribe on changes on this specific day
   useEffect(() => {
     // TODO Need to verify that a user can't send any UID in here, somehow... That should be specified in the rules!
     const unsub = firebase.firestore()

@@ -40,7 +40,6 @@ const SetsSecondsExerciseContainer: FunctionComponent<SetsSecondsExerciseContain
 
   const [headerEditVisible, setHeaderEditVisible] = useContext(ExerciseHeaderEditCtx);
 
-  // Effect to subscribe on changes on this specific day
   useEffect(() => {
     // TODO Need to verify that a user can't send any UID in here, somehow... That should be specified in the rules!
     const unsub = firebase.firestore()
