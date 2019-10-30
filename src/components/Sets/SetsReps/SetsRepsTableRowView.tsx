@@ -1,5 +1,3 @@
-import './OneSet.scss';
-
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import {ISetBasicModel, ISetModel} from '../../../models/ISetModel';
 import ErrorAlert from '../../ErrorAlert/ErrorAlert';

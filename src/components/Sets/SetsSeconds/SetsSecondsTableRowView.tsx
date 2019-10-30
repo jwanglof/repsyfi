@@ -1,5 +1,3 @@
-import './SetsSeconds.scss';
-
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import ErrorAlert from '../../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../../LoadingAlert/LoadingAlert';
