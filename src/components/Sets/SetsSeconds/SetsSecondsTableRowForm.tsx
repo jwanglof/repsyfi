@@ -5,13 +5,13 @@ import {Formik, FormikHelpers} from 'formik';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import FormikField from '../../Formik/FormikField';
 import {Button, ButtonGroup} from 'reactstrap';
-import isNumber from 'lodash/isNumber';
 // TODO :(
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 import {ISetSecondsBasicModel} from '../../../models/ISetSecondsModel';
 import {addNewSetSecondsAndGetUid, addSetSecondsToSetsSecondsExerciseArray} from './SetsSecondsService';
 import {getCurrentUsersUid} from '../../../config/FirebaseUtils';
+import {setsValidation} from '../SetsHelpers';
 
 const SetsSecondsTableRowForm: FunctionComponent<ISetsSecondsTableRowFormProps> = ({ exerciseUid, initialData, setAddSetViewVisible }) => {
   const { t } = useTranslation();
@@ -49,25 +49,13 @@ const SetsSecondsTableRowForm: FunctionComponent<ISetsSecondsTableRowFormProps> 
     actions.setSubmitting(false);
   };
 
-  const validate = (values: ISetsSecondsTableRowFormValidate): ISetsSecondsTableRowFormValidate | {} => {
-    const errors: ISetsSecondsTableRowFormValidateErrors = {};
-    if (!isNumber(values.amountInKg) || values.amountInKg && values.amountInKg < 0) {
-      errors.amountInKg = t("Amount must exist, and be 0 or higher");
-    }
-    if (!isNumber(values.seconds) || values.seconds && values.seconds <= 0) {
-      errors.seconds = t("Repetitions must exist, and be higher than 0");
-    }
-    if (!isNumber(values.index) || values.index && values.index <= 0) {
-      errors.index = t("Index must exist, and be higher than 0")
-    }
-    return errors;
-  };
-
   return (
     <Formik
       initialValues={initialData}
       onSubmit={onSubmit}
-      validate={validate}
+      validate={(values: any) => {
+        return setsValidation(values, t);
+      }}
       render={({errors, isSubmitting}) => (
         <>
           {isSubmitting && <tr><td colSpan={3} className="text-center"><FontAwesomeIcon icon="spinner" spin/></td></tr>}
@@ -102,18 +90,6 @@ interface ISetsSecondsTableRowFormProps {
   exerciseUid: string,
   initialData: ISetSecondsBasicModel,
   setAddSetViewVisible: ((visible: boolean) => void),
-}
-
-interface ISetsSecondsTableRowFormValidate {
-  amountInKg?: number,
-  seconds?: number,
-  index?: number
-}
-
-interface ISetsSecondsTableRowFormValidateErrors {
-  amountInKg?: string,
-  seconds?: string,
-  index?: string
 }
 
 export default SetsSecondsTableRowForm;

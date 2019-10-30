@@ -1,7 +1,7 @@
 import {isNumber, isEmpty, isUndefined} from 'lodash';
 import * as i18next from 'i18next';
 
-const _checkIfEmptyAndNotNegative = (value: any) => {
+const _isEmptyOrNegative = (value: any) => {
   if (!isUndefined(value)) {
     if (isNumber(value) && value < 0) {
       return true;
@@ -12,16 +12,21 @@ const _checkIfEmptyAndNotNegative = (value: any) => {
   return false;
 };
 
+const getErrorText = (key: string) => key + " must exist, and be 0 or higher";
+
 export const setsValidation = (values: ISetsFormValidate, t: i18next.TFunction): ISetsFormValidateErrors => {
   const errors: ISetsFormValidateErrors = {};
-  if (_checkIfEmptyAndNotNegative(values.amountInKg)) {
-    errors.amountInKg = t("Amount must exist, and be 0 or higher");
+  if (_isEmptyOrNegative(values.amountInKg)) {
+    errors.amountInKg = t(getErrorText("Amount"));
   }
-  if (_checkIfEmptyAndNotNegative(values.reps)) {
-    errors.reps = t("Repetitions must exist, and be higher than 0");
+  if (_isEmptyOrNegative(values.reps)) {
+    errors.reps = t(getErrorText("Repetitions"));
   }
-  if (_checkIfEmptyAndNotNegative(values.seconds)) {
-    errors.seconds = t("Seconds must exist, and be higher than 0");
+  if (_isEmptyOrNegative(values.seconds)) {
+    errors.seconds = t(getErrorText("Seconds"));
+  }
+  if (_isEmptyOrNegative(values.index)) {
+    errors.index = t(getErrorText("Index"));
   }
   return errors;
 };
@@ -30,10 +35,12 @@ interface ISetsFormValidate {
   amountInKg?: number,
   reps?: number,
   seconds?: number,
+  index?: number,
 }
 
 interface ISetsFormValidateErrors {
   amountInKg?: string,
   reps?: string,
   seconds?: string,
+  index?: string,
 }
