@@ -1,15 +1,15 @@
 import React, {FunctionComponent, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import ErrorAlert from '../ErrorAlert/ErrorAlert';
+import ErrorAlert from '../../ErrorAlert/ErrorAlert';
 import {Formik, FormikHelpers} from 'formik';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import FormikField from '../Formik/FormikField';
+import FormikField from '../../Formik/FormikField';
 import {Button, ButtonGroup} from 'reactstrap';
 import isNumber from 'lodash/isNumber';
 // TODO :(
 // @ts-ignore
 import {Form} from 'react-formik-ui';
-import {ISetSecondsBasicModel, ISetSecondsBasicUpdateModel, ISetSecondsModel} from '../../models/ISetSecondsModel';
+import {ISetSecondsBasicModel, ISetSecondsBasicUpdateModel, ISetSecondsModel} from '../../../models/ISetSecondsModel';
 import {updateSetsSecondsExercise} from './SetsSecondsService';
 
 const SetsSecondsTableRowFormEdit: FunctionComponent<ISetsSecondsTableRowFormEditProps> = ({ initialData, setAddSetViewVisible }) => {

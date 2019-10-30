@@ -1,4 +1,4 @@
-import {deleteSet, deleteSetsRepsExercise, getSetsRepsExercise} from '../SetsReps/SetsRepsService';
+import {deleteSet, deleteSetsRepsExercise, getSetsRepsExercise} from '../Sets/SetsReps/SetsRepsService';
 import firebase from '../../config/firebase';
 import isEmpty from 'lodash/isEmpty';
 import {
@@ -11,7 +11,7 @@ import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {FirebaseCollectionNames, getExerciseErrorObject, getNowTimestamp} from '../../config/FirebaseUtils';
 import {Versions} from '../../models/IBaseModel';
 import {deleteTimeDistanceExercise} from '../TimeDistance/TimeDistanceService';
-import {deleteSetsSeconds, deleteSetsSecondsExercise, getSetsSecondsExercise} from '../SetsSeconds/SetsSecondsService';
+import {deleteSetsSeconds, deleteSetsSecondsExercise, getSetsSecondsExercise} from '../Sets/SetsSeconds/SetsSecondsService';
 
 export const getExercise = async (exerciseUid: string): Promise<IExerciseModel> => {
   const querySnapshot = await firebase.firestore()

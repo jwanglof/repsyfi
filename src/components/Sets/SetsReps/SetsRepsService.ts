@@ -1,9 +1,9 @@
-import firebase from '../../config/firebase';
+import firebase from '../../../config/firebase';
 import isEmpty from 'lodash/isEmpty';
-import {ISetBasicModel, ISetBasicUpdateModel, ISetModelWithoutUid, ISetUpdateModel} from '../../models/ISetModel';
-import {FirebaseCollectionNames, getNowTimestamp, getSetsRepsExerciseErrorObject} from '../../config/FirebaseUtils';
-import {Versions} from '../../models/IBaseModel';
-import {ISetsRepsModel, ISetsRepsModelWithoutUid} from '../../models/ISetsRepsModel';
+import {ISetBasicModel, ISetBasicUpdateModel, ISetModelWithoutUid, ISetUpdateModel} from '../../../models/ISetModel';
+import {FirebaseCollectionNames, getNowTimestamp, getSetsRepsExerciseErrorObject} from '../../../config/FirebaseUtils';
+import {Versions} from '../../../models/IBaseModel';
+import {ISetsRepsModel, ISetsRepsModelWithoutUid} from '../../../models/ISetsRepsModel';
 
 export const deleteSet = async (setUid: string): Promise<void> => {
   return await firebase.firestore()

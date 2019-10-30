@@ -1,10 +1,10 @@
 import React, {FunctionComponent, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import ErrorAlert from '../ErrorAlert/ErrorAlert';
-import {ISetBasicModel, ISetBasicUpdateModel, ISetModel} from '../../models/ISetModel';
+import ErrorAlert from '../../ErrorAlert/ErrorAlert';
+import {ISetBasicModel, ISetBasicUpdateModel, ISetModel} from '../../../models/ISetModel';
 import {Formik, FormikHelpers} from 'formik';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import FormikField from '../Formik/FormikField';
+import FormikField from '../../Formik/FormikField';
 import {Button, ButtonGroup} from 'reactstrap';
 import isNumber from 'lodash/isNumber';
 // TODO :(

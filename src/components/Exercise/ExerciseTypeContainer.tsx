@@ -8,14 +8,14 @@ import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import ExerciseHeader from './ExerciseHeader';
 import ExerciseHeaderView from './ExerciseHeaderView';
-import SetsRepsExerciseContainer from '../SetsReps/SetsRepsExerciseContainer';
+import SetsRepsExerciseContainer from '../Sets/SetsReps/SetsRepsExerciseContainer';
 import TimeDistanceExerciseContainer from '../TimeDistance/TimeDistanceExerciseContainer';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
-import SetsSecondsExerciseContainer from '../SetsSeconds/SetsSecondsExerciseContainer';
+import SetsSecondsExerciseContainer from '../Sets/SetsSeconds/SetsSecondsExerciseContainer';
 
 export const ExerciseHeaderEditCtx = createContext<any>([false, () => {}]);
 
-const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({ exerciseUid, dayUid=null }) => {
+const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({ exerciseUid }) => {
   const [currentExerciseData, setCurrentExerciseData] = useState<IExerciseModel | undefined>(undefined);
   const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
   const [headerEditVisible, setHeaderEditVisible] = useState<boolean>(false);
@@ -62,8 +62,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({
 };
 
 interface IExerciseTypeContainerProps {
-  exerciseUid: string,
-  dayUid?: string
+  exerciseUid: string
 }
 
 export default ExerciseTypeContainer;

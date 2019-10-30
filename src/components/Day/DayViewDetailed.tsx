@@ -125,7 +125,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
 
       <Row>
         {!currentData.exercises.length && <Col xs={12}><Alert color="success">{t("No exercises added")}</Alert></Col>}
-        {currentData.exercises.length > 0 && orderBy(currentData.exercises, 'index', 'desc').map(e => <ExerciseTypeContainer key={e.exerciseUid} exerciseUid={e.exerciseUid} dayUid={dayUid}/>)}
+        {currentData.exercises.length > 0 && orderBy(currentData.exercises, 'index', 'desc').map(e => <ExerciseTypeContainer key={e.exerciseUid} exerciseUid={e.exerciseUid}/>)}
       </Row>
 
       <Row>

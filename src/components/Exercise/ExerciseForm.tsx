@@ -11,13 +11,13 @@ import {Button, ButtonGroup, Col, FormGroup, Row} from 'reactstrap';
 import FieldFormGroup from '../Formik/FieldFormGroup';
 import SelectFormGroup from '../Formik/SelectFormGroup';
 import {addNewTimeDistanceExerciseAndGetUid} from '../TimeDistance/TimeDistanceService';
-import {addNewSetsRepsExerciseAndGetUid} from '../SetsReps/SetsRepsService';
+import {addNewSetsRepsExerciseAndGetUid} from '../Sets/SetsReps/SetsRepsService';
 import {addExerciseToDayArray} from '../Day/DayService';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 import {Router} from 'router5';
 import {withRoute} from 'react-router5';
-import {addNewSetsSecondsExerciseAndGetUid} from '../SetsSeconds/SetsSecondsService';
+import {addNewSetsSecondsExerciseAndGetUid} from '../Sets/SetsSeconds/SetsSecondsService';
 
 const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> = ({router, setAddExerciseViewVisible}) => {
   const { t } = useTranslation();

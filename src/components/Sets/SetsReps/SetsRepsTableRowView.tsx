@@ -1,17 +1,17 @@
-import './SetsSeconds.scss';
+import './OneSet.scss';
 
 import React, {FunctionComponent, useEffect, useState} from 'react';
-import ErrorAlert from '../ErrorAlert/ErrorAlert';
-import LoadingAlert from '../LoadingAlert/LoadingAlert';
+import {ISetBasicModel, ISetModel} from '../../../models/ISetModel';
+import ErrorAlert from '../../ErrorAlert/ErrorAlert';
+import LoadingAlert from '../../LoadingAlert/LoadingAlert';
 import classnames from 'classnames';
-import firebase from '../../config/firebase';
-import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
+import SetsRepsTableRowFormEdit from './SetsRepsTableRowFormEdit';
+import firebase from '../../../config/firebase';
+import {FirebaseCollectionNames} from '../../../config/FirebaseUtils';
 import isEmpty from 'lodash/isEmpty';
-import {ISetSecondsBasicModel, ISetSecondsModel} from '../../models/ISetSecondsModel';
-import SetsSecondsTableRowFormEdit from './SetsSecondsTableRowFormEdit';
 
-const SetsSecondsTableRowView: FunctionComponent<ISetsRepsTableRowViewProps> = ({ setUid, disabled, setLastSetData }) => {
-  const [currentData, setCurrentData] = useState<ISetSecondsModel | undefined>(undefined);
+const SetsRepsTableRowView: FunctionComponent<ISetsRepsTableRowViewProps> = ({ setUid, disabled, setLastSetData }) => {
+  const [currentData, setCurrentData] = useState<ISetModel | undefined>(undefined);
   const [editRow, setEditRow] = useState<boolean>(false);
   const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
 
@@ -19,18 +19,18 @@ const SetsSecondsTableRowView: FunctionComponent<ISetsRepsTableRowViewProps> = (
   useEffect(() => {
     // TODO Need to verify that a user can't send any UID in here, somehow... That should be specified in the rules!
     const unsub = firebase.firestore()
-      .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_SETS_SECONDS)
+      .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_SETS)
       // .where("ownerUid", "==", uid)
       .doc(setUid)
       .onSnapshot({includeMetadataChanges: true}, doc => {
         if (doc.exists && !isEmpty(doc.data())) {
           const snapshotData: any = doc.data();
-          const res: ISetSecondsModel = {
+          const res: ISetModel = {
             ownerUid: snapshotData.ownerUid,
             uid: doc.id,
             createdTimestamp: snapshotData.createdTimestamp,
             version: snapshotData.version,
-            seconds: snapshotData.seconds,
+            reps: snapshotData.reps,
             amountInKg: snapshotData.amountInKg,
             index: snapshotData.index
           };
@@ -63,11 +63,11 @@ const SetsSecondsTableRowView: FunctionComponent<ISetsRepsTableRowViewProps> = (
   });
 
   return (<>
-    {editRow && !disabled && <SetsSecondsTableRowFormEdit setAddSetViewVisible={setEditRow} initialData={currentData}/>}
+    {editRow && !disabled && <SetsRepsTableRowFormEdit setAddSetViewVisible={setEditRow} initialData={currentData}/>}
     {!editRow && <tr className={classNames} onClick={() => setEditRow(true)}>
       <th scope="row">{currentData.index}</th>
       <td>{currentData.amountInKg}</td>
-      <td>{currentData.seconds}</td>
+      <td>{currentData.reps}</td>
     </tr>}
   </>);
 };
@@ -75,7 +75,7 @@ const SetsSecondsTableRowView: FunctionComponent<ISetsRepsTableRowViewProps> = (
 interface ISetsRepsTableRowViewProps {
   setUid: string,
   disabled: boolean,
-  setLastSetData?: ((lastSetData: ISetSecondsBasicModel) => void)
+  setLastSetData?: ((lastSetData: ISetBasicModel) => void)
 }
 
-export default SetsSecondsTableRowView;
+export default SetsRepsTableRowView;
