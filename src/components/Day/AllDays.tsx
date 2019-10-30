@@ -3,8 +3,7 @@ import './Day.scss';
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import EmptyCollection from '../EmptyCollection/EmptyCollection';
-import orderBy from 'lodash/orderBy';
-import {getAllDays10DaysBackInTime} from './DayService';
+import {getLatest10Days} from './DayService';
 import {IDayModel} from '../../models/IDayModel';
 import {Col, Row} from 'reactstrap';
 import DayView from './DayView';
@@ -14,9 +13,11 @@ const AllDays: FunctionComponent<IAllDaysProps> = () => {
   const [allDays, setAllDays] = useState<Array<IDayModel> | undefined>(undefined);
 
   useEffect(() => {
-    getAllDays10DaysBackInTime().then(res => {
-      setAllDays(orderBy(res, ['startTimestamp'], ['desc']));
-    });
+    getLatest10Days()
+      .then(setAllDays)
+      .catch(err => {
+        console.error(err);
+      });
   }, []);
 
   if (!allDays) {

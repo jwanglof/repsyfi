@@ -10,8 +10,6 @@ import firebase, {getCurrentUsersUid} from '../../config/firebase';
 import {deleteExercise} from '../Exercise/ExerciseService';
 import isEmpty from 'lodash/isEmpty';
 import {FirebaseCollectionNames, getDayErrorObject, getNowTimestamp} from '../../config/FirebaseUtils';
-import getUnixTime from 'date-fns/getUnixTime';
-import subDays from 'date-fns/subDays';
 import {Versions} from '../../models/IBaseModel';
 
 // "Cache"
@@ -97,13 +95,13 @@ export const addDay = async (dayData: IDayBasicModel, ownerUid: string): Promise
   return dayDocRef.id;
 };
 
-export const getAllDays10DaysBackInTime = async (): Promise<Array<IDayModel>> => {
-  const sub10DaysTimestamp = getUnixTime(subDays(new Date(), 100));  // TODO Lol
+export const getLatest10Days = async (): Promise<Array<IDayModel>> => {
   const ownerUid = await getCurrentUsersUid();
   return firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
-    .where("startTimestamp", ">=", sub10DaysTimestamp)
     .where("ownerUid", "==", ownerUid)
+    .orderBy('startTimestamp', 'desc')
+    .limit(10)
     .get()
     .then(querySnapshot => {
       const days: Array<IDayModel> = [];
