@@ -88,6 +88,7 @@ const resources = {
       "Yes": "Yes",
       "No": "No",
       "(HH MM SS)": "(hour minute second)",
+      "Update": "Update",
 
       // Features
       "Track your sets and repetitions": "Track your sets and repetitions",
@@ -169,7 +170,7 @@ const resources = {
       "No exercises added": "Inga övningar tillagda",
       "Sets with seconds": "Set med sekunder",
       "Seconds": "Sekunder",
-      "Exercise questionnaire": "Övningformulär",
+      "Exercise questionnaire": "Övningsformulär",
       "questionnaire": "formulär",
       "How did the workout feel?": "Hur kändes träningspasset?",
       "Worst": "Sämst",
@@ -183,6 +184,7 @@ const resources = {
       "Yes": "Ja",
       "No": "Nej",
       "(HH MM SS)": "(timme minut sekund)",
+      "Update": "Uppdatera",
 
       // Features
       "Track your sets and repetitions": "Hålla koll på dina set och repetitioner",

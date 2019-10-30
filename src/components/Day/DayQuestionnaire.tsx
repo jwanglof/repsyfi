@@ -18,7 +18,6 @@ import {isEmpty} from 'lodash';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 
 const DayQuestionnaire: FunctionComponent<IDayQuestionnaireRouter & IDayQuestionnaireProps> = ({router, show, dayData}) => {
-
   const { t } = useTranslation();
 
   const [currentData, setCurrentData] = useState<IDayQuestionnaireModelV1 | undefined>(undefined);
@@ -27,33 +26,37 @@ const DayQuestionnaire: FunctionComponent<IDayQuestionnaireRouter & IDayQuestion
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
   const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
 
+  const subscribeOnQuestionnaireAndSetData = (questionnaireUid: string) => {
+    // TODO Need to verify that a user can't send any UID in here, somehow... That should be specified in the rules!
+    return firebase.firestore()
+      .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_QUESTIONNAIRE)
+      // .where("ownerUid", "==", uid)
+      .doc(questionnaireUid)
+      .onSnapshot({includeMetadataChanges: true}, doc => {
+        if (doc.exists && !isEmpty(doc.data())) {
+          const snapshotData: any = doc.data();
+          setCurrentData({
+            ownerUid: snapshotData.ownerUid,
+            uid: doc.id,
+            createdTimestamp: snapshotData.createdTimestamp,
+            version: snapshotData.version,
+            totalStretchSeconds: snapshotData.totalStretchSeconds,
+            stretched: snapshotData.stretched,
+            feeling: snapshotData.feeling
+          });
+          setFeelingButton(snapshotData.feeling);
+          setYesNoButton(snapshotData.stretched);
+        }
+      }, err => {
+        console.error('error:', err);
+        setSnapshotErrorData(err.message);
+      });
+  };
+
   useEffect(() => {
-    const questionnaireUid = dayData.questionnaire;
+    const questionnaireUid: string | undefined = dayData.questionnaire;
     if (questionnaireUid) {
-      // TODO Need to verify that a user can't send any UID in here, somehow... That should be specified in the rules!
-      const unsub = firebase.firestore()
-        .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_QUESTIONNAIRE)
-        // .where("ownerUid", "==", uid)
-        .doc(questionnaireUid)
-        .onSnapshot({includeMetadataChanges: true}, doc => {
-          if (doc.exists && !isEmpty(doc.data())) {
-            const snapshotData: any = doc.data();
-            setCurrentData({
-              ownerUid: snapshotData.ownerUid,
-              uid: doc.id,
-              createdTimestamp: snapshotData.createdTimestamp,
-              version: snapshotData.version,
-              totalStretchSeconds: snapshotData.totalStretchSeconds,
-              stretched: snapshotData.stretched,
-              feeling: snapshotData.feeling
-            });
-            setFeelingButton(snapshotData.feeling);
-            setYesNoButton(snapshotData.stretched);
-          }
-        }, err => {
-          console.error('error:', err);
-          setSnapshotErrorData(err.message);
-        });
+      const unsub = subscribeOnQuestionnaireAndSetData(questionnaireUid);
 
       // Unsubscribe on un-mount
       return () => {
@@ -100,6 +103,7 @@ const DayQuestionnaire: FunctionComponent<IDayQuestionnaireRouter & IDayQuestion
       if (!currentData) {
         const questionnaireUid = await addQuestionnaire(data, ownerUid);
         await updateDayWithQuestionnaireUid(dayUid, questionnaireUid);
+        subscribeOnQuestionnaireAndSetData(questionnaireUid);
       } else {
         const questionnaireUid = currentData.uid;
         await updateQuestionnaire(data, questionnaireUid);
@@ -118,6 +122,8 @@ const DayQuestionnaire: FunctionComponent<IDayQuestionnaireRouter & IDayQuestion
   } else {
     initialValues = {totalStretchSeconds: 0};
   }
+
+  const buttonText = (!currentData ? t("Save") : t("Update")) + ` ${t("questionnaire")}`;
 
   return (
     <Formik
@@ -138,37 +144,41 @@ const DayQuestionnaire: FunctionComponent<IDayQuestionnaireRouter & IDayQuestion
                     <CardTitle className="text-center">
                       <h3>{t("How did the workout feel?")}</h3>
                     </CardTitle>
-                    <ButtonGroup className="w-100">
-                      <Button onClick={() => setFeelingButton(FEELING.WORST)}
-                              active={feelingButton === FEELING.WORST}
-                              color="info">{t("Worst")}</Button>
-                      <Button onClick={() => setFeelingButton(FEELING.BAD)}
-                              active={feelingButton === FEELING.BAD}
-                              color="info">{t("Bad")}</Button>
-                      <Button onClick={() => setFeelingButton(FEELING.NEUTRAL)}
-                              active={feelingButton === FEELING.NEUTRAL}
-                              color="info">{t("Neutral")}</Button>
-                      <Button onClick={() => setFeelingButton(FEELING.GOOD)}
-                              active={feelingButton === FEELING.GOOD}
-                              color="info">{t("Good")}</Button>
-                      <Button onClick={() => setFeelingButton(FEELING.GOD_LIKE)}
-                              active={feelingButton === FEELING.GOD_LIKE}
-                              color="info">{t("God-like")}</Button>
-                    </ButtonGroup>
+                    <Row>
+                      <ButtonGroup className="mx-auto">
+                        <Button onClick={() => setFeelingButton(FEELING.WORST)}
+                                active={feelingButton === FEELING.WORST}
+                                color="info">{t("Worst")}</Button>
+                        <Button onClick={() => setFeelingButton(FEELING.BAD)}
+                                active={feelingButton === FEELING.BAD}
+                                color="info">{t("Bad")}</Button>
+                        <Button onClick={() => setFeelingButton(FEELING.NEUTRAL)}
+                                active={feelingButton === FEELING.NEUTRAL}
+                                color="info">{t("Neutral")}</Button>
+                        <Button onClick={() => setFeelingButton(FEELING.GOOD)}
+                                active={feelingButton === FEELING.GOOD}
+                                color="info">{t("Good")}</Button>
+                        <Button onClick={() => setFeelingButton(FEELING.GOD_LIKE)}
+                                active={feelingButton === FEELING.GOD_LIKE}
+                                color="info">{t("God-like")}</Button>
+                      </ButtonGroup>
+                    </Row>
                   </CardBody>
 
                   <CardBody>
                     <CardTitle className="text-center">
                       <h3>{t("Did you stretch?")}</h3>
                     </CardTitle>
-                    <ButtonGroup className="w-100">
-                      <Button onClick={() => setYesNoButton(true)}
-                              active={yesNoButton}
-                              color="info">{t("Yes")}</Button>
-                      <Button onClick={() => setYesNoButton(false)}
-                              active={!yesNoButton}
-                              color="info">{t("No")}</Button>
-                    </ButtonGroup>
+                    <Row>
+                      <ButtonGroup className="mx-auto w-100">
+                        <Button onClick={() => setYesNoButton(true)}
+                                active={yesNoButton}
+                                color="info">{t("Yes")}</Button>
+                        <Button onClick={() => setYesNoButton(false)}
+                                active={!yesNoButton}
+                                color="info">{t("No")}</Button>
+                      </ButtonGroup>
+                    </Row>
                   </CardBody>
 
                   {yesNoButton && <CardBody>
@@ -179,9 +189,9 @@ const DayQuestionnaire: FunctionComponent<IDayQuestionnaireRouter & IDayQuestion
                   </CardBody>}
 
                   <CardFooter>
-                    {/*<ButtonGroup className="w-100 m-0 p-0">*/}
-                      <Button type="submit" color="primary" disabled={isSubmitting || !errors} block>{`${t("Save")} ${t("questionnaire")}`}</Button>
-                    {/*</ButtonGroup>*/}
+                    <Button type="submit" color="primary" disabled={isSubmitting || !errors} block>
+                      {buttonText}
+                    </Button>
                   </CardFooter>
                 </Card>
               </Col>
