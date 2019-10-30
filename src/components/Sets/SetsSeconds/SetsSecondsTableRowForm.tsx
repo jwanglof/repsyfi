@@ -1,17 +1,11 @@
 import React, {FunctionComponent, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import ErrorAlert from '../../ErrorAlert/ErrorAlert';
-import {Formik, FormikHelpers} from 'formik';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import FormikField from '../../Formik/FormikField';
-import {Button, ButtonGroup} from 'reactstrap';
-// TODO :(
-// @ts-ignore
-import {Form} from 'react-formik-ui';
+import {FormikHelpers} from 'formik';
 import {ISetSecondsBasicModel} from '../../../models/ISetSecondsModel';
 import {addNewSetSecondsAndGetUid, addSetSecondsToSetsSecondsExerciseArray} from './SetsSecondsService';
 import {getCurrentUsersUid} from '../../../config/FirebaseUtils';
-import {setsValidation} from '../SetsHelpers';
+import SetsSecondsTableFormRowRender from './SetsSecondsTableRowFormRender';
 
 const SetsSecondsTableRowForm: FunctionComponent<ISetsSecondsTableRowFormProps> = ({ exerciseUid, initialData, setAddSetViewVisible }) => {
   const { t } = useTranslation();
@@ -49,41 +43,7 @@ const SetsSecondsTableRowForm: FunctionComponent<ISetsSecondsTableRowFormProps> 
     actions.setSubmitting(false);
   };
 
-  return (
-    <Formik
-      initialValues={initialData}
-      onSubmit={onSubmit}
-      validate={(values: any) => {
-        return setsValidation(values, t);
-      }}
-      render={({errors, isSubmitting}) => (
-        <>
-          {isSubmitting && <tr><td colSpan={3} className="text-center"><FontAwesomeIcon icon="spinner" spin/></td></tr>}
-          {!isSubmitting && <>
-            <tr>
-              <th className="align-middle" scope="row">{initialData.index}</th>
-              <td>
-                <FormikField name="amountInKg" labelText={t("Amount in KG")} type="number" labelHidden inputProps={{min: 0, autoFocus: true}}/>
-              </td>
-              <td>
-                <FormikField name="seconds" labelText={t("Seconds")} type="number" labelHidden inputProps={{min: 0}}/>
-              </td>
-            </tr>
-            <tr>
-              <td colSpan={3}>
-                <Form mode='structured'>
-                  <ButtonGroup className="w-100">
-                    <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t("Save set")}</Button>
-                    <Button color="danger" onClick={() => setAddSetViewVisible(false)}>{t("Discard set")}</Button>
-                  </ButtonGroup>
-                </Form>
-              </td>
-            </tr>
-          </>}
-        </>
-      )}
-    />
-  );
+  return <SetsSecondsTableFormRowRender initialData={initialData} onSubmit={onSubmit} setAddSetViewVisible={setAddSetViewVisible} t={t}/>
 };
 
 interface ISetsSecondsTableRowFormProps {

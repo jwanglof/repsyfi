@@ -1,16 +1,10 @@
 import React, {FunctionComponent, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import ErrorAlert from '../../ErrorAlert/ErrorAlert';
-import {Formik, FormikHelpers} from 'formik';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import FormikField from '../../Formik/FormikField';
-import {Button, ButtonGroup} from 'reactstrap';
-// TODO :(
-// @ts-ignore
-import {Form} from 'react-formik-ui';
+import {FormikHelpers} from 'formik';
 import {ISetSecondsBasicModel, ISetSecondsBasicUpdateModel, ISetSecondsModel} from '../../../models/ISetSecondsModel';
 import {updateSetsSecondsExercise} from './SetsSecondsService';
-import {setsValidation} from '../SetsHelpers';
+import SetsSecondsTableFormRowRender from './SetsSecondsTableRowFormRender';
 
 const SetsSecondsTableRowFormEdit: FunctionComponent<ISetsSecondsTableRowFormEditProps> = ({ initialData, setAddSetViewVisible }) => {
   const { t } = useTranslation();
@@ -21,7 +15,7 @@ const SetsSecondsTableRowFormEdit: FunctionComponent<ISetsSecondsTableRowFormEdi
     return <tr><td colSpan={3}><ErrorAlert errorText={submitErrorMessage} componentName="SetsSecondsTableRowFormEdit"/></td></tr>;
   }
 
-  const onSubmit = async (values: ISetSecondsBasicModel, actions: FormikHelpers<ISetSecondsModel>) => {
+  const onSubmit = async (values: ISetSecondsBasicModel, actions: FormikHelpers<ISetSecondsBasicModel>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
 
@@ -41,42 +35,7 @@ const SetsSecondsTableRowFormEdit: FunctionComponent<ISetsSecondsTableRowFormEdi
     actions.setSubmitting(false);
   };
 
-  // TODO Merge this Form with the form in SetsSecondsTableRowForm!
-  return (
-    <Formik
-      initialValues={initialData}
-      onSubmit={onSubmit}
-      validate={(values: any) => {
-        return setsValidation(values, t);
-      }}
-      render={({errors, isSubmitting}) => (
-        <>
-          {isSubmitting && <tr><td colSpan={3} className="text-center"><FontAwesomeIcon icon="spinner" spin/></td></tr>}
-          {!isSubmitting && <>
-            <tr>
-              <th className="align-middle" scope="row">{initialData.index}</th>
-              <td>
-                <FormikField name="amountInKg" labelText={t("Amount in KG")} type="number" labelHidden inputProps={{min: 0, autoFocus: true}}/>
-              </td>
-              <td>
-                <FormikField name="seconds" labelText={t("Seconds")} type="number" labelHidden inputProps={{min: 0}}/>
-              </td>
-            </tr>
-            <tr>
-              <td colSpan={3}>
-                <Form mode='structured'>
-                  <ButtonGroup className="w-100">
-                    <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t("Save set")}</Button>
-                    <Button color="danger" onClick={() => setAddSetViewVisible(false)}>{t("Discard set")}</Button>
-                  </ButtonGroup>
-                </Form>
-              </td>
-            </tr>
-          </>}
-        </>
-      )}
-    />
-  );
+  return <SetsSecondsTableFormRowRender initialData={initialData} onSubmit={onSubmit} setAddSetViewVisible={setAddSetViewVisible} t={t}/>
 };
 
 interface ISetsSecondsTableRowFormEditProps {
