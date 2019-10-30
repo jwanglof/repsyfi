@@ -1,15 +1,16 @@
 import React, {FunctionComponent} from 'react';
 import {Formik, FormikHelpers} from 'formik';
-import {setsValidation} from '../SetsHelpers';
+import {setsValidation} from './SetsHelpers';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import FormikField from '../../Formik/FormikField';
-import {Button, ButtonGroup} from 'reactstrap';
-import * as i18next from 'i18next';
+import FormikField from '../Formik/FormikField';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
-import {ISetBasicModel} from '../../../models/ISetModel';
+import {Button, ButtonGroup} from 'reactstrap';
+import {ISetBasicModel} from '../../models/ISetModel';
+import i18next from 'i18next';
+import {SetTypesEnum} from '../../enums/SetTypesEnum';
 
-const SetsRepsTableRowFormRender: FunctionComponent<ISetsRepsTableRowFormRender> = ({initialData, onSubmit, t, setAddSetViewVisible}) => {
+const SetsTableRowFormRender: FunctionComponent<ISetsTableRowFormRender> = ({initialData, onSubmit, t, setAddSetViewVisible, setTypeShown}) => {
   return (
     <Formik
       initialValues={initialData}
@@ -26,9 +27,12 @@ const SetsRepsTableRowFormRender: FunctionComponent<ISetsRepsTableRowFormRender>
               <td>
                 <FormikField name="amountInKg" labelText={t("Amount in KG")} type="number" labelHidden inputProps={{min: 0, autoFocus: true}}/>
               </td>
-              <td>
+              {setTypeShown === SetTypesEnum.SET_TYPE_REPS && <td>
                 <FormikField name="reps" labelText={t("Repetitions")} type="number" labelHidden inputProps={{min: 0}}/>
-              </td>
+              </td>}
+              {setTypeShown === SetTypesEnum.SET_TYPE_SECONDS && <td>
+                <FormikField name="seconds" labelText={t("Seconds")} type="number" labelHidden inputProps={{min: 0}}/>
+              </td>}
             </tr>
             <tr>
               <td colSpan={3}>
@@ -47,11 +51,12 @@ const SetsRepsTableRowFormRender: FunctionComponent<ISetsRepsTableRowFormRender>
   );
 };
 
-interface ISetsRepsTableRowFormRender {
+interface ISetsTableRowFormRender {
   initialData: ISetBasicModel,
   onSubmit: ((values: ISetBasicModel, actions: FormikHelpers<ISetBasicModel>) => void),
   t: i18next.TFunction,
   setAddSetViewVisible: ((visible: boolean) => void),
+  setTypeShown: SetTypesEnum
 }
 
-export default SetsRepsTableRowFormRender;
+export default SetsTableRowFormRender;

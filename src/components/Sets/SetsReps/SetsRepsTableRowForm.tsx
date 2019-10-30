@@ -5,9 +5,8 @@ import {addNewSetAndGetUid, addSetToSetsRepsExerciseArray} from './SetsRepsServi
 import {ISetBasicModel} from '../../../models/ISetModel';
 import {FormikHelpers} from 'formik';
 import {getCurrentUsersUid} from '../../../config/FirebaseUtils';
-// TODO :(
-// @ts-ignore
-import SetsRepsTableRowFormRender from './SetsRepsTableRowFormRender';
+import SetsTableRowFormRender from '../SetsTableRowFormRender';
+import {SetTypesEnum} from '../../../enums/SetTypesEnum';
 
 const SetsRepsTableRowForm: FunctionComponent<ISetsRepsTableRowFormProps> = ({ exerciseUid, initialData, setAddSetViewVisible }) => {
   const { t } = useTranslation();
@@ -45,7 +44,7 @@ const SetsRepsTableRowForm: FunctionComponent<ISetsRepsTableRowFormProps> = ({ e
     actions.setSubmitting(false);
   };
 
-  return <SetsRepsTableRowFormRender initialData={initialData} onSubmit={onSubmit} t={t} setAddSetViewVisible={setAddSetViewVisible}/>
+  return <SetsTableRowFormRender initialData={initialData} onSubmit={onSubmit} setAddSetViewVisible={setAddSetViewVisible} t={t} setTypeShown={SetTypesEnum.SET_TYPE_REPS}/>;
 };
 
 interface ISetsRepsTableRowFormProps {

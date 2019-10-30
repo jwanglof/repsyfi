@@ -4,7 +4,8 @@ import ErrorAlert from '../../ErrorAlert/ErrorAlert';
 import {ISetBasicModel, ISetBasicUpdateModel, ISetModel} from '../../../models/ISetModel';
 import {FormikHelpers} from 'formik';
 import {updateSetsRepsExercise} from './SetsRepsService';
-import SetsRepsTableRowFormRender from './SetsRepsTableRowFormRender';
+import SetsTableRowFormRender from '../SetsTableRowFormRender';
+import {SetTypesEnum} from '../../../enums/SetTypesEnum';
 
 const SetsRepsTableRowFormEdit: FunctionComponent<ISetsRepsTableRowFormEditProps> = ({ initialData, setAddSetViewVisible }) => {
   const { t } = useTranslation();
@@ -35,7 +36,7 @@ const SetsRepsTableRowFormEdit: FunctionComponent<ISetsRepsTableRowFormEditProps
     actions.setSubmitting(false);
   };
 
-  return <SetsRepsTableRowFormRender initialData={initialData} onSubmit={onSubmit} t={t} setAddSetViewVisible={setAddSetViewVisible}/>;
+  return <SetsTableRowFormRender initialData={initialData} onSubmit={onSubmit} setAddSetViewVisible={setAddSetViewVisible} t={t} setTypeShown={SetTypesEnum.SET_TYPE_REPS}/>;
 };
 
 interface ISetsRepsTableRowFormEditProps {

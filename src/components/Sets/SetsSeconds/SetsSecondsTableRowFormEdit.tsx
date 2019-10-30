@@ -3,8 +3,9 @@ import {useTranslation} from 'react-i18next';
 import ErrorAlert from '../../ErrorAlert/ErrorAlert';
 import {FormikHelpers} from 'formik';
 import {updateSetsSecondsExercise} from './SetsSecondsService';
-import SetsSecondsTableFormRowRender from './SetsSecondsTableRowFormRender';
 import {ISetBasicModel, ISetBasicUpdateModel, ISetModel} from '../../../models/ISetModel';
+import SetsTableRowFormRender from '../SetsTableRowFormRender';
+import {SetTypesEnum} from '../../../enums/SetTypesEnum';
 
 const SetsSecondsTableRowFormEdit: FunctionComponent<ISetsSecondsTableRowFormEditProps> = ({ initialData, setAddSetViewVisible }) => {
   const { t } = useTranslation();
@@ -35,7 +36,7 @@ const SetsSecondsTableRowFormEdit: FunctionComponent<ISetsSecondsTableRowFormEdi
     actions.setSubmitting(false);
   };
 
-  return <SetsSecondsTableFormRowRender initialData={initialData} onSubmit={onSubmit} setAddSetViewVisible={setAddSetViewVisible} t={t}/>
+  return <SetsTableRowFormRender initialData={initialData} onSubmit={onSubmit} setAddSetViewVisible={setAddSetViewVisible} t={t} setTypeShown={SetTypesEnum.SET_TYPE_SECONDS}/>;
 };
 
 interface ISetsSecondsTableRowFormEditProps {

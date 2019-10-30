@@ -4,8 +4,9 @@ import ErrorAlert from '../../ErrorAlert/ErrorAlert';
 import {FormikHelpers} from 'formik';
 import {addNewSetSecondsAndGetUid, addSetSecondsToSetsSecondsExerciseArray} from './SetsSecondsService';
 import {getCurrentUsersUid} from '../../../config/FirebaseUtils';
-import SetsSecondsTableFormRowRender from './SetsSecondsTableRowFormRender';
 import {ISetBasicModel} from '../../../models/ISetModel';
+import SetsTableRowFormRender from '../SetsTableRowFormRender';
+import {SetTypesEnum} from '../../../enums/SetTypesEnum';
 
 const SetsSecondsTableRowForm: FunctionComponent<ISetsSecondsTableRowFormProps> = ({ exerciseUid, initialData, setAddSetViewVisible }) => {
   const { t } = useTranslation();
@@ -43,7 +44,7 @@ const SetsSecondsTableRowForm: FunctionComponent<ISetsSecondsTableRowFormProps> 
     actions.setSubmitting(false);
   };
 
-  return <SetsSecondsTableFormRowRender initialData={initialData} onSubmit={onSubmit} setAddSetViewVisible={setAddSetViewVisible} t={t}/>
+  return <SetsTableRowFormRender initialData={initialData} onSubmit={onSubmit} setAddSetViewVisible={setAddSetViewVisible} t={t} setTypeShown={SetTypesEnum.SET_TYPE_SECONDS}/>;
 };
 
 interface ISetsSecondsTableRowFormProps {
