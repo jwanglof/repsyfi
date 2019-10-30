@@ -1,6 +1,6 @@
-import React, {FunctionComponent, useContext, useEffect, useState} from 'react';
+import React, {FunctionComponent, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Button, ButtonDropdown, ButtonGroup, DropdownItem, DropdownMenu, DropdownToggle, Table} from 'reactstrap';
+import {Table} from 'reactstrap';
 import ErrorAlert from '../../ErrorAlert/ErrorAlert';
 import {isEmpty, remove} from 'lodash';
 import {withRouter} from 'react-router5';
@@ -13,16 +13,16 @@ import LoadingAlert from '../../LoadingAlert/LoadingAlert';
 import {ISetSecondsBasicModel} from '../../../models/ISetSecondsModel';
 import SetsSecondsTableRowForm from './SetsSecondsTableRowForm';
 import SetsSecondsTableRowView from './SetsSecondsTableRowView';
-import {ExerciseHeaderEditCtx} from '../../Exercise/ExerciseTypeContainer';
 import {recalculateIndexes} from '../../../utils/exercise-utils';
 import {getSetsSecondDocument, getSetsSecondsExerciseDocument} from './SetsSecondsService';
 import {getExerciseDocument} from '../../Exercise/ExerciseService';
 import {getDay, getDayDocument} from '../../Day/DayService';
 
-import isWithinInterval from "date-fns/isWithinInterval";
-import fromUnixTime from "date-fns/fromUnixTime";
+import isWithinInterval from 'date-fns/isWithinInterval';
+import fromUnixTime from 'date-fns/fromUnixTime';
 import addSeconds from 'date-fns/addSeconds';
 import subSeconds from 'date-fns/subSeconds';
+import ExerciseContainerFooter from '../ExerciseContainerFooter';
 
 const SetsSecondsExerciseContainer: FunctionComponent<SetsSecondsExerciseContainerRouter & SetsSecondsExerciseContainerProps> = ({router, setsSecondsExerciseUid, exerciseUid}) => {
   const { t } = useTranslation();
@@ -37,8 +37,6 @@ const SetsSecondsExerciseContainer: FunctionComponent<SetsSecondsExerciseContain
   const [lastSetData, setLastSetData] = useState<ISetSecondsBasicModel | undefined>(undefined);
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const [exerciseDeleteStep2Shown, setExerciseDeleteStep2Shown] = useState<boolean>(false);
-
-  const [headerEditVisible, setHeaderEditVisible] = useContext(ExerciseHeaderEditCtx);
 
   useEffect(() => {
     // TODO Need to verify that a user can't send any UID in here, somehow... That should be specified in the rules!
@@ -160,32 +158,7 @@ const SetsSecondsExerciseContainer: FunctionComponent<SetsSecondsExerciseContain
 
       </tbody>
 
-      {detailedDayView && !addSetViewVisible && <tfoot>
-      <tr>
-        <td colSpan={3}>
-          <ButtonGroup className="w-100">
-            <Button color="success" block onClick={() => setAddSetViewVisible(!addSetViewVisible)}>{t("Add set")}</Button>
-            <ButtonDropdown isOpen={dropdownVisible} toggle={toggleActionDropdown}>
-              <DropdownToggle caret>
-                {t("Actions")}
-              </DropdownToggle>
-              <DropdownMenu right>
-                <DropdownItem onClick={() => setHeaderEditVisible(true)} disabled={headerEditVisible}>
-                  {`${t("Edit")} ${t("name")}`}
-                </DropdownItem>
-                <DropdownItem toggle={false}>
-                  {!exerciseDeleteStep2Shown && <span onClick={() => setExerciseDeleteStep2Shown(true)}>{t("Delete")} {t("exercise")}</span>}
-                  {exerciseDeleteStep2Shown && <span className="text-danger" onClick={delExercise}>{t("Click again to delete!")}</span>}
-                </DropdownItem>
-              </DropdownMenu>
-            </ButtonDropdown>
-          </ButtonGroup>
-        </td>
-      </tr>
-      <tr>
-        <td className="text-muted text-center font-italic" colSpan={3}><small>{t("Click on a set for different actions")}</small></td>
-      </tr>
-      </tfoot>}
+      <ExerciseContainerFooter detailedDayView={detailedDayView} addSetViewVisible={addSetViewVisible} dropdownVisible={dropdownVisible} toggleActionDropdown={toggleActionDropdown} setAddSetViewVisible={setAddSetViewVisible} t={t} exerciseDeleteStep2Shown={exerciseDeleteStep2Shown} setExerciseDeleteStep2Shown={setExerciseDeleteStep2Shown} delExercise={delExercise}/>
 
     </Table>
   );
