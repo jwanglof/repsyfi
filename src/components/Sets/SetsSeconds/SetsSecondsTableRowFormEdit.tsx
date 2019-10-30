@@ -2,9 +2,9 @@ import React, {FunctionComponent, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import ErrorAlert from '../../ErrorAlert/ErrorAlert';
 import {FormikHelpers} from 'formik';
-import {ISetSecondsBasicModel, ISetSecondsBasicUpdateModel, ISetSecondsModel} from '../../../models/ISetSecondsModel';
 import {updateSetsSecondsExercise} from './SetsSecondsService';
 import SetsSecondsTableFormRowRender from './SetsSecondsTableRowFormRender';
+import {ISetBasicModel, ISetBasicUpdateModel, ISetModel} from '../../../models/ISetModel';
 
 const SetsSecondsTableRowFormEdit: FunctionComponent<ISetsSecondsTableRowFormEditProps> = ({ initialData, setAddSetViewVisible }) => {
   const { t } = useTranslation();
@@ -15,12 +15,12 @@ const SetsSecondsTableRowFormEdit: FunctionComponent<ISetsSecondsTableRowFormEdi
     return <tr><td colSpan={3}><ErrorAlert errorText={submitErrorMessage} componentName="SetsSecondsTableRowFormEdit"/></td></tr>;
   }
 
-  const onSubmit = async (values: ISetSecondsBasicModel, actions: FormikHelpers<ISetSecondsBasicModel>) => {
+  const onSubmit = async (values: ISetBasicModel, actions: FormikHelpers<ISetBasicModel>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
 
     try {
-      const data: ISetSecondsBasicUpdateModel = {
+      const data: ISetBasicUpdateModel = {
         amountInKg: values.amountInKg,
         seconds: values.seconds
       };
@@ -39,7 +39,7 @@ const SetsSecondsTableRowFormEdit: FunctionComponent<ISetsSecondsTableRowFormEdi
 };
 
 interface ISetsSecondsTableRowFormEditProps {
-  initialData: ISetSecondsModel,
+  initialData: ISetModel,
   setAddSetViewVisible: ((visible: boolean) => void),
 }
 

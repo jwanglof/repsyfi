@@ -2,10 +2,10 @@ import React, {FunctionComponent, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import ErrorAlert from '../../ErrorAlert/ErrorAlert';
 import {FormikHelpers} from 'formik';
-import {ISetSecondsBasicModel} from '../../../models/ISetSecondsModel';
 import {addNewSetSecondsAndGetUid, addSetSecondsToSetsSecondsExerciseArray} from './SetsSecondsService';
 import {getCurrentUsersUid} from '../../../config/FirebaseUtils';
 import SetsSecondsTableFormRowRender from './SetsSecondsTableRowFormRender';
+import {ISetBasicModel} from '../../../models/ISetModel';
 
 const SetsSecondsTableRowForm: FunctionComponent<ISetsSecondsTableRowFormProps> = ({ exerciseUid, initialData, setAddSetViewVisible }) => {
   const { t } = useTranslation();
@@ -20,12 +20,12 @@ const SetsSecondsTableRowForm: FunctionComponent<ISetsSecondsTableRowFormProps> 
     return <tr><td colSpan={3}><ErrorAlert errorText="Need an exercise UID to add a set!" componentName="SetsSecondsTableRowForm"/></td></tr>;
   }
 
-  const onSubmit = async (values: ISetSecondsBasicModel, actions: FormikHelpers<ISetSecondsBasicModel>) => {
+  const onSubmit = async (values: ISetBasicModel, actions: FormikHelpers<ISetBasicModel>) => {
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
 
     try {
-      const data: ISetSecondsBasicModel = {
+      const data: ISetBasicModel = {
         index: values.index,
         amountInKg: values.amountInKg,
         seconds: values.seconds
@@ -48,7 +48,7 @@ const SetsSecondsTableRowForm: FunctionComponent<ISetsSecondsTableRowFormProps> 
 
 interface ISetsSecondsTableRowFormProps {
   exerciseUid: string,
-  initialData: ISetSecondsBasicModel,
+  initialData: ISetBasicModel,
   setAddSetViewVisible: ((visible: boolean) => void),
 }
 

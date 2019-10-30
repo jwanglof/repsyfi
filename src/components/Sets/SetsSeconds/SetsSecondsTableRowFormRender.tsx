@@ -6,8 +6,8 @@ import FormikField from '../../Formik/FormikField';
 import {Button, ButtonGroup} from 'reactstrap';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
-import {ISetSecondsBasicModel, ISetSecondsModel} from '../../../models/ISetSecondsModel';
 import * as i18next from 'i18next';
+import {ISetBasicModel} from '../../../models/ISetModel';
 
 const SetsSecondsTableFormRowRender: FunctionComponent<ISetsSecondsTableFormRowRender> = ({initialData, onSubmit, t, setAddSetViewVisible}) => {
   return (
@@ -48,8 +48,8 @@ const SetsSecondsTableFormRowRender: FunctionComponent<ISetsSecondsTableFormRowR
 };
 
 interface ISetsSecondsTableFormRowRender {
-  initialData: ISetSecondsModel | ISetSecondsBasicModel,
-  onSubmit: ((values: ISetSecondsModel | ISetSecondsBasicModel, actions: FormikHelpers<ISetSecondsModel | ISetSecondsBasicModel>) => void),
+  initialData: ISetBasicModel,
+  onSubmit: ((values: ISetBasicModel, actions: FormikHelpers<ISetBasicModel>) => void),
   t: i18next.TFunction,
   setAddSetViewVisible: ((visible: boolean) => void),
 }

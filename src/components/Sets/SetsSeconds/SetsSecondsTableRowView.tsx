@@ -5,11 +5,11 @@ import classnames from 'classnames';
 import firebase from '../../../config/firebase';
 import {FirebaseCollectionNames} from '../../../config/FirebaseUtils';
 import isEmpty from 'lodash/isEmpty';
-import {ISetSecondsBasicModel, ISetSecondsModel} from '../../../models/ISetSecondsModel';
 import SetsSecondsTableRowFormEdit from './SetsSecondsTableRowFormEdit';
+import {ISetBasicModel, ISetModel} from '../../../models/ISetModel';
 
 const SetsSecondsTableRowView: FunctionComponent<ISetsRepsTableRowViewProps> = ({ setUid, disabled, setLastSetData }) => {
-  const [currentData, setCurrentData] = useState<ISetSecondsModel | undefined>(undefined);
+  const [currentData, setCurrentData] = useState<ISetModel | undefined>(undefined);
   const [editRow, setEditRow] = useState<boolean>(false);
   const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
 
@@ -23,7 +23,7 @@ const SetsSecondsTableRowView: FunctionComponent<ISetsRepsTableRowViewProps> = (
       .onSnapshot({includeMetadataChanges: true}, doc => {
         if (doc.exists && !isEmpty(doc.data())) {
           const snapshotData: any = doc.data();
-          const res: ISetSecondsModel = {
+          const res: ISetModel = {
             ownerUid: snapshotData.ownerUid,
             uid: doc.id,
             createdTimestamp: snapshotData.createdTimestamp,
@@ -73,7 +73,7 @@ const SetsSecondsTableRowView: FunctionComponent<ISetsRepsTableRowViewProps> = (
 interface ISetsRepsTableRowViewProps {
   setUid: string,
   disabled: boolean,
-  setLastSetData?: ((lastSetData: ISetSecondsBasicModel) => void)
+  setLastSetData?: ((lastSetData: ISetBasicModel) => void)
 }
 
 export default SetsSecondsTableRowView;

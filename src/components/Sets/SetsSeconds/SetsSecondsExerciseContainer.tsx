@@ -10,7 +10,6 @@ import firebase from '../../../config/firebase';
 import {FirebaseCollectionNames} from '../../../config/FirebaseUtils';
 import {ISetsSecondsModel} from '../../../models/ISetsSecondsModel';
 import LoadingAlert from '../../LoadingAlert/LoadingAlert';
-import {ISetSecondsBasicModel} from '../../../models/ISetSecondsModel';
 import SetsSecondsTableRowForm from './SetsSecondsTableRowForm';
 import SetsSecondsTableRowView from './SetsSecondsTableRowView';
 import {recalculateIndexes} from '../../../utils/exercise-utils';
@@ -23,6 +22,7 @@ import fromUnixTime from 'date-fns/fromUnixTime';
 import addSeconds from 'date-fns/addSeconds';
 import subSeconds from 'date-fns/subSeconds';
 import ExerciseContainerFooter from '../ExerciseContainerFooter';
+import {ISetBasicModel} from '../../../models/ISetModel';
 
 const SetsSecondsExerciseContainer: FunctionComponent<SetsSecondsExerciseContainerRouter & SetsSecondsExerciseContainerProps> = ({router, setsSecondsExerciseUid, exerciseUid}) => {
   const { t } = useTranslation();
@@ -34,7 +34,7 @@ const SetsSecondsExerciseContainer: FunctionComponent<SetsSecondsExerciseContain
   const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
   const [addSetViewVisible, setAddSetViewVisible] = useState<boolean>(false);
-  const [lastSetData, setLastSetData] = useState<ISetSecondsBasicModel | undefined>(undefined);
+  const [lastSetData, setLastSetData] = useState<ISetBasicModel | undefined>(undefined);
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const [exerciseDeleteStep2Shown, setExerciseDeleteStep2Shown] = useState<boolean>(false);
 
@@ -87,7 +87,7 @@ const SetsSecondsExerciseContainer: FunctionComponent<SetsSecondsExerciseContain
   }
 
   // Return the last set's data so that it can be pre-filled to the new set
-  const getLastSetData = (): ISetSecondsBasicModel => {
+  const getLastSetData = (): ISetBasicModel => {
     if (!lastSetData) {
       return {
         index: 1,

@@ -1,14 +1,13 @@
 import firebase from '../../../config/firebase';
 import isEmpty from 'lodash/isEmpty';
-import {FirebaseCollectionNames, getNowTimestamp, getSetsSecondsExerciseErrorObject} from '../../../config/FirebaseUtils';
+import {
+  FirebaseCollectionNames,
+  getNowTimestamp,
+  getSetsSecondsExerciseErrorObject
+} from '../../../config/FirebaseUtils';
 import {Versions} from '../../../models/IBaseModel';
 import {ISetsSecondsModel, ISetsSecondsModelWithoutUid} from '../../../models/ISetsSecondsModel';
-import {
-  ISetSecondsBasicModel,
-  ISetSecondsBasicUpdateModel,
-  ISetSecondsModelWithoutUid,
-  ISetSecondsUpdateModel
-} from '../../../models/ISetSecondsModel';
+import {ISetBasicModel, ISetBasicUpdateModel, ISetModelWithoutUid, ISetUpdateModel} from '../../../models/ISetModel';
 
 export const deleteSetsSeconds = async (setUid: string): Promise<void> => {
   return await firebase.firestore()
@@ -23,8 +22,8 @@ export const getSetsSecondDocument = (setUid: string) => {
     .doc(setUid);
 };
 
-export const updateSetsSecondsExercise = async (setUid: string, setData: ISetSecondsBasicUpdateModel) => {
-  const data: ISetSecondsUpdateModel = {
+export const updateSetsSecondsExercise = async (setUid: string, setData: ISetBasicUpdateModel) => {
+  const data: ISetUpdateModel = {
     amountInKg: setData.amountInKg,
     seconds: setData.seconds,
     updatedTimestamp: getNowTimestamp()
@@ -32,8 +31,8 @@ export const updateSetsSecondsExercise = async (setUid: string, setData: ISetSec
   return await getSetsSecondDocument(setUid).update(data);
 };
 
-export const addNewSetSecondsAndGetUid = async (setData: ISetSecondsBasicModel, ownerUid: string): Promise<string> => {
-  const data: ISetSecondsModelWithoutUid = {
+export const addNewSetSecondsAndGetUid = async (setData: ISetBasicModel, ownerUid: string): Promise<string> => {
+  const data: ISetModelWithoutUid = {
     index: setData.index,
     amountInKg: setData.amountInKg,
     seconds: setData.seconds,
