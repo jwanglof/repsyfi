@@ -8,8 +8,8 @@ import isEmpty from 'lodash/isEmpty';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {IDayModel} from '../../models/IDayModel';
 import {Button, Col, Row} from 'reactstrap';
-import {getFormattedDate, getTitle} from './DayUtils';
 import {RouteNames} from '../../routes';
+import DayDetails from './DayDetails';
 
 const DayView: FunctionComponent<IDayViewProps & IDayViewRouter> = ({router, data}) => {
   const { t } = useTranslation();
@@ -31,18 +31,7 @@ const DayView: FunctionComponent<IDayViewProps & IDayViewRouter> = ({router, dat
       <Row className="text-center mt-1 mb-2"><Col>{t("Open detailed view")} {t("to edit/view")}</Col></Row>
 
       <Row>
-        <Col className="text-lg-right text-center" lg={3} xs={12}>
-          <div>{t("Workout location")}: {data.location}</div>
-          <div>{t("Muscle groups")}: {data.muscleGroups}</div>
-        </Col>
-        <Col className="text-center" lg={6} xs={12}>
-          <h2 className="mb-0">{getTitle(data.title || null, data.startTimestamp)}</h2>
-          <div className="day--notes">{data.notes}</div>
-        </Col>
-        <Col className="text-lg-left text-center" lg={3} xs={12}>
-          <div>{t("Start time")}: {getFormattedDate(data.startTimestamp)}</div>
-          <div>{t("End time")}: {data.endTimestamp && getFormattedDate(data.endTimestamp)}</div>
-        </Col>
+        <DayDetails dayData={data}/>
       </Row>
     </div>
   );

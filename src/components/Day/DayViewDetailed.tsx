@@ -11,7 +11,6 @@ import {IDayModel} from '../../models/IDayModel';
 import {deleteDay, endDayNow} from './DayService';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {Alert, Button, ButtonGroup, Col, Row} from 'reactstrap';
-import {getFormattedDate, getTitle} from './DayUtils';
 import ExerciseForm from '../Exercise/ExerciseForm';
 import ExerciseTypeContainer from '../Exercise/ExerciseTypeContainer';
 import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
@@ -19,6 +18,7 @@ import firebase from '../../config/firebase';
 import {RouteNames} from '../../routes';
 import {useGlobalState} from '../../state';
 import DayQuestionnaire from './DayQuestionnaire';
+import DayDetails from './DayDetails';
 
 const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetailedProps> = ({router, dayUid, dayData}) => {
   const { t } = useTranslation();
@@ -73,8 +73,6 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
       return () => {
         unsub();
       };
-    } else {
-      console.log('will use existing data::', dayData);
     }
   }, []);
 
@@ -131,18 +129,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
       </Row>
 
       <Row>
-        <Col className="text-lg-right text-center" lg={3} xs={12}>
-          <div>{t("Workout location")}: {currentData.location}</div>
-          <div>{t("Muscle groups")}: {currentData.muscleGroups}</div>
-        </Col>
-        <Col className="text-center" lg={6} xs={12}>
-          <h2 className="mb-0">{getTitle(currentData.title || null, currentData.startTimestamp)}</h2>
-          <div>{currentData.notes}</div>
-        </Col>
-        <Col className="text-lg-left text-center" lg={3} xs={12}>
-          <div>{t("Start time")}: {getFormattedDate(currentData.startTimestamp)}</div>
-          <div>{t("End time")}: {currentData.endTimestamp && getFormattedDate(currentData.endTimestamp)}</div>
-        </Col>
+        <DayDetails dayData={currentData}/>
         <Col xs={12}>
           <ButtonGroup className="w-100">
             <Button color="info" onClick={editDay}>{t("Edit day")}</Button>
