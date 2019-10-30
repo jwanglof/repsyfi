@@ -1,48 +1,36 @@
 import './Day.scss';
 
-import React, {FunctionComponent, useState} from 'react';
+import React, {FunctionComponent} from 'react';
 import {useTranslation} from 'react-i18next';
 import {withRoute} from 'react-router5';
 import {Router} from 'router5';
 import isEmpty from 'lodash/isEmpty';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {IDayModel} from '../../models/IDayModel';
-import {Button, Col, Collapse, Row} from 'reactstrap';
+import {Button, Col, Row} from 'reactstrap';
 import {getFormattedDate, getTitle} from './DayUtils';
-import ExerciseTypeContainer from '../Exercise/ExerciseTypeContainer';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {RouteNames} from '../../routes';
 
 const DayView: FunctionComponent<IDayViewProps & IDayViewRouter> = ({router, data}) => {
   const { t } = useTranslation();
 
-  const [collapseIsOpen, setCollapseIsOpen] = useState<boolean>(false);
-
   if (isEmpty(data)) {
     return <ErrorAlert errorText="Must have data to show anything for the day!" componentName="DayView"/>;
   }
 
-  const toggle = () => setCollapseIsOpen(!collapseIsOpen);
-
-  const openDetailedView = () => router.navigate(RouteNames.SPECIFIC_DAY, { uid: data.uid }, {reload: true});
+  const openDetailedView = () => router.navigate(RouteNames.SPECIFIC_DAY, { uid: data.uid, data }, {reload: true});
 
   return (
-    <div className="day--separator" onClick={toggle}>
+    <div className="day--separator">
       <Row className="text-center">
         <Col xs={12}>
           <Button block size="sm" onClick={openDetailedView}>{t("Open detailed view")}</Button>
         </Col>
       </Row>
 
-      <Row className="text-center mt-1 mb-2"><Col>{t("Open detailed view")} {t("to edit")}</Col></Row>
+      <Row className="text-center mt-1 mb-2"><Col>{t("Open detailed view")} {t("to edit/view")}</Col></Row>
 
-      <Collapse isOpen={collapseIsOpen}>
-        <Row>
-          {collapseIsOpen && data.exercises.length && data.exercises.map(e => <ExerciseTypeContainer key={e.exerciseUid} exerciseUid={e.exerciseUid}/>)}
-        </Row>
-      </Collapse>
-
-      <Row onClick={toggle}>
+      <Row>
         <Col className="text-lg-right text-center" lg={3} xs={12}>
           <div>{t("Workout location")}: {data.location}</div>
           <div>{t("Muscle groups")}: {data.muscleGroups}</div>
@@ -54,14 +42,6 @@ const DayView: FunctionComponent<IDayViewProps & IDayViewRouter> = ({router, dat
         <Col className="text-lg-left text-center" lg={3} xs={12}>
           <div>{t("Start time")}: {getFormattedDate(data.startTimestamp)}</div>
           <div>{t("End time")}: {data.endTimestamp && getFormattedDate(data.endTimestamp)}</div>
-        </Col>
-      </Row>
-
-      <Row className="text-center">
-        <Col xs={12}>
-          {t("Click to")} {collapseIsOpen ? t("collapse"): t("expand")}
-          <br/>
-          {collapseIsOpen ? <FontAwesomeIcon icon="caret-up" size="2x"/> : <FontAwesomeIcon icon="caret-down" size="2x"/>}
         </Col>
       </Row>
     </div>

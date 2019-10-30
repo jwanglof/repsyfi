@@ -75,7 +75,7 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
 
   switch (topRouteName) {
     case RouteNames.SPECIFIC_DAY:
-      shownComponent = signInReq(<DayViewDetailed dayUid={params.uid}/>);
+      shownComponent = signInReq(<DayViewDetailed dayUid={params.uid} dayData={params.data}/>);
       break;
     case RouteNames.ADD_DAY:
       shownComponent = signInReq(<AddDay/>);
