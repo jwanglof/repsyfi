@@ -6,11 +6,11 @@ import {Formik, FormikHelpers} from 'formik';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import FormikField from '../../Formik/FormikField';
 import {Button, ButtonGroup} from 'reactstrap';
-import isNumber from 'lodash/isNumber';
 // TODO :(
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 import {updateSetsRepsExercise} from './SetsRepsService';
+import {setsValidation} from '../SetsHelpers';
 
 const SetsRepsTableRowFormEdit: FunctionComponent<ISetsRepsTableRowFormEditProps> = ({ initialData, setAddSetViewVisible }) => {
   const { t } = useTranslation();
@@ -41,23 +41,14 @@ const SetsRepsTableRowFormEdit: FunctionComponent<ISetsRepsTableRowFormEditProps
     actions.setSubmitting(false);
   };
 
-  const validate = (values: ISetsRepsTableRowFormEditValidate): ISetsRepsTableRowFormEditValidate | {} => {
-    const errors: ISetsRepsTableRowFormEditValidateErrors = {};
-    if (!isNumber(values.amountInKg) || values.amountInKg && values.amountInKg < 0) {
-      errors.amountInKg = t("Amount must exist, and be 0 or higher");
-    }
-    if (!isNumber(values.reps) || values.reps && values.reps <= 0) {
-      errors.reps = t("Repetitions must exist, and be higher than 0");
-    }
-    return errors;
-  };
-
   // TODO Merge this Form with the form in SetsRepsTableRowForm!
   return (
     <Formik
       initialValues={initialData}
       onSubmit={onSubmit}
-      validate={validate}
+      validate={(values: any) => {
+        return setsValidation(values, t);
+      }}
       render={({errors, isSubmitting}) => (
         <>
           {isSubmitting && <tr><td colSpan={3} className="text-center"><FontAwesomeIcon icon="spinner" spin/></td></tr>}
@@ -91,16 +82,6 @@ const SetsRepsTableRowFormEdit: FunctionComponent<ISetsRepsTableRowFormEditProps
 interface ISetsRepsTableRowFormEditProps {
   initialData: ISetModel,
   setAddSetViewVisible: ((visible: boolean) => void),
-}
-
-interface ISetsRepsTableRowFormEditValidate {
-  amountInKg?: number,
-  reps?: number,
-}
-
-interface ISetsRepsTableRowFormEditValidateErrors {
-  amountInKg?: string,
-  reps?: string,
 }
 
 export default SetsRepsTableRowFormEdit;

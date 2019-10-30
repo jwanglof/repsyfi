@@ -5,12 +5,12 @@ import {Formik, FormikHelpers} from 'formik';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import FormikField from '../../Formik/FormikField';
 import {Button, ButtonGroup} from 'reactstrap';
-import isNumber from 'lodash/isNumber';
 // TODO :(
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 import {ISetSecondsBasicModel, ISetSecondsBasicUpdateModel, ISetSecondsModel} from '../../../models/ISetSecondsModel';
 import {updateSetsSecondsExercise} from './SetsSecondsService';
+import {setsValidation} from '../SetsHelpers';
 
 const SetsSecondsTableRowFormEdit: FunctionComponent<ISetsSecondsTableRowFormEditProps> = ({ initialData, setAddSetViewVisible }) => {
   const { t } = useTranslation();
@@ -41,23 +41,14 @@ const SetsSecondsTableRowFormEdit: FunctionComponent<ISetsSecondsTableRowFormEdi
     actions.setSubmitting(false);
   };
 
-  const validate = (values: ISetsSecondsTableRowFormEditValidate): ISetsSecondsTableRowFormEditValidate | {} => {
-    const errors: ISetsSecondsTableRowFormEditValidateErrors = {};
-    if (!isNumber(values.amountInKg) || values.amountInKg && values.amountInKg < 0) {
-      errors.amountInKg = t("Amount must exist, and be 0 or higher");
-    }
-    if (!isNumber(values.seconds) || values.seconds && values.seconds <= 0) {
-      errors.seconds = t("Seconds must exist, and be higher than 0");
-    }
-    return errors;
-  };
-
   // TODO Merge this Form with the form in SetsSecondsTableRowForm!
   return (
     <Formik
       initialValues={initialData}
       onSubmit={onSubmit}
-      validate={validate}
+      validate={(values: any) => {
+        return setsValidation(values, t);
+      }}
       render={({errors, isSubmitting}) => (
         <>
           {isSubmitting && <tr><td colSpan={3} className="text-center"><FontAwesomeIcon icon="spinner" spin/></td></tr>}
@@ -91,16 +82,6 @@ const SetsSecondsTableRowFormEdit: FunctionComponent<ISetsSecondsTableRowFormEdi
 interface ISetsSecondsTableRowFormEditProps {
   initialData: ISetSecondsModel,
   setAddSetViewVisible: ((visible: boolean) => void),
-}
-
-interface ISetsSecondsTableRowFormEditValidate {
-  amountInKg?: number,
-  seconds?: number,
-}
-
-interface ISetsSecondsTableRowFormEditValidateErrors {
-  amountInKg?: string,
-  seconds?: string,
 }
 
 export default SetsSecondsTableRowFormEdit;
