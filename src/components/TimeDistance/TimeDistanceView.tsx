@@ -43,7 +43,7 @@ const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanc
     };
 
     fetchExerciseData();
-  }, []);
+  }, [timeDistanceUid]);
 
   if (fetchDataError) {
     return <ErrorAlert errorText={fetchDataError} componentName="TimeDistanceView"/>;

@@ -1,7 +1,7 @@
 import React, {FunctionComponent} from 'react';
 import {IFormikProps} from '../../utils/ts-formik-utils';
 import {Alert, Col, FormGroup, Label} from 'reactstrap';
-import {colSmSize, dateFormat, labelSmSize} from '../../utils/formik-utils';
+import {colSmSize, labelSmSize} from '../../utils/formik-utils';
 import {ErrorMessage} from 'formik';
 // @ts-ignore
 import {Autocomplete} from 'react-formik-ui';

@@ -33,7 +33,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({
 
     // noinspection JSIgnoredPromiseFromCall
     fetchExerciseData();
-  }, []);
+  }, [exerciseUid]);
 
   if (fetchDataError != null) {
     return <ErrorAlert errorText={fetchDataError} componentName="ExerciseTypeContainer"/>;

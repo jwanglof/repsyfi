@@ -1,4 +1,4 @@
-import React, {useRef, useEffect, MutableRefObject} from 'react';
+import {useRef, useEffect, MutableRefObject} from 'react';
 
 // Stolen from: https://overreacted.io/making-setinterval-declarative-with-react-hooks/
 function useInterval(callback: Function, delay: number): void {

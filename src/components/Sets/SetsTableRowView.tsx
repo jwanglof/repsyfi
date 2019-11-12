@@ -58,7 +58,7 @@ const SetsTableRowView: FunctionComponent<ISetsTableRowView> = ({ setUid, disabl
     return () => {
       unsub();
     };
-  }, []);
+  }, [setLastSetData, setTypeShown, setUid]);
 
   if (snapshotErrorData) {
     return <tr><td colSpan={3}><ErrorAlert errorText={snapshotErrorData} componentName="SetsRepsTableRowView" uid={setUid}/></td></tr>;

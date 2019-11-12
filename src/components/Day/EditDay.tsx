@@ -43,7 +43,7 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
 
       setInitialData(data);
     });
-  }, []);
+  }, [dayUid]);
 
   if (isEmpty(dayUid)) {
     return <ErrorAlert errorText="Must have the day's UID to proceed!" componentName="EditDay"/>;

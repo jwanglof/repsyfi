@@ -3,7 +3,7 @@ import {Alert, Col, FormGroup, Input, Label} from 'reactstrap';
 import {connect, ErrorMessage, FormikContextType} from 'formik';
 import defaultTo from 'lodash/defaultTo';
 import toNumber from 'lodash/toNumber';
-import {getHoursMinutesSecondsFromSeconds, getMinutesSecondsFromSeconds} from '../../utils/time-utils';
+import {getHoursMinutesSecondsFromSeconds, getMinutesSecondsFromSeconds, getTotalSeconds} from '../../utils/time-utils';
 
 const DurationFormGroup: FunctionComponent<IDurationFormGroupProps & IDurationFormGroupPropsFormik> = ({formik, labelText, name, autoFocus=false}) => {
   const [hours, setHours] = useState<number>(0);
@@ -20,9 +20,9 @@ const DurationFormGroup: FunctionComponent<IDurationFormGroupProps & IDurationFo
       setMinutes(t.minutes);
       setSeconds(t.seconds);
     } else {
-      formik.values[name] = getTotalSeconds();
+      formik.values[name] = getTotalSeconds(hours, minutes, seconds);
     }
-  }, [hours, minutes, seconds]);
+  }, [hours, minutes, seconds, formik.values, name]);
 
 
   const onBlur = (e: ChangeEvent<HTMLInputElement>) => {
@@ -41,10 +41,8 @@ const DurationFormGroup: FunctionComponent<IDurationFormGroupProps & IDurationFo
         setSeconds(s);
       }
     }
-    formik.values[name] = getTotalSeconds();
+    formik.values[name] = getTotalSeconds(hours, minutes, seconds);
   };
-
-  const getTotalSeconds = (): number => ((hours * 3600) + (minutes * 60) + seconds);
 
   const getNumber = (e: ChangeEvent<HTMLInputElement>): number => defaultTo(toNumber(e.target.value), 0);
 

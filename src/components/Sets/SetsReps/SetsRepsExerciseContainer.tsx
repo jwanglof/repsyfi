@@ -3,7 +3,6 @@ import {useTranslation} from 'react-i18next';
 import {ISetsRepsModel} from '../../../models/ISetsRepsModel';
 import ErrorAlert from '../../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../../LoadingAlert/LoadingAlert';
-import {ISetBasicModel} from '../../../models/ISetModel';
 import firebase from '../../../config/firebase';
 import {FirebaseCollectionNames} from '../../../config/FirebaseUtils';
 import {isEmpty} from 'lodash';
@@ -61,7 +60,7 @@ const SetsRepsExerciseContainer: FunctionComponent<ISetsRepsExerciseContainerRou
     return () => {
       unsub();
     };
-  }, []);
+  }, [setsRepsExerciseUid]);
 
   if (isEmpty(setsRepsExerciseUid)) {
     return <ErrorAlert errorText="Must have the exercises's UID to proceed!" componentName="SetsRepsExerciseContainer"/>;

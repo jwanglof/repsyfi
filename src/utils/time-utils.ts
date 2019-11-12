@@ -11,6 +11,21 @@ export const getHoursMinutesSecondsFromSeconds = (seconds: number): IHoursMinute
   return {seconds: s, minutes, hours}
 };
 
+export const getTotalSeconds = (hours: number, minutes: number, seconds: number): number => {
+  let total: number = 0;
+  if (hours) {
+    total += (hours * 3600);
+  }
+  if (minutes) {
+    total += (minutes * 60);
+  }
+  if (seconds) {
+    total += seconds;
+  }
+  // return ((hours * 3600) + (minutes * 60) + seconds);
+  return total;
+};
+
 interface ISeconds {
   seconds: number
 }

@@ -74,7 +74,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
         unsub();
       };
     }
-  }, []);
+  }, [dayData, dayUid]);
 
   if (isEmpty(dayUid)) {
     return <ErrorAlert errorText="Must have the day's UID to proceed!" componentName="DayViewDetailed"/>;

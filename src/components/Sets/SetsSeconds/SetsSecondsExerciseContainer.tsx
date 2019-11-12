@@ -14,7 +14,6 @@ import isWithinInterval from 'date-fns/isWithinInterval';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import addSeconds from 'date-fns/addSeconds';
 import subSeconds from 'date-fns/subSeconds';
-import {ISetBasicModel} from '../../../models/ISetModel';
 import SetsExerciseContainerRender from '../SetsExerciseContainerRender';
 import {SetTypesEnum} from '../../../enums/SetTypesEnum';
 
@@ -62,7 +61,7 @@ const SetsSecondsExerciseContainer: FunctionComponent<SetsSecondsExerciseContain
     return () => {
       unsub();
     };
-  }, []);
+  }, [setsSecondsExerciseUid]);
 
   if (isEmpty(setsSecondsExerciseUid)) {
     return <ErrorAlert errorText="Must have the exercises's UID to proceed!" componentName="SetsSecondsExerciseContainer"/>;

@@ -31,7 +31,7 @@ const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistan
     };
 
     fetchExerciseData();
-  }, []);
+  }, [timeDistanceUid]);
 
   if (fetchDataError || submitErrorMessage) {
     return <ErrorAlert errorText={fetchDataError || submitErrorMessage} componentName="TimeDistanceView"/>;

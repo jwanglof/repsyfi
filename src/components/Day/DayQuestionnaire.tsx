@@ -63,7 +63,7 @@ const DayQuestionnaire: FunctionComponent<IDayQuestionnaireRouter & IDayQuestion
         unsub();
       };
     }
-  }, []);
+  }, [dayData.questionnaire]);
 
   if (!show) return null;
 
