@@ -27,7 +27,6 @@ const SetsSecondsExerciseContainer: FunctionComponent<SetsSecondsExerciseContain
   const [currentExerciseData, setCurrentExerciseData] = useState<ISetsSecondsModel | undefined>(undefined);
   const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
   const [addSetViewVisible, setAddSetViewVisible] = useState<boolean>(false);
-  const [lastSetData, setLastSetData] = useState<ISetBasicModel | undefined>(undefined);
 
   useEffect(() => {
     // TODO Need to verify that a user can't send any UID in here, somehow... That should be specified in the rules!
@@ -77,23 +76,7 @@ const SetsSecondsExerciseContainer: FunctionComponent<SetsSecondsExerciseContain
     return <LoadingAlert componentName="SetsSecondsExerciseContainer"/>;
   }
 
-  // Return the last set's data so that it can be pre-filled to the new set
-  const getLastSetData = (): ISetBasicModel => {
-    if (!lastSetData) {
-      return {
-        index: 1,
-        amountInKg: 0,
-        seconds: 0
-      }
-    }
-    return {
-      index: (lastSetData.index + 1),
-      amountInKg: lastSetData.amountInKg,
-      seconds: lastSetData.seconds
-    };
-  };
-
-  return <SetsExerciseContainerRender router={router} detailedDayView={detailedDayView} addSetViewVisible={addSetViewVisible} t={t} currentExerciseData={currentExerciseData} setLastSetData={setLastSetData} setAddSetViewVisible={setAddSetViewVisible} getLastSetData={getLastSetData} exerciseUid={exerciseUid} setsSecondsExerciseUid={setsSecondsExerciseUid} type={SetTypesEnum.SET_TYPE_SECONDS}/>
+  return <SetsExerciseContainerRender router={router} detailedDayView={detailedDayView} addSetViewVisible={addSetViewVisible} t={t} currentExerciseData={currentExerciseData} setAddSetViewVisible={setAddSetViewVisible} exerciseUid={exerciseUid} setsSecondsExerciseUid={setsSecondsExerciseUid} type={SetTypesEnum.SET_TYPE_SECONDS}/>
 };
 
 interface SetsSecondsExerciseContainerProps {

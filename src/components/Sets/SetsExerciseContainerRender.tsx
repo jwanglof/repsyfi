@@ -17,14 +17,41 @@ import {remove} from 'lodash';
 import {getSetDocument, getSetsRepsExerciseDocument} from './SetsReps/SetsRepsService';
 import SetsTableRowFormRender from './SetsTableRowFormRender';
 
-const SetsExerciseContainerRender: FunctionComponent<ISetsExerciseContainerRender> = ({router, detailedDayView, addSetViewVisible, t, currentExerciseData, setLastSetData, setAddSetViewVisible, getLastSetData, exerciseUid, setsSecondsExerciseUid="", setsRepsExerciseUid="", type}) => {
+const SetsExerciseContainerRender: FunctionComponent<ISetsExerciseContainerRender> = ({router, detailedDayView, addSetViewVisible, t, currentExerciseData, setAddSetViewVisible, exerciseUid, setsSecondsExerciseUid="", setsRepsExerciseUid="", type}) => {
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const [exerciseDeleteStep2Shown, setExerciseDeleteStep2Shown] = useState<boolean>(false);
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
+  const [lastSetData, setLastSetData] = useState<ISetBasicModel | undefined>(undefined);
 
   if (submitErrorMessage) {
     return <ErrorAlert errorText={submitErrorMessage} componentName="SetsExerciseContainerRender"/>;
   }
+
+  // Return the last set's data so that it can be pre-filled to the new set
+  const getLastSetData = (): ISetBasicModel => {
+    if (!lastSetData) {
+      const newVar: ISetBasicModel = {
+        index: 1,
+        amountInKg: 0,
+      };
+      if (type === SetTypesEnum.SET_TYPE_SECONDS) {
+        newVar.seconds = 0;
+      } else if (type === SetTypesEnum.SET_TYPE_REPS) {
+        newVar.reps = 0;
+      }
+      return newVar;
+    }
+    const newVar: ISetBasicModel = {
+      index: (lastSetData.index + 1),
+      amountInKg: lastSetData.amountInKg,
+    };
+    if (type === SetTypesEnum.SET_TYPE_SECONDS) {
+      newVar.seconds = lastSetData.seconds;
+    } else if (type === SetTypesEnum.SET_TYPE_REPS) {
+      newVar.reps = lastSetData.reps;
+    }
+    return newVar;
+  };
 
   const delExercise = async () => {
     setSubmitErrorMessage(undefined);
@@ -100,9 +127,7 @@ interface ISetsExerciseContainerRender {
   addSetViewVisible: boolean,
   t: i18next.TFunction,
   currentExerciseData: ISetsSecondsModel,
-  setLastSetData: ((lastSetData: ISetBasicModel) => void),
   setAddSetViewVisible: ((value: boolean) => void),
-  getLastSetData: (() => ISetBasicModel),
   exerciseUid: string,
   setsSecondsExerciseUid?: string,
   setsRepsExerciseUid?: string,
