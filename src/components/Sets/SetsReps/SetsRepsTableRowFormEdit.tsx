@@ -36,7 +36,7 @@ const SetsRepsTableRowFormEdit: FunctionComponent<ISetsRepsTableRowFormEditProps
     actions.setSubmitting(false);
   };
 
-  return <SetsTableRowFormRender initialData={initialData} onSubmit={onSubmit} setAddSetViewVisible={setAddSetViewVisible} t={t} setTypeShown={SetTypesEnum.SET_TYPE_REPS}/>;
+  return <SetsTableRowFormRender initialData={initialData} editOnSubmit={onSubmit} setAddSetViewVisible={setAddSetViewVisible} t={t} setTypeShown={SetTypesEnum.SET_TYPE_REPS} exerciseUid=""/>;  // TODO Migrate this to SetsTableRowFormRender!
 };
 
 interface ISetsRepsTableRowFormEditProps {

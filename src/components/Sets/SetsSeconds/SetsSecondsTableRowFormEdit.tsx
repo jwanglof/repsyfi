@@ -36,7 +36,7 @@ const SetsSecondsTableRowFormEdit: FunctionComponent<ISetsSecondsTableRowFormEdi
     actions.setSubmitting(false);
   };
 
-  return <SetsTableRowFormRender initialData={initialData} onSubmit={onSubmit} setAddSetViewVisible={setAddSetViewVisible} t={t} setTypeShown={SetTypesEnum.SET_TYPE_SECONDS}/>;
+  return <SetsTableRowFormRender initialData={initialData} editOnSubmit={onSubmit} setAddSetViewVisible={setAddSetViewVisible} t={t} setTypeShown={SetTypesEnum.SET_TYPE_SECONDS} exerciseUid=""/>;  // TODO Migrate this to SetsTableRowFormRender!
 };
 
 interface ISetsSecondsTableRowFormEditProps {

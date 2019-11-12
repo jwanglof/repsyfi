@@ -14,7 +14,7 @@ import {addNewSetSecondsAndGetUid, addSetSecondsToSetsSecondsExerciseArray} from
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {addNewSetAndGetUid, addSetToSetsRepsExerciseArray} from './SetsReps/SetsRepsService';
 
-const SetsTableRowFormRender: FunctionComponent<ISetsTableRowFormRender> = ({initialData, t, setAddSetViewVisible, setTypeShown, exerciseUid}) => {
+const SetsTableRowFormRender: FunctionComponent<ISetsTableRowFormRender> = ({initialData, editOnSubmit, t, setAddSetViewVisible, setTypeShown, exerciseUid}) => {
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
 
   if (submitErrorMessage) {
@@ -59,7 +59,7 @@ const SetsTableRowFormRender: FunctionComponent<ISetsTableRowFormRender> = ({ini
   return (
     <Formik
       initialValues={initialData}
-      onSubmit={onSubmit}
+      onSubmit={editOnSubmit || onSubmit}
       validate={(values: any) => {
         return setsValidation(values, t);
       }}
@@ -98,7 +98,7 @@ const SetsTableRowFormRender: FunctionComponent<ISetsTableRowFormRender> = ({ini
 
 interface ISetsTableRowFormRender {
   initialData: ISetBasicModel,
-  // onSubmit: ((values: ISetBasicModel, actions: FormikHelpers<ISetBasicModel>) => void),
+  editOnSubmit?: ((values: ISetBasicModel, actions: FormikHelpers<ISetBasicModel>) => void),
   t: i18next.TFunction,
   setAddSetViewVisible: ((visible: boolean) => void),
   setTypeShown: SetTypesEnum,
