@@ -1,4 +1,4 @@
-import React, {FunctionComponent} from 'react';
+import React, {FunctionComponent, useState} from 'react';
 import {Formik, FormikHelpers} from 'formik';
 import {setsValidation} from './SetsHelpers';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -9,8 +9,53 @@ import {Button, ButtonGroup} from 'reactstrap';
 import {ISetBasicModel} from '../../models/ISetModel';
 import i18next from 'i18next';
 import {SetTypesEnum} from '../../enums/SetTypesEnum';
+import {getCurrentUsersUid} from '../../config/FirebaseUtils';
+import {addNewSetSecondsAndGetUid, addSetSecondsToSetsSecondsExerciseArray} from './SetsSeconds/SetsSecondsService';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
+import {addNewSetAndGetUid, addSetToSetsRepsExerciseArray} from './SetsReps/SetsRepsService';
 
-const SetsTableRowFormRender: FunctionComponent<ISetsTableRowFormRender> = ({initialData, onSubmit, t, setAddSetViewVisible, setTypeShown}) => {
+const SetsTableRowFormRender: FunctionComponent<ISetsTableRowFormRender> = ({initialData, t, setAddSetViewVisible, setTypeShown, exerciseUid}) => {
+  const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
+
+  if (submitErrorMessage) {
+    return <tr><td colSpan={3}><ErrorAlert errorText={submitErrorMessage} componentName="SetsTableRowFormRender"/></td></tr>;
+  }
+
+  const onSubmit = async (values: ISetBasicModel, actions: FormikHelpers<ISetBasicModel>) => {
+    actions.setSubmitting(true);
+    setSubmitErrorMessage(undefined);
+
+    try {
+      const data: ISetBasicModel = {
+        index: values.index,
+        amountInKg: values.amountInKg,
+      };
+
+      if (setTypeShown === SetTypesEnum.SET_TYPE_SECONDS) {
+        data.seconds = values.seconds;
+      } else if (setTypeShown === SetTypesEnum.SET_TYPE_REPS) {
+        data.reps = values.reps;
+      }
+
+      const ownerUid = await getCurrentUsersUid();
+
+      if (setTypeShown === SetTypesEnum.SET_TYPE_SECONDS) {
+        const uid = await addNewSetSecondsAndGetUid(data, ownerUid);
+        await addSetSecondsToSetsSecondsExerciseArray(uid, exerciseUid);
+      } else if (setTypeShown === SetTypesEnum.SET_TYPE_REPS) {
+        const uid = await addNewSetAndGetUid(data, ownerUid);
+        await addSetToSetsRepsExerciseArray(uid, exerciseUid);
+      }
+
+      // Hide this form
+      setAddSetViewVisible(false);
+    } catch (e) {
+      console.error(e);
+      setSubmitErrorMessage(e.data.message);
+    }
+    actions.setSubmitting(false);
+  };
+
   return (
     <Formik
       initialValues={initialData}
@@ -53,10 +98,11 @@ const SetsTableRowFormRender: FunctionComponent<ISetsTableRowFormRender> = ({ini
 
 interface ISetsTableRowFormRender {
   initialData: ISetBasicModel,
-  onSubmit: ((values: ISetBasicModel, actions: FormikHelpers<ISetBasicModel>) => void),
+  // onSubmit: ((values: ISetBasicModel, actions: FormikHelpers<ISetBasicModel>) => void),
   t: i18next.TFunction,
   setAddSetViewVisible: ((visible: boolean) => void),
   setTypeShown: SetTypesEnum,
+  exerciseUid: string,
 }
 
 export default SetsTableRowFormRender;
