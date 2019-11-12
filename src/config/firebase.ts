@@ -3,7 +3,6 @@ import 'firebase/firestore';
 import 'firebase/auth';
 
 // Initialize Firebase
-// TODO Remove the API key from GitHub!
 const config = {
   apiKey: "AIzaSyAbBmvUiJIY4kBNmJJnzUkdRVm2vAzi6Rc",
   authDomain: "repsyfi.firebaseapp.com",
@@ -14,15 +13,16 @@ const config = {
 };
 
 export const initializeFirebase = async () => {
-  // console.log('Initializing firebase!!');
   await firebase.initializeApp(config);
-  // console.log('Firebase is initialized!', app);
   return firebase;
 };
 
 export const getCurrentUsersUid = async () => {
   const currentUser = firebase.auth().currentUser;
-  return currentUser.uid;
+  if (currentUser) {
+    return currentUser.uid;
+  }
+  return null;
 };
 
 export default firebase;
