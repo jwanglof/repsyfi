@@ -1,19 +1,25 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
-import {ISetBasicModel, ISetModel} from '../../models/ISetModel';
+import {ISetBasicModel, ISetBasicUpdateModel, ISetModel} from '../../models/ISetModel';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import classnames from 'classnames';
-import SetsRepsTableRowFormEdit from './SetsReps/SetsRepsTableRowFormEdit';
 import firebase from '../../config/firebase';
 import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
 import isEmpty from 'lodash/isEmpty';
 import {SetTypesEnum} from '../../enums/SetTypesEnum';
-import SetsSecondsTableRowFormEdit from './SetsSeconds/SetsSecondsTableRowFormEdit';
+import SetsTableRowFormRender from './SetsTableRowFormRender';
+import {FormikHelpers} from 'formik';
+import {updateSetsRepsExercise} from './SetsReps/SetsRepsService';
+import {useTranslation} from 'react-i18next';
+import {updateSetsSecondsExercise} from './SetsSeconds/SetsSecondsService';
 
 const SetsTableRowView: FunctionComponent<ISetsTableRowView> = ({ setUid, disabled, setLastSetData, setTypeShown }) => {
+  const { t } = useTranslation();
+
   const [currentData, setCurrentData] = useState<ISetModel | undefined>(undefined);
   const [editRow, setEditRow] = useState<boolean>(false);
   const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
+  const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
 
   // Effect to subscribe on changes on this specific set
   useEffect(() => {
@@ -68,13 +74,43 @@ const SetsTableRowView: FunctionComponent<ISetsTableRowView> = ({ setUid, disabl
     return <tr><td colSpan={3}><LoadingAlert componentName="SetsRepsTableRowView"/></td></tr>;
   }
 
+  if (submitErrorMessage) {
+    return <tr><td colSpan={3}><ErrorAlert errorText={submitErrorMessage} componentName="SetsRepsTableRowAdd"/></td></tr>;
+  }
+
+  const onSubmit = async (values: ISetBasicModel, actions: FormikHelpers<ISetBasicModel>) => {
+    actions.setSubmitting(true);
+    setSubmitErrorMessage(undefined);
+
+    try {
+      const data: ISetBasicUpdateModel = {
+        amountInKg: values.amountInKg,
+      };
+
+      if (setTypeShown === SetTypesEnum.SET_TYPE_REPS) {
+        data.reps = values.reps;
+        await updateSetsRepsExercise(currentData.uid, data);
+      } else if (setTypeShown === SetTypesEnum.SET_TYPE_SECONDS) {
+        data.seconds = values.seconds;
+        await updateSetsSecondsExercise(currentData.uid, data);
+      }
+
+      // Hide this form
+      setEditRow(false);
+    } catch (e) {
+      console.error(e);
+      setSubmitErrorMessage(e.data.message);
+    }
+    actions.setSubmitting(false);
+  };
+
   const classNames = classnames({
     "one-set--muted": disabled
   });
 
   return (<>
-    {editRow && !disabled && setTypeShown === SetTypesEnum.SET_TYPE_REPS && <SetsRepsTableRowFormEdit setAddSetViewVisible={setEditRow} initialData={currentData}/>}
-    {editRow && !disabled && setTypeShown === SetTypesEnum.SET_TYPE_SECONDS && <SetsSecondsTableRowFormEdit setAddSetViewVisible={setEditRow} initialData={currentData}/>}
+    {editRow && !disabled && <SetsTableRowFormRender initialData={currentData} editOnSubmit={onSubmit} t={t} setTypeShown={setTypeShown} setAddSetViewVisible={setEditRow} exerciseUid=""/>}
+
     {!editRow && <tr className={classNames} onClick={() => setEditRow(true)}>
       <th scope="row">{currentData.index}</th>
       <td>{currentData.amountInKg}</td>
