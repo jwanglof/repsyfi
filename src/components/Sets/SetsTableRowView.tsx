@@ -10,12 +10,9 @@ import {SetTypesEnum} from '../../enums/SetTypesEnum';
 import SetsTableRowFormRender from './SetsTableRowFormRender';
 import {FormikHelpers} from 'formik';
 import {updateSetsRepsExercise} from './SetsReps/SetsRepsService';
-import {useTranslation} from 'react-i18next';
 import {updateSetsSecondsExercise} from './SetsSeconds/SetsSecondsService';
 
 const SetsTableRowView: FunctionComponent<ISetsTableRowView> = ({ setUid, disabled, setLastSetData, setTypeShown }) => {
-  const { t } = useTranslation();
-
   const [currentData, setCurrentData] = useState<ISetModel | undefined>(undefined);
   const [editRow, setEditRow] = useState<boolean>(false);
   const [snapshotErrorData, setSnapshotErrorData] = useState<string | undefined>(undefined);
@@ -105,7 +102,7 @@ const SetsTableRowView: FunctionComponent<ISetsTableRowView> = ({ setUid, disabl
   });
 
   return (<>
-    {editRow && !disabled && <SetsTableRowFormRender initialData={currentData} editOnSubmit={onSubmit} t={t} setTypeShown={setTypeShown} setAddSetViewVisible={setEditRow} exerciseUid=""/>}
+    {editRow && !disabled && <SetsTableRowFormRender initialData={currentData} editOnSubmit={onSubmit} setTypeShown={setTypeShown} setAddSetViewVisible={setEditRow} exerciseUid=""/>}
 
     {!editRow && <tr className={classNames} onClick={() => setEditRow(true)}>
       <th scope="row">{currentData.index}</th>

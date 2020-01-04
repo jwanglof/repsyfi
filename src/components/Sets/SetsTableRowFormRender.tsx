@@ -7,14 +7,16 @@ import FormikField from '../Formik/FormikField';
 import {Form} from 'react-formik-ui';
 import {Button, ButtonGroup} from 'reactstrap';
 import {ISetBasicModel} from '../../models/ISetModel';
-import i18next from 'i18next';
 import {SetTypesEnum} from '../../enums/SetTypesEnum';
 import {getCurrentUsersUid} from '../../config/FirebaseUtils';
 import {addNewSetSecondsAndGetUid, addSetSecondsToSetsSecondsExerciseArray} from './SetsSeconds/SetsSecondsService';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {addNewSetAndGetUid, addSetToSetsRepsExerciseArray} from './SetsReps/SetsRepsService';
+import {useTranslation} from 'react-i18next';
 
-const SetsTableRowFormRender: FunctionComponent<ISetsTableRowFormRender> = ({initialData, editOnSubmit, t, setAddSetViewVisible, setTypeShown, exerciseUid}) => {
+const SetsTableRowFormRender: FunctionComponent<ISetsTableRowFormRender> = ({initialData, editOnSubmit, setAddSetViewVisible, setTypeShown, exerciseUid}) => {
+  const { t } = useTranslation();
+
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
 
   if (submitErrorMessage) {
@@ -99,7 +101,6 @@ const SetsTableRowFormRender: FunctionComponent<ISetsTableRowFormRender> = ({ini
 interface ISetsTableRowFormRender {
   initialData: ISetBasicModel,
   editOnSubmit?: ((values: ISetBasicModel, actions: FormikHelpers<ISetBasicModel>) => void),
-  t: i18next.TFunction,
   setAddSetViewVisible: ((visible: boolean) => void),
   setTypeShown: SetTypesEnum,
   exerciseUid: string,

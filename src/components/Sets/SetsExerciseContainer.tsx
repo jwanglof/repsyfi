@@ -157,7 +157,7 @@ const SetsExerciseContainer: FunctionComponent<ISetsExerciseContainerRouter & IS
         return <SetsTableRowView key={setUid} setUid={setUid} disabled={addSetViewVisible} setTypeShown={type}/>;
       })}
 
-      {addSetViewVisible && <SetsTableRowFormRender initialData={getLastSetData(lastSetData, type)} setAddSetViewVisible={setAddSetViewVisible} t={t} setTypeShown={type} exerciseUid={currentExerciseData.uid}/>}
+      {addSetViewVisible && <SetsTableRowFormRender initialData={getLastSetData(lastSetData, type)} setAddSetViewVisible={setAddSetViewVisible} setTypeShown={type} exerciseUid={currentExerciseData.uid}/>}
 
       </tbody>
 
