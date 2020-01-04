@@ -1,5 +1,7 @@
 import {isNumber, isEmpty, isUndefined} from 'lodash';
 import * as i18next from 'i18next';
+import {ISetBasicModel} from '../../models/ISetModel';
+import {SetTypesEnum} from '../../enums/SetTypesEnum';
 
 const _isEmptyOrNegative = (value: any) => {
   if (!isUndefined(value)) {
@@ -44,3 +46,29 @@ interface ISetsFormValidateErrors {
   seconds?: string,
   index?: string,
 }
+
+// Return the last set's data so that it can be pre-filled to the new set
+export const getLastSetData = (lastSetData: (ISetBasicModel | undefined), type: SetTypesEnum): ISetBasicModel => {
+  if (!lastSetData) {
+    const newVar: ISetBasicModel = {
+      index: 1,
+      amountInKg: 0,
+    };
+    if (type === SetTypesEnum.SET_TYPE_SECONDS) {
+      newVar.seconds = 0;
+    } else if (type === SetTypesEnum.SET_TYPE_REPS) {
+      newVar.reps = 0;
+    }
+    return newVar;
+  }
+  const newVar: ISetBasicModel = {
+    index: (lastSetData.index + 1),
+    amountInKg: lastSetData.amountInKg,
+  };
+  if (type === SetTypesEnum.SET_TYPE_SECONDS) {
+    newVar.seconds = lastSetData.seconds;
+  } else if (type === SetTypesEnum.SET_TYPE_REPS) {
+    newVar.reps = lastSetData.reps;
+  }
+  return newVar;
+};
