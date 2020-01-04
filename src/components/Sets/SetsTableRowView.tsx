@@ -66,16 +66,12 @@ const SetsTableRowView: FunctionComponent<ISetsTableRowView> = ({ setUid, disabl
     };
   }, [setLastSetData, setTypeShown, setUid]);
 
-  if (snapshotErrorData) {
-    return <tr><td colSpan={3}><ErrorAlert errorText={snapshotErrorData} componentName="SetsRepsTableRowView" uid={setUid}/></td></tr>;
+  if (snapshotErrorData || submitErrorMessage) {
+    return <tr><td colSpan={3}><ErrorAlert errorText={snapshotErrorData || submitErrorMessage} componentName="SetsRepsTableRowView" uid={setUid}/></td></tr>;
   }
 
   if (!currentData) {
     return <tr><td colSpan={3}><LoadingAlert componentName="SetsRepsTableRowView"/></td></tr>;
-  }
-
-  if (submitErrorMessage) {
-    return <tr><td colSpan={3}><ErrorAlert errorText={submitErrorMessage} componentName="SetsRepsTableRowAdd"/></td></tr>;
   }
 
   const onSubmit = async (values: ISetBasicModel, actions: FormikHelpers<ISetBasicModel>) => {
