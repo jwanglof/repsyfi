@@ -1,7 +1,9 @@
-import {isNumber, isEmpty, isUndefined} from 'lodash';
+import {isEmpty, isNumber, isUndefined} from 'lodash';
 import * as i18next from 'i18next';
-import {ISetBasicModel} from '../../models/ISetModel';
-import {SetTypesEnum} from '../../enums/SetTypesEnum';
+import {ISetModel} from '../../models/ISetModel';
+import {Versions} from '../../models/IBaseModel';
+import {ISetsModel} from '../../models/ISetsModel';
+import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 
 const _isEmptyOrNegative = (value: any) => {
   if (!isUndefined(value)) {
@@ -48,27 +50,54 @@ interface ISetsFormValidateErrors {
 }
 
 // Return the last set's data so that it can be pre-filled to the new set
-export const getLastSetData = (lastSetData: (ISetBasicModel | undefined), type: SetTypesEnum): ISetBasicModel => {
+export const getLastSetData = (lastSetData: (ISetModel | undefined), exerciseType: ExerciseTypesEnum): ISetModel => {
   if (!lastSetData) {
-    const newVar: ISetBasicModel = {
+    const newVar: ISetModel = {
+      createdTimestamp: 0,
+      ownerUid: '',
+      uid: '',
+      version: Versions.v1,
       index: 1,
-      amountInKg: 0,
+      amountInKg: 0
     };
-    if (type === SetTypesEnum.SET_TYPE_SECONDS) {
+    if (exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS) {
       newVar.seconds = 0;
-    } else if (type === SetTypesEnum.SET_TYPE_REPS) {
+    } else if (exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS) {
       newVar.reps = 0;
     }
     return newVar;
   }
-  const newVar: ISetBasicModel = {
+  const newVar: ISetModel = {
+    createdTimestamp: 0,
+    ownerUid: lastSetData.ownerUid,
+    uid: '',
+    version: lastSetData.version,
     index: (lastSetData.index + 1),
-    amountInKg: lastSetData.amountInKg,
+    amountInKg: lastSetData.amountInKg
   };
-  if (type === SetTypesEnum.SET_TYPE_SECONDS) {
+  if (exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS) {
     newVar.seconds = lastSetData.seconds;
-  } else if (type === SetTypesEnum.SET_TYPE_REPS) {
+  } else if (exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS) {
     newVar.reps = lastSetData.reps;
   }
   return newVar;
 };
+
+export const getSetModelFromSnapshotData = (setUid: string, snapshotData: any): ISetModel => ({
+  ownerUid: snapshotData.ownerUid,
+  uid: setUid,
+  createdTimestamp: snapshotData.createdTimestamp,
+  version: snapshotData.version,
+  seconds: snapshotData.seconds,
+  reps: snapshotData.reps,
+  amountInKg: snapshotData.amountInKg,
+  index: snapshotData.index
+});
+
+export const getSetsModelFromSnapshotData = (exerciseUid: string, snapshotData: any): ISetsModel => ({
+  sets: snapshotData.sets,
+  uid: exerciseUid,
+  ownerUid: snapshotData.ownerUid,
+  createdTimestamp: snapshotData.createdTimestamp,
+  version: snapshotData.version
+});

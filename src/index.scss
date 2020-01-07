@@ -21,3 +21,27 @@ body {
 .one-set--muted {
   opacity: 0.3;
 }
+
+.set__head {
+  border-bottom: 2px solid $gray-300;
+  //vertical-align: bottom;
+  //padding: 0.3rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.one-set:hover {
+  font-weight: bolder;
+}
+
+.legend .row:nth-of-type(odd) div {
+  background-color: rgba($black, .05);
+}
+
+.legend .row:nth-of-type(even) div {
+  background-color: rgba($white, 1);
+}
+
+.height-0 {
+  height: 0;
+}

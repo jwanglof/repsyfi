@@ -29,3 +29,17 @@ export const getSetErrorObject = (dayUid: string): object => _getErrorObject(day
 const _getErrorObject = (uid: string, type: string): object => ({message: `${type} (uid: ${uid}) did not exist/had no data!`});
 
 export const _getErrorObjectCustomMessage = (uid: string, type: string, message: string): object => ({message: `${type} (uid: ${uid}): ${message}`});
+export const getErrorObjectCustomMessage = (uid: string, collectionName: FirebaseCollectionNames, message: string): IErrorObject => ({
+  message: `[collection name: ${collectionName}] [uid: ${uid}] [message: "${message}"]`
+});
+
+export const retrieveErrorMessage = (err: any) => {
+  if (err.message) {
+    return err.message;
+  }
+  return err;
+};
+
+export interface IErrorObject {
+  message: string
+}
