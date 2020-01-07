@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useContext, useEffect, useState} from 'react';
+import React, {createContext, FunctionComponent, useContext, useEffect, useState} from 'react';
 import {withRouter} from 'react-router5';
 import {Router} from 'router5';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
@@ -25,6 +25,8 @@ import {getLastSetData} from './SetsHelpers';
 import SetAddForm from './SetAddForm';
 import {IErrorObject} from '../../config/FirebaseUtils';
 
+export const SetsExerciseViewShowButtonCtx = createContext<any>([true, () => {}]);
+
 const SetsExerciseView: FunctionComponent<ISetsViewRouter & ISetsViewProps> = ({router, setsExerciseUid, exerciseUid,  exerciseType}) => {
   const { t } = useTranslation();
 
@@ -37,6 +39,7 @@ const SetsExerciseView: FunctionComponent<ISetsViewRouter & ISetsViewProps> = ({
   const [addSetViewVisible, setAddSetViewVisible] = useState<boolean>(false);
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
   const [lastSetData, setLastSetData] = useState<ISetModel | undefined>(undefined);
+  const [buttonsIsShown, setButtonsIsShown] = useState<boolean>(true);
 
   useEffect(() => {
     const cbErr = (e: IErrorObject) => {
@@ -104,7 +107,7 @@ const SetsExerciseView: FunctionComponent<ISetsViewRouter & ISetsViewProps> = ({
   };
 
   return (
-    <>
+    <SetsExerciseViewShowButtonCtx.Provider value={[buttonsIsShown, setButtonsIsShown]}>
       <Col>
         <Row className="set__head">
           <Col xs={2}>#</Col>
@@ -119,9 +122,9 @@ const SetsExerciseView: FunctionComponent<ISetsViewRouter & ISetsViewProps> = ({
           })}
         </div>
 
-        {addSetViewVisible && <SetAddForm currentData={getLastSetData(lastSetData, exerciseType)} setEditVisible={setAddSetViewVisible} exerciseType={exerciseType} setsExerciseUid={setsExerciseUid}/>}
+        {addSetViewVisible && <SetAddForm currentData={getLastSetData(lastSetData, exerciseType)} setAddSetViewVisible={setAddSetViewVisible} exerciseType={exerciseType} setsExerciseUid={setsExerciseUid}/>}
 
-        <Row>
+        {buttonsIsShown && <Row>
             <ButtonGroup className="w-100">
               <Button color="success" block onClick={() => setAddSetViewVisible(!addSetViewVisible)}>{t("Add set")}</Button>
               <ButtonDropdown isOpen={dropdownVisible} toggle={toggleActionDropdown}>
@@ -139,9 +142,9 @@ const SetsExerciseView: FunctionComponent<ISetsViewRouter & ISetsViewProps> = ({
                 </DropdownMenu>
               </ButtonDropdown>
             </ButtonGroup>
-        </Row>
+        </Row>}
       </Col>
-    </>
+    </SetsExerciseViewShowButtonCtx.Provider>
   );
 };
 

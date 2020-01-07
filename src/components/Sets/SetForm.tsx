@@ -10,7 +10,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {setsValidation} from './SetsHelpers';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 
-const SetForm: FunctionComponent<ISetFormProps> = ({setEditVisible, exerciseType, currentData, onSubmit}) => {
+const SetForm: FunctionComponent<ISetFormProps> = ({hideFormCb, exerciseType, currentData, onSubmit, extraButtonGroups}) => {
   const { t } = useTranslation();
 
   return <Formik
@@ -34,7 +34,8 @@ const SetForm: FunctionComponent<ISetFormProps> = ({setEditVisible, exerciseType
           <Row>
             <ButtonGroup className="w-100">
               <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t("Save set")}</Button>
-              <Button color="danger" onClick={() => setEditVisible(false)}>{t("Discard set")}</Button>
+              <Button color="danger" onClick={() => hideFormCb()}>{t("Discard set")}</Button>
+              {extraButtonGroups}
             </ButtonGroup>
           </Row>
         </Form>}
@@ -44,10 +45,11 @@ const SetForm: FunctionComponent<ISetFormProps> = ({setEditVisible, exerciseType
 };
 
 interface ISetFormProps {
-  setEditVisible: ((editVisible: boolean) => void)
+  hideFormCb: (() => void)
   exerciseType: ExerciseTypesEnum
   currentData: ISetModel
   onSubmit: ((values: ISetModel, actions: FormikHelpers<ISetModel>) => void)
+  extraButtonGroups?: any
 }
 
 export default SetForm;

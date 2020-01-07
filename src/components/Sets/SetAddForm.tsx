@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useState} from 'react';
+import React, {FunctionComponent, useContext, useEffect, useState} from 'react';
 import {FormikHelpers} from 'formik';
 import {ISetBasicModel, ISetModel} from '../../models/ISetModel';
 // @ts-ignore
@@ -9,9 +9,16 @@ import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import SetForm from './SetForm';
 import {getCurrentUsersUid} from '../../config/FirebaseUtils';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
+import {SetsExerciseViewShowButtonCtx} from './SetsExerciseView';
 
-const SetAddForm: FunctionComponent<ISetFormProps> = ({setEditVisible, exerciseType, currentData, setsExerciseUid}) => {
+const SetAddForm: FunctionComponent<ISetFormProps> = ({setAddSetViewVisible, exerciseType, currentData, setsExerciseUid}) => {
+  const [ignored, setButtonsIsShown] = useContext(SetsExerciseViewShowButtonCtx);
+
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    setButtonsIsShown(false);
+  }, []);
 
   if (submitErrorMessage) {
     return <Row><Col><ErrorAlert errorText={submitErrorMessage} componentName="SetForm" uid={currentData.uid}/></Col></Row>;
@@ -40,19 +47,23 @@ const SetAddForm: FunctionComponent<ISetFormProps> = ({setEditVisible, exerciseT
 
       actions.setSubmitting(false);
 
-      // Hide this form
-      setEditVisible(false);
+      hideAddForm();
     } catch (e) {
       console.error(e);
       setSubmitErrorMessage(e.data.message);
     }
   };
 
-  return <SetForm setEditVisible={setEditVisible} exerciseType={exerciseType} currentData={currentData} onSubmit={onSubmit}/>;
+  const hideAddForm = () => {
+    setAddSetViewVisible(false);
+    setButtonsIsShown(true);
+  };
+
+  return <SetForm hideFormCb={hideAddForm} exerciseType={exerciseType} currentData={currentData} onSubmit={onSubmit}/>;
 };
 
 interface ISetFormProps {
-  setEditVisible: ((editVisible: boolean) => void)
+  setAddSetViewVisible: ((editVisible: boolean) => void)
   exerciseType: ExerciseTypesEnum
   currentData: ISetModel
   setsExerciseUid: string
