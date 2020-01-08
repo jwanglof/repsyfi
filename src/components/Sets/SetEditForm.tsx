@@ -15,7 +15,6 @@ import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {useTranslation} from 'react-i18next';
 import {SetsExerciseViewShowButtonCtx} from './SetsExerciseView';
 import firebase from '../../config/firebase';
-import {firestore} from 'firebase';
 import {ISetsModel} from '../../models/ISetsModel';
 import {retrieveErrorMessage} from '../../config/FirebaseUtils';
 
@@ -99,14 +98,14 @@ const SetEditForm: FunctionComponent<ISetFormProps> = ({setEditVisible, exercise
         batch
           .update(
             getSetsRepsExerciseDocument(exerciseData.uid),
-            {sets: firestore.FieldValue.arrayRemove(currentData.uid)}
+            {sets: firebase.firestore.FieldValue.arrayRemove(currentData.uid)}
           );
         batch.delete(getSetDocument(currentData.uid));
       } else if (exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS) {
         batch
           .update(
             getSetsSecondsExerciseDocument(exerciseData.uid),
-            {sets: firestore.FieldValue.arrayRemove(currentData.uid)}
+            {sets: firebase.firestore.FieldValue.arrayRemove(currentData.uid)}
           );
         batch.delete(getSetSecondDocument(currentData.uid));
       }

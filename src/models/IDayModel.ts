@@ -1,5 +1,5 @@
 import {IBaseModel, IBaseModelUpdating, IBaseModelWithoutUid} from './IBaseModel';
-import {firestore} from 'firebase';
+import firebase from '../config/firebase';
 
 export interface IDayBasicModel {
   startTimestamp: number,
@@ -22,7 +22,7 @@ export interface IDayModelWithoutUid extends IDayBasicModel, IBaseModelWithoutUi
 
 export interface IDayBasicUpdateModel {
   startTimestamp?: number,
-  endTimestamp?: number | firestore.FieldValue,
+  endTimestamp?: number | firebase.firestore.FieldValue,
   location?: string,
   muscleGroups?: string,
   title?: string,
