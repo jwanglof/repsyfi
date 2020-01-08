@@ -26,9 +26,7 @@ interface IInternalSetRepsFakeCache {
 const InternalSetRepsFakeCache: IInternalSetRepsFakeCache = {};
 
 export const deleteSet = async (setUid: string): Promise<void> => {
-  return await firebase.firestore()
-    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_SETS)
-    .doc(setUid)
+  return await getSetDocument(setUid)
     .delete();
 };
 
@@ -36,12 +34,6 @@ export const getSetDocument = (setUid: string): firebase.firestore.DocumentRefer
   return firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_SETS)
     .doc(setUid);
-};
-
-const getSetRepsExerciseDocument = (exerciseUid: string): firebase.firestore.DocumentReference => {
-  return firebase.firestore()
-    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_REPS)
-    .doc(exerciseUid);
 };
 
 export const updateSetsRepsExercise = async (setUid: string, setData: ISetBasicUpdateModel) => {
@@ -114,7 +106,7 @@ export const getSetsRepsExercise = async (exerciseUid: string): Promise<ISetsRep
 };
 
 export const getSetsRepsExerciseOnSnapshot = (exerciseUid: string, cb: ((data: ISetsModel) => void), errCb: ((error: IErrorObject) => any)): any => {
-  return getSetRepsExerciseDocument(exerciseUid)
+  return getSetsRepsExerciseDocument(exerciseUid)
     .onSnapshot({includeMetadataChanges: true}, doc => {
       if (doc.exists && !isEmpty(doc.data())) {
         const snapshotData: any = doc.data();

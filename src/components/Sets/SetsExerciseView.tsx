@@ -23,9 +23,9 @@ import {ISetModel} from '../../models/ISetModel';
 import SetViewContainer from './SetViewContainer';
 import {getLastSetData} from './SetsHelpers';
 import SetAddForm from './SetAddForm';
-import {IErrorObject} from '../../config/FirebaseUtils';
+import {IErrorObject, retrieveErrorMessage} from '../../config/FirebaseUtils';
 
-export const SetsExerciseViewShowButtonCtx = createContext<any>([true, () => {}]);
+export const SetsExerciseViewShowButtonCtx = createContext<any>(() => {});
 
 const SetsExerciseView: FunctionComponent<ISetsViewRouter & ISetsViewProps> = ({router, setsExerciseUid, exerciseUid,  exerciseType}) => {
   const { t } = useTranslation();
@@ -97,7 +97,7 @@ const SetsExerciseView: FunctionComponent<ISetsViewRouter & ISetsViewProps> = ({
       await batch.commit();
     } catch (e) {
       console.error(e);
-      setSubmitErrorMessage(e.message);
+      setSubmitErrorMessage(retrieveErrorMessage(e));
     }
   };
 
@@ -107,7 +107,7 @@ const SetsExerciseView: FunctionComponent<ISetsViewRouter & ISetsViewProps> = ({
   };
 
   return (
-    <SetsExerciseViewShowButtonCtx.Provider value={[buttonsIsShown, setButtonsIsShown]}>
+    <SetsExerciseViewShowButtonCtx.Provider value={setButtonsIsShown}>
       <Col>
         <Row className="set__head">
           <Col xs={2}>#</Col>
@@ -118,7 +118,7 @@ const SetsExerciseView: FunctionComponent<ISetsViewRouter & ISetsViewProps> = ({
         <div className="legend">
           {currentExerciseData.sets.map((setUid, i) => {
             const isLastSet = i === currentExerciseData.sets.length - 1;
-            return <SetViewContainer key={i} setUid={setUid} disabled={addSetViewVisible} exerciseType={exerciseType} isLastSet={isLastSet} setLastSetData={setLastSetData}/>
+            return <SetViewContainer key={i} setUid={setUid} disabled={addSetViewVisible} exerciseType={exerciseType} isLastSet={isLastSet} setLastSetData={setLastSetData} exerciseData={currentExerciseData}/>
           })}
         </div>
 

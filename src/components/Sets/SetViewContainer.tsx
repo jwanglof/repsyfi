@@ -8,8 +8,10 @@ import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import SetEditForm from './SetEditForm';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
+import {ISetsModel} from '../../models/ISetsModel';
+import {retrieveErrorMessage} from '../../config/FirebaseUtils';
 
-const SetViewContainer: FunctionComponent<ISetViewContainerProps> = ({setUid, disabled, exerciseType, isLastSet, setLastSetData}) => {
+const SetViewContainer: FunctionComponent<ISetViewContainerProps> = ({setUid, disabled, exerciseType, isLastSet, setLastSetData, exerciseData}) => {
   const [editVisible, setEditVisible] = useState<boolean>(false);
   const [currentData, setCurrentData] = useState<ISetModel | undefined>(undefined);
   const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
@@ -24,7 +26,7 @@ const SetViewContainer: FunctionComponent<ISetViewContainerProps> = ({setUid, di
 
     const cbErr = (e: any) => {
       console.error(e);
-      setFetchDataError(e.message);
+      setFetchDataError(retrieveErrorMessage(e));
     };
 
     let unsubFn: any;
@@ -52,7 +54,7 @@ const SetViewContainer: FunctionComponent<ISetViewContainerProps> = ({setUid, di
   return (
     <>
       {!editVisible && <SetView setEditVisible={setEditVisible} disabled={disabled} exerciseType={exerciseType} currentData={currentData}/>}
-      {editVisible && <SetEditForm setEditVisible={setEditVisible} exerciseType={exerciseType} currentData={currentData}/>}
+      {editVisible && <SetEditForm setEditVisible={setEditVisible} exerciseType={exerciseType} currentData={currentData} exerciseData={exerciseData} setLastSetData={setLastSetData}/>}
     </>
   );
 };
@@ -62,7 +64,8 @@ interface ISetViewContainerProps {
   disabled: boolean
   exerciseType: ExerciseTypesEnum
   isLastSet: boolean
-  setLastSetData: ((lastSetData: ISetModel) => void)
+  setLastSetData: ((lastSetData: ISetModel | undefined) => void)
+  exerciseData: ISetsModel
 }
 
 export default SetViewContainer;

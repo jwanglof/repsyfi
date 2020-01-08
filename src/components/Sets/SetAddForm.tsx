@@ -7,18 +7,18 @@ import {addNewSetAndGetUid, addSetToSetsRepsExerciseArray} from './SetsReps/Sets
 import {addNewSetSecondsAndGetUid, addSetSecondsToSetsSecondsExerciseArray} from './SetsSeconds/SetsSecondsService';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import SetForm from './SetForm';
-import {getCurrentUsersUid} from '../../config/FirebaseUtils';
+import {getCurrentUsersUid, retrieveErrorMessage} from '../../config/FirebaseUtils';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {SetsExerciseViewShowButtonCtx} from './SetsExerciseView';
 
 const SetAddForm: FunctionComponent<ISetFormProps> = ({setAddSetViewVisible, exerciseType, currentData, setsExerciseUid}) => {
-  const [ignored, setButtonsIsShown] = useContext(SetsExerciseViewShowButtonCtx);
+  const setButtonsIsShown = useContext(SetsExerciseViewShowButtonCtx);
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     setButtonsIsShown(false);
-  }, []);
+  }, [setButtonsIsShown]);
 
   if (submitErrorMessage) {
     return <Row><Col><ErrorAlert errorText={submitErrorMessage} componentName="SetForm" uid={currentData.uid}/></Col></Row>;
@@ -50,7 +50,7 @@ const SetAddForm: FunctionComponent<ISetFormProps> = ({setAddSetViewVisible, exe
       hideAddForm();
     } catch (e) {
       console.error(e);
-      setSubmitErrorMessage(e.data.message);
+      setSubmitErrorMessage(retrieveErrorMessage(e));
     }
   };
 

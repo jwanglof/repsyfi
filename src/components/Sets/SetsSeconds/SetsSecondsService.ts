@@ -36,7 +36,7 @@ export const getSetSecondDocument = (setUid: string) => {
     .doc(setUid);
 };
 
-const getSetSecondExerciseDocument = (exerciseUid: string) => {
+export const getSetSecondExerciseDocument = (exerciseUid: string) => {
   return firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_SECONDS)
     .doc(exerciseUid);

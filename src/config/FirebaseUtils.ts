@@ -1,4 +1,5 @@
 import firebase from './firebase';
+import {isString} from 'lodash';
 
 export const getCurrentUsersUid = async (): Promise<string> => {
   const currentUser = await firebase.auth().currentUser;
@@ -34,10 +35,14 @@ export const getErrorObjectCustomMessage = (uid: string, collectionName: Firebas
 });
 
 export const retrieveErrorMessage = (err: any) => {
-  if (err.message) {
+  if (isString(err)) {
+    return err;
+  } else if (err.message) {
     return err.message;
+  } else if (err.data && err.data.message) {
+    return err.data.message;
   }
-  return err;
+  return null;
 };
 
 export interface IErrorObject {

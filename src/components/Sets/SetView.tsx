@@ -6,7 +6,7 @@ import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {SetsExerciseViewShowButtonCtx} from './SetsExerciseView';
 
 const SetView: FunctionComponent<ISetViewProps> = ({setEditVisible, disabled, exerciseType, currentData}) => {
-  const [ignored, setButtonsIsShown] = useContext(SetsExerciseViewShowButtonCtx);
+  const setButtonsIsShown = useContext(SetsExerciseViewShowButtonCtx);
 
   const onClick = () => {
     if (!disabled) {
