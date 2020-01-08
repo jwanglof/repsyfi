@@ -20,6 +20,7 @@ import DatepickerFormGroup from '../Formik/DatepickerFormGroup';
 import {Form} from 'react-formik-ui';
 import {isDate, format} from 'date-fns';
 import {RouteNames} from '../../routes';
+import {retrieveErrorMessage} from '../../config/FirebaseUtils';
 
 const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, dayUid}) => {
   const { t } = useTranslation();
@@ -89,7 +90,7 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
       router.navigate(RouteNames.SPECIFIC_DAY, {uid: dayUid}, {reload: true});
     } catch (e) {
       console.error(e);
-      setSubmitErrorMessage(e.message);
+      setSubmitErrorMessage(retrieveErrorMessage(e));
     }
     actions.setSubmitting(false);
   };

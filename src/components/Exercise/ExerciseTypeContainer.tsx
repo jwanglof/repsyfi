@@ -12,6 +12,7 @@ import TimeDistanceExerciseContainer from '../TimeDistance/TimeDistanceExerciseC
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {useTranslation} from 'react-i18next';
 import SetsView from '../Sets/SetsExerciseView';
+import {retrieveErrorMessage} from '../../config/FirebaseUtils';
 
 export const ExerciseHeaderEditCtx = createContext<any>([false, () => {}]);
 
@@ -29,7 +30,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({
         setCurrentExerciseData(res);
       } catch (e) {
         console.error(e);
-        setFetchDataError(e.message);
+        setFetchDataError(retrieveErrorMessage(e));
       }
     };
 

@@ -11,6 +11,7 @@ import {ExerciseHeaderEditCtx} from './ExerciseTypeContainer';
 // TODO :(
 // @ts-ignore
 import {Form} from 'react-formik-ui';
+import {retrieveErrorMessage} from '../../config/FirebaseUtils';
 
 const ExerciseHeader: FunctionComponent<IExerciseHeaderProps> = ({exerciseData}) => {
   const { t } = useTranslation();
@@ -32,7 +33,7 @@ const ExerciseHeader: FunctionComponent<IExerciseHeaderProps> = ({exerciseData})
       exerciseData.exerciseName = values.exerciseName;
       setHeaderEditVisible(false)
     } catch (e) {
-      setSubmitErrorMessage(e.message);
+      setSubmitErrorMessage(retrieveErrorMessage(e));
     }
 
     actions.setSubmitting(false);

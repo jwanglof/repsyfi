@@ -16,6 +16,7 @@ import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import firebase from '../../config/firebase';
 import {remove} from 'lodash';
 import {recalculateIndexes} from '../../utils/exercise-utils';
+import {retrieveErrorMessage} from '../../config/FirebaseUtils';
 
 const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanceViewProps> = ({router, timeDistanceUid, setEditVisible, exerciseUid}) => {
   const { t } = useTranslation();
@@ -38,7 +39,7 @@ const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanc
         setTimeDistanceDataData(res);
       } catch (e) {
         console.error(e);
-        setFetchDataError(e.message);
+        setFetchDataError(retrieveErrorMessage(e));
       }
     };
 
@@ -75,7 +76,7 @@ const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanc
       await batch.commit();
     } catch (e) {
       console.error(e);
-      setSubmitErrorMessage(e.message);
+      setSubmitErrorMessage(retrieveErrorMessage(e));
     }
   };
 

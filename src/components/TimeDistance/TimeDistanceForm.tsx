@@ -11,6 +11,7 @@ import {Form} from 'react-formik-ui';
 import DurationFormGroup from '../Formik/DurationFormGroup';
 import {getTimeDistanceExercise, updateTimeDistanceExercise} from './TimeDistanceService';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
+import {retrieveErrorMessage} from '../../config/FirebaseUtils';
 
 const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistanceUid, setEditVisible}) => {
   const { t } = useTranslation();
@@ -26,7 +27,7 @@ const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistan
         setTimeDistanceDataData(res);
       } catch (e) {
         console.error(e);
-        setFetchDataError(e.message);
+        setFetchDataError(retrieveErrorMessage(e));
       }
     };
 
@@ -50,7 +51,7 @@ const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistan
       setEditVisible(false)
     } catch (e) {
       console.error(e);
-      setSubmitErrorMessage(e.message);
+      setSubmitErrorMessage(retrieveErrorMessage(e));
     }
     actions.setSubmitting(false);
   };

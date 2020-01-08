@@ -13,7 +13,7 @@ import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {Alert, Button, ButtonGroup, Col, Row} from 'reactstrap';
 import ExerciseForm from '../Exercise/ExerciseForm';
 import ExerciseTypeContainer from '../Exercise/ExerciseTypeContainer';
-import {FirebaseCollectionNames} from '../../config/FirebaseUtils';
+import {FirebaseCollectionNames, retrieveErrorMessage} from '../../config/FirebaseUtils';
 import firebase from '../../config/firebase';
 import {RouteNames} from '../../routes';
 import {useGlobalState} from '../../state';
@@ -96,7 +96,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
       // Show questionnaire when day ends
       setShowQuestionnaire(true);
     } catch (e) {
-      setUpdateErrorData(e.message);
+      setUpdateErrorData(retrieveErrorMessage(e));
     }
   };
 
@@ -106,7 +106,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
       await deleteDay(dayUid);
       router.navigate(RouteNames.ALL_DAYS, {}, {reload: true});
     } catch (e) {
-      setDeleteErrorData(e.message);
+      setDeleteErrorData(retrieveErrorMessage(e));
     }
   };
 

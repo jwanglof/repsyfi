@@ -10,7 +10,7 @@ import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import getUnixTime from 'date-fns/getUnixTime';
 import parseISO from 'date-fns/parseISO';
 import {Formik, FormikHelpers} from 'formik';
-import {getCurrentUsersUid} from '../../config/FirebaseUtils';
+import {getCurrentUsersUid, retrieveErrorMessage} from '../../config/FirebaseUtils';
 import {Button, Col, FormGroup, Row} from 'reactstrap';
 import DateTimePickerFormGroup from '../Formik/DateTimePickerFormGroup';
 import DatepickerFormGroup from '../Formik/DatepickerFormGroup';
@@ -79,7 +79,7 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
       router.navigate(RouteNames.SPECIFIC_DAY, {uid: newUid}, {reload: true});
     } catch (e) {
       console.error(e);
-      setSubmitErrorMessage(e.message);
+      setSubmitErrorMessage(retrieveErrorMessage(e));
     }
     actions.setSubmitting(false);
   };

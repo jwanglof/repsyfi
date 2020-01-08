@@ -7,7 +7,7 @@ import {Formik, FormikHelpers} from 'formik';
 import {Form} from 'react-formik-ui';
 import DurationFormGroup from '../Formik/DurationFormGroup';
 import {FEELING, IDayQuestionnaireBasicModelV1, IDayQuestionnaireModelV1} from '../../models/IDayQuestionnaireModel';
-import {FirebaseCollectionNames, getCurrentUsersUid} from '../../config/FirebaseUtils';
+import {FirebaseCollectionNames, getCurrentUsersUid, retrieveErrorMessage} from '../../config/FirebaseUtils';
 import {Router} from 'router5';
 import {withRouter} from 'react-router5';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
@@ -110,7 +110,7 @@ const DayQuestionnaire: FunctionComponent<IDayQuestionnaireRouter & IDayQuestion
       }
     } catch (e) {
       console.error(e);
-      setSubmitErrorMessage(e.message);
+      setSubmitErrorMessage(retrieveErrorMessage(e));
     }
 
     actions.setSubmitting(false);

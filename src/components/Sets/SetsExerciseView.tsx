@@ -43,7 +43,7 @@ const SetsExerciseView: FunctionComponent<ISetsViewRouter & ISetsViewProps> = ({
 
   useEffect(() => {
     const cbErr = (e: IErrorObject) => {
-      setFetchDataError(e.message);
+      setFetchDataError(retrieveErrorMessage(e));
     };
 
     let unsubFn: any;

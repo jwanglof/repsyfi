@@ -2,7 +2,7 @@ import React, {FunctionComponent, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
-import {getCurrentUsersUid} from '../../config/FirebaseUtils';
+import {getCurrentUsersUid, retrieveErrorMessage} from '../../config/FirebaseUtils';
 import {Formik, FormikHelpers} from 'formik';
 import isEmpty from 'lodash/isEmpty';
 import {addExerciseAndGetUid} from './ExerciseService';
@@ -68,7 +68,7 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
       setAddExerciseViewVisible(false);
     } catch (e) {
       console.error(e);
-      setSubmitErrorMessage(e.message);
+      setSubmitErrorMessage(retrieveErrorMessage(e));
     }
     actions.setSubmitting(false);
   };
