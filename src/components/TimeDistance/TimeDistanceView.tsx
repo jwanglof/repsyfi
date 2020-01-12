@@ -54,33 +54,6 @@ const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanc
     return <LoadingAlert componentName="TimeDistanceView"/>;
   }
 
-  const delExercise = async () => {
-    // TODO MOve this to ExerciseTypeContainer#delExercise!!
-    setSubmitErrorMessage(undefined);
-
-    try {
-      const dayUid = router.getState().params.uid;
-      const day = await getDay(dayUid);
-
-      // Recalculate the indexes of the remaining exercises
-      // Need this so they keep the order, and when adding a new exercise that an index isn't duplicated
-      const exercises = day.exercises;
-      const removedExercise = remove(exercises, e => e.exerciseUid === exerciseUid);
-      const removedExerciseIndex = removedExercise[0].index;
-      const recalculatedExercises: any = recalculateIndexes(removedExerciseIndex, exercises);
-
-      // More: https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
-      const batch = firebase.firestore().batch();
-      batch.delete(getTimeDistanceDocument(timeDistanceUid));
-      batch.delete(getExerciseDocument(exerciseUid));
-      batch.update(getDayDocument(dayUid), {exercises: recalculatedExercises});
-      await batch.commit();
-    } catch (e) {
-      console.error(e);
-      setSubmitErrorMessage(retrieveErrorMessage(e));
-    }
-  };
-
   // const toggleActionDropdown = () => {
   //   setExerciseDeleteStep2Shown(false);
   //   setDropdownVisible(!dropdownVisible)

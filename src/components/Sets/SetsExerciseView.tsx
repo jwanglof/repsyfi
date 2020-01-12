@@ -63,39 +63,6 @@ const SetsExerciseView: FunctionComponent<ISetsViewRouter & ISetsViewProps> = ({
     return <LoadingAlert componentName="SetsExerciseView"/>;
   }
 
-  const delExercise = async () => {
-    // TODO MOve this to ExerciseTypeContainer#delExercise!!
-    setSubmitErrorMessage(undefined);
-
-    try {
-      const dayUid = router.getState().params.uid;
-      const day = await getDay(dayUid);
-
-      // Recalculate the indexes of the remaining exercises
-      // Need this so they keep the order, and when adding a new exercise that an index isn't duplicated
-      const exercises = day.exercises;
-      const removedExercise = remove(exercises, e => e.exerciseUid === exerciseUid);
-      const removedExerciseIndex = removedExercise[0].index;
-      const recalculatedExercises: any = recalculateIndexes(removedExerciseIndex, exercises);
-
-      // More: https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
-      const batch = firebase.firestore().batch();
-      if (exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS) {
-        currentExerciseData.sets.forEach((setUid: string) => batch.delete(getSetSecondDocument(setUid)));
-        batch.delete(getSetsSecondsExerciseDocument(setsExerciseUid));
-      } else if (exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS) {
-        currentExerciseData.sets.forEach((setUid: string) => batch.delete(getSetDocument(setUid)));
-        batch.delete(getSetsRepsExerciseDocument(setsExerciseUid));
-      }
-      batch.delete(getExerciseDocument(exerciseUid));
-      batch.update(getDayDocument(dayUid), {exercises: recalculatedExercises});
-      await batch.commit();
-    } catch (e) {
-      console.error(e);
-      setSubmitErrorMessage(retrieveErrorMessage(e));
-    }
-  };
-
   return (
       <Col>
         <Row className="set__head">
