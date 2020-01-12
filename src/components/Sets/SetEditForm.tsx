@@ -13,7 +13,6 @@ import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import SetForm from './SetForm';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {useTranslation} from 'react-i18next';
-// import {SetsExerciseViewShowButtonCtx} from './SetsExerciseView';
 import firebase from '../../config/firebase';
 import {ISetsModel} from '../../models/ISetsModel';
 import {retrieveErrorMessage} from '../../config/FirebaseUtils';

@@ -4,13 +4,13 @@ import TimeDistanceForm from './TimeDistanceForm';
 import {ExerciseContainerAsdCtx} from '../Exercise/ExerciseTypeContainer';
 import {Col, Row} from 'reactstrap';
 
-const TimeDistanceExerciseContainer: FunctionComponent<ITimeDistanceExerciseContainerProps> = ({timeDistanceExerciseUid, exerciseUid}) => {
+const TimeDistanceExerciseContainer: FunctionComponent<ITimeDistanceExerciseContainerProps> = ({timeDistanceExerciseUid}) => {
   const editVisible = useContext(ExerciseContainerAsdCtx)[0];
 
   return (
     <Row>
       <Col>
-        {!editVisible && <TimeDistanceView exerciseUid={exerciseUid} timeDistanceUid={timeDistanceExerciseUid}/>}
+        {!editVisible && <TimeDistanceView timeDistanceUid={timeDistanceExerciseUid}/>}
         {editVisible && <TimeDistanceForm timeDistanceUid={timeDistanceExerciseUid}/>}
       </Col>
     </Row>
@@ -19,7 +19,6 @@ const TimeDistanceExerciseContainer: FunctionComponent<ITimeDistanceExerciseCont
 
 interface ITimeDistanceExerciseContainerProps {
   timeDistanceExerciseUid: string,
-  exerciseUid: string,
 }
 
 export default TimeDistanceExerciseContainer;

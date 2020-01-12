@@ -3,11 +3,8 @@ import {ISetModel} from '../../models/ISetModel';
 import classnames from 'classnames';
 import {Col, Row} from 'reactstrap';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
-// import {SetsExerciseViewShowButtonCtx} from './SetsExerciseView';
 
 const SetView: FunctionComponent<ISetViewProps> = ({setEditVisible, disabled, exerciseType, currentData}) => {
-  // const setButtonsIsShown = useContext(SetsExerciseViewShowButtonCtx);
-
   const onClick = () => {
     if (!disabled) {
       setEditVisible(true);

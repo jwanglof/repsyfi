@@ -21,9 +21,9 @@ import {
   deleteSetsSeconds,
   deleteSetsSecondsExercise,
   getSetSecondDocument,
-  getSetsSecondsExercise, getSetsSecondsExerciseDocument
+  getSetsSecondsExercise,
+  getSetsSecondsExerciseDocument
 } from '../Sets/SetsSeconds/SetsSecondsService';
-import {getDayDocument} from '../Day/DayService';
 
 export const getExercise = async (exerciseUid: string): Promise<IExerciseModel> => {
   const querySnapshot = await firebase.firestore()

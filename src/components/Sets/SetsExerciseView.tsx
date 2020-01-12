@@ -1,38 +1,26 @@
 import React, {FunctionComponent, useContext, useEffect, useState} from 'react';
-import {withRouter} from 'react-router5';
-import {Router} from 'router5';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {useTranslation} from 'react-i18next';
-import {getSetDocument, getSetsRepsExerciseDocument, getSetsRepsExerciseOnSnapshot} from './SetsReps/SetsRepsService';
+import {getSetsRepsExerciseOnSnapshot} from './SetsReps/SetsRepsService';
 import {ISetsModel} from '../../models/ISetsModel';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {Col, Row} from 'reactstrap';
 import {ExerciseContainerAsdCtx} from '../Exercise/ExerciseTypeContainer';
-import {getDay, getDayDocument} from '../Day/DayService';
-import {remove} from 'lodash';
-import {recalculateIndexes} from '../../utils/exercise-utils';
-import firebase from '../../config/firebase';
-import {
-  getSetSecondDocument,
-  getSetsSecondsExerciseDocument,
-  getSetsSecondsExerciseOnSnapshot
-} from './SetsSeconds/SetsSecondsService';
-import {getExerciseDocument} from '../Exercise/ExerciseService';
+import {getSetsSecondsExerciseOnSnapshot} from './SetsSeconds/SetsSecondsService';
 import {ISetModel} from '../../models/ISetModel';
 import SetViewContainer from './SetViewContainer';
 import {getLastSetData} from './SetsHelpers';
 import SetAddForm from './SetAddForm';
 import {IErrorObject, retrieveErrorMessage} from '../../config/FirebaseUtils';
 
-const SetsExerciseView: FunctionComponent<ISetsViewRouter & ISetsViewProps> = ({router, setsExerciseUid, exerciseUid,  exerciseType}) => {
+const SetsExerciseView: FunctionComponent<ISetsViewProps> = ({setsExerciseUid,  exerciseType}) => {
   const { t } = useTranslation();
 
   const [addSetViewVisible, setAddSetViewVisible] = useContext(ExerciseContainerAsdCtx);
 
   const [currentExerciseData, setCurrentExerciseData] = useState<ISetsModel | undefined>(undefined);
   const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
-  const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
   const [lastSetData, setLastSetData] = useState<ISetModel | undefined>(undefined);
 
   useEffect(() => {
@@ -55,8 +43,8 @@ const SetsExerciseView: FunctionComponent<ISetsViewRouter & ISetsViewProps> = ({
     };
   }, [setsExerciseUid, exerciseType]);
 
-  if (fetchDataError || submitErrorMessage) {
-    return <ErrorAlert errorText={fetchDataError || submitErrorMessage} componentName="SetsExerciseView"/>;
+  if (fetchDataError) {
+    return <ErrorAlert errorText={fetchDataError} componentName="SetsExerciseView"/>;
   }
 
   if (!currentExerciseData) {
@@ -85,12 +73,7 @@ const SetsExerciseView: FunctionComponent<ISetsViewRouter & ISetsViewProps> = ({
 
 interface ISetsViewProps {
   setsExerciseUid: string
-  exerciseUid: string
   exerciseType: ExerciseTypesEnum
 }
 
-interface ISetsViewRouter {
-  router: Router
-}
-
-export default withRouter(SetsExerciseView);
+export default SetsExerciseView;

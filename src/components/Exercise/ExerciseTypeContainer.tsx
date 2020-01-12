@@ -1,7 +1,7 @@
 import './Exercise.scss';
 
 import React, {createContext, FunctionComponent, useEffect, useState} from 'react';
-import {getBatchToDeleteExercise, getExercise, getExerciseDocument} from './ExerciseService';
+import {getBatchToDeleteExercise, getExercise} from './ExerciseService';
 import {IExerciseModel} from '../../models/IExerciseModel';
 import {
   Button,
@@ -27,16 +27,8 @@ import SetsView from '../Sets/SetsExerciseView';
 import {retrieveErrorMessage} from '../../config/FirebaseUtils';
 import {getDay, getDayDocument} from '../Day/DayService';
 import {recalculateIndexes} from '../../utils/exercise-utils';
-import firebase from '../../config/firebase';
-import {
-  getSetSecondDocument,
-  getSetsSecondsExercise,
-  getSetsSecondsExerciseDocument
-} from '../Sets/SetsSeconds/SetsSecondsService';
-import {getSetDocument, getSetsRepsExercise, getSetsRepsExerciseDocument} from '../Sets/SetsReps/SetsRepsService';
 import {withRouter} from 'react-router5';
 import {Router} from 'router5';
-import {getTimeDistanceDocument} from '../TimeDistance/TimeDistanceService';
 
 export const ExerciseHeaderEditCtx = createContext<any>([false, () => {}]);
 export const ExerciseContainerAsdCtx = createContext<any>([false, () => {}]);   // TODO Rename to something better than Asd
@@ -138,8 +130,8 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
             </CardHeader>
 
             <CardBody className="p-0">
-              {(currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS || currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS) && <SetsView setsExerciseUid={currentExerciseData.typeUid} exerciseType={currentExerciseData.type} exerciseUid={exerciseUid}/>}
-              {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE && <TimeDistanceExerciseContainer timeDistanceExerciseUid={currentExerciseData.typeUid} exerciseUid={exerciseUid}/>}
+              {(currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS || currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS) && <SetsView setsExerciseUid={currentExerciseData.typeUid} exerciseType={currentExerciseData.type}/>}
+              {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE && <TimeDistanceExerciseContainer timeDistanceExerciseUid={currentExerciseData.typeUid}/>}
             </CardBody>
 
             <CardFooter className="p-0">
