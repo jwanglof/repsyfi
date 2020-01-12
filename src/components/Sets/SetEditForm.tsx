@@ -1,8 +1,8 @@
-import React, {FunctionComponent, useContext, useState} from 'react';
+import React, {FunctionComponent, useState} from 'react';
 import {FormikHelpers} from 'formik';
 import {ISetBasicUpdateModel, ISetModel} from '../../models/ISetModel';
 // @ts-ignore
-import {Col, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Row} from 'reactstrap';
+import {ButtonDropdown, Col, DropdownItem, DropdownMenu, DropdownToggle, Row} from 'reactstrap';
 import {getSetDocument, getSetsRepsExerciseDocument, updateSetsRepsExercise} from './SetsReps/SetsRepsService';
 import {
   getSetSecondDocument,
@@ -13,15 +13,13 @@ import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import SetForm from './SetForm';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {useTranslation} from 'react-i18next';
-import {SetsExerciseViewShowButtonCtx} from './SetsExerciseView';
+// import {SetsExerciseViewShowButtonCtx} from './SetsExerciseView';
 import firebase from '../../config/firebase';
 import {ISetsModel} from '../../models/ISetsModel';
 import {retrieveErrorMessage} from '../../config/FirebaseUtils';
 
 const SetEditForm: FunctionComponent<ISetFormProps> = ({setEditVisible, exerciseType, currentData, exerciseData, setLastSetData}) => {
   const { t } = useTranslation();
-
-  const setButtonsIsShown = useContext(SetsExerciseViewShowButtonCtx);
 
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
@@ -127,19 +125,18 @@ const SetEditForm: FunctionComponent<ISetFormProps> = ({setEditVisible, exercise
 
   const hideEditForm = () => {
     setEditVisible(false);
-    setButtonsIsShown(true);
   };
 
   const actionButtonDropdown = (
-    <Dropdown isOpen={dropdownVisible} toggle={toggleActionDropdown}>
+    <ButtonDropdown isOpen={dropdownVisible} toggle={toggleActionDropdown}>
       <DropdownToggle caret>
         {t("Actions")}
       </DropdownToggle>
-      <DropdownMenu right>
+      <DropdownMenu>
         {!deleteStep2Shown && <DropdownItem toggle={false} onClick={() => setDeleteStep2Shown(true)}>{t("Delete")} {t("set")}</DropdownItem>}
-        {deleteStep2Shown && <DropdownItem toggle={false} className="text-danger" onClick={delSet}>{t("Click again to delete!")}</DropdownItem>}
+        {deleteStep2Shown && <DropdownItem toggle={false} className="text-danger" onClick={() => delSet()}>{t("Click again to delete!")}</DropdownItem>}
       </DropdownMenu>
-    </Dropdown>
+    </ButtonDropdown>
   );
 
   return <SetForm hideFormCb={hideEditForm} exerciseType={exerciseType} currentData={currentData} onSubmit={onSubmit} extraButtonGroups={actionButtonDropdown}/>;

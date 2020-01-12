@@ -89,7 +89,6 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
           initialValues={emptyInitialValues}
           onSubmit={onSubmit}
           validate={validate}
-          // render={({ errors, status, touched, isSubmitting }) => (
           render={({ errors, isSubmitting }) => (
             <Form>
               <FieldFormGroup name="exerciseName" labelText={t("Exercise name")} inputProps={{autoFocus: true}}/>

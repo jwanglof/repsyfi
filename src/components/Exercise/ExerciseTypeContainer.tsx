@@ -1,9 +1,21 @@
 import './Exercise.scss';
 
 import React, {createContext, FunctionComponent, useEffect, useState} from 'react';
-import {getExercise} from './ExerciseService';
+import {getBatchToDeleteExercise, getExercise, getExerciseDocument} from './ExerciseService';
 import {IExerciseModel} from '../../models/IExerciseModel';
-import {Card, CardBody, CardFooter, CardHeader, Col} from 'reactstrap';
+import {
+  Button,
+  ButtonDropdown,
+  ButtonGroup,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Col,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle
+} from 'reactstrap';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import ExerciseHeader from './ExerciseHeader';
@@ -13,15 +25,33 @@ import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {useTranslation} from 'react-i18next';
 import SetsView from '../Sets/SetsExerciseView';
 import {retrieveErrorMessage} from '../../config/FirebaseUtils';
+import {getDay, getDayDocument} from '../Day/DayService';
+import {recalculateIndexes} from '../../utils/exercise-utils';
+import firebase from '../../config/firebase';
+import {
+  getSetSecondDocument,
+  getSetsSecondsExercise,
+  getSetsSecondsExerciseDocument
+} from '../Sets/SetsSeconds/SetsSecondsService';
+import {getSetDocument, getSetsRepsExercise, getSetsRepsExerciseDocument} from '../Sets/SetsReps/SetsRepsService';
+import {withRouter} from 'react-router5';
+import {Router} from 'router5';
+import {getTimeDistanceDocument} from '../TimeDistance/TimeDistanceService';
 
 export const ExerciseHeaderEditCtx = createContext<any>([false, () => {}]);
+export const ExerciseContainerAsdCtx = createContext<any>([false, () => {}]);   // TODO Rename to something better than Asd
 
-const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({ exerciseUid }) => {
+const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IExerciseTypeContainerProps> = ({ router, exerciseUid }) => {
   const { t } = useTranslation();
 
   const [currentExerciseData, setCurrentExerciseData] = useState<IExerciseModel | undefined>(undefined);
   const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
   const [headerEditVisible, setHeaderEditVisible] = useState<boolean>(false);
+  const [addSetViewVisible, setAddSetViewVisible] = useState<boolean>(false);
+  const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
+  const [exerciseDeleteStep2Shown, setExerciseDeleteStep2Shown] = useState<boolean>(false);
+  const [options, setOptions] = useState<any>({});
+  const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const fetchExerciseData = async () => {
@@ -38,39 +68,114 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerProps> = ({
     fetchExerciseData();
   }, [exerciseUid]);
 
-  if (fetchDataError != null) {
-    return <ErrorAlert errorText={fetchDataError} componentName="ExerciseTypeContainer"/>;
+  useEffect(() => {
+    if (currentExerciseData) {
+      if (currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS || currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS) {
+        const texts = {
+          actionButtonText: t("Add set"),
+          showFooterInfo: true
+        };
+        setOptions(texts);
+      } else if (currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE) {
+        const texts = {
+          actionButtonText: t("Edit"),
+          showFooterInfo: false
+        };
+        setOptions(texts);
+      }
+    }
+  }, [currentExerciseData, t]);
+
+  if (fetchDataError != null || submitErrorMessage) {
+    return <ErrorAlert errorText={fetchDataError || submitErrorMessage} componentName="ExerciseTypeContainer"/>;
   }
 
   if (!currentExerciseData) {
     return <LoadingAlert componentName="ExerciseTypeContainer"/>;
   }
 
-  const showFooterInfo = (currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS || currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS);
+  const toggleActionDropdown = () => {
+    setExerciseDeleteStep2Shown(false);
+    setDropdownVisible(!dropdownVisible);
+  };
 
-  return (<ExerciseHeaderEditCtx.Provider value={[headerEditVisible, setHeaderEditVisible]}>
-    <Col lg={4} xs={12} className="mb-2">
-      <Card>
-        <CardHeader className="text-center pt-0 pb-0">
-          <ExerciseHeader exerciseData={currentExerciseData}/>
-          <ExerciseHeaderView exerciseData={currentExerciseData}/>
-        </CardHeader>
+  const delExercise = async () => {
+    setSubmitErrorMessage(undefined);
 
-        <CardBody className="mb-0 p-0">
-          {(currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS || currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS) && <SetsView setsExerciseUid={currentExerciseData.typeUid} exerciseType={currentExerciseData.type} exerciseUid={exerciseUid}/>}
-          {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE && <TimeDistanceExerciseContainer timeDistanceExerciseUid={currentExerciseData.typeUid} exerciseUid={exerciseUid}/>}
-        </CardBody>
+    try {
+      const dayUid = router.getState().params.uid;
+      const day = await getDay(dayUid);
 
-        {showFooterInfo && <CardFooter className="text-muted text-center font-italic p-0">
-          <small>{t("Click on a set for different actions")}</small>
-        </CardFooter>}
-      </Card>
-    </Col>
-  </ExerciseHeaderEditCtx.Provider>);
+      // Recalculate the indexes of the remaining exercises
+      // Need this so they keep the order, and when adding a new exercise that an index isn't duplicated
+      const exercises = day.exercises;
+      const removedExercise = exercises.find(e => e.exerciseUid === exerciseUid);
+      const exercisesWithoutRemoved = exercises.filter(e => e.exerciseUid !== exerciseUid);
+      if (!removedExercise) {
+        setSubmitErrorMessage("Exercise not found in day's exercises!");
+        return;
+      }
+      const recalculatedExercises: Array<any> = recalculateIndexes(removedExercise.index, exercisesWithoutRemoved);
+
+      const batch = await getBatchToDeleteExercise(exerciseUid);
+      await batch
+        .update(getDayDocument(dayUid), {exercises: recalculatedExercises})
+        .commit();
+    } catch (e) {
+      console.error(e);
+      setSubmitErrorMessage(retrieveErrorMessage(e));
+    }
+  };
+
+  return (
+    <ExerciseHeaderEditCtx.Provider value={[headerEditVisible, setHeaderEditVisible]}>
+      <ExerciseContainerAsdCtx.Provider value={[addSetViewVisible, setAddSetViewVisible]}>
+        <Col lg={4} xs={12} className="mb-2">
+          <Card>
+            <CardHeader className="text-center pt-0 pb-0">
+              <ExerciseHeader exerciseData={currentExerciseData}/>
+              <ExerciseHeaderView exerciseData={currentExerciseData}/>
+            </CardHeader>
+
+            <CardBody className="p-0">
+              {(currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS || currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS) && <SetsView setsExerciseUid={currentExerciseData.typeUid} exerciseType={currentExerciseData.type} exerciseUid={exerciseUid}/>}
+              {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE && <TimeDistanceExerciseContainer timeDistanceExerciseUid={currentExerciseData.typeUid} exerciseUid={exerciseUid}/>}
+            </CardBody>
+
+            <CardFooter className="p-0">
+              {!addSetViewVisible && <ButtonGroup className="w-100" vertical>
+                  <Button color="success" block onClick={() => setAddSetViewVisible(!addSetViewVisible)}>{options.actionButtonText}</Button>
+                  <ButtonDropdown isOpen={dropdownVisible} toggle={toggleActionDropdown}>
+                    <DropdownToggle caret>
+                      {t("Actions")}
+                    </DropdownToggle>
+                    <DropdownMenu>
+                      <DropdownItem onClick={() => setHeaderEditVisible(true)} disabled={headerEditVisible}>
+                        {`${t("Edit")} ${t("name")}`}
+                      </DropdownItem>
+                      {!exerciseDeleteStep2Shown && <DropdownItem toggle={false} onClick={() => setExerciseDeleteStep2Shown(true)}>{t("Delete")} {t("exercise")}</DropdownItem>}
+                      {exerciseDeleteStep2Shown && <DropdownItem className="text-danger" onClick={() => delExercise()}>{t("Click again to delete!")}</DropdownItem>}
+                    </DropdownMenu>
+                  </ButtonDropdown>
+              </ButtonGroup>}
+              {/*<ButtonGroup className="w-100"></ButtonGroup>  // Something wrong with buttongroup and dropdown.. */}
+              {options.showFooterInfo && <div className="text-muted text-center font-italic">
+                <small>{t("Click on a set for different actions")}</small>
+              </div>}
+            </CardFooter>
+          </Card>
+        </Col>
+      </ExerciseContainerAsdCtx.Provider>
+    </ExerciseHeaderEditCtx.Provider>
+  );
 };
 
 interface IExerciseTypeContainerProps {
   exerciseUid: string
 }
 
-export default ExerciseTypeContainer;
+interface IExerciseTypeContainerRouter {
+  router: Router
+}
+
+export default withRouter(ExerciseTypeContainer);

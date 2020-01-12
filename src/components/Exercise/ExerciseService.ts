@@ -1,4 +1,10 @@
-import {deleteSet, deleteSetsRepsExercise, getSetsRepsExercise} from '../Sets/SetsReps/SetsRepsService';
+import {
+  deleteSet,
+  deleteSetsRepsExercise,
+  getSetDocument,
+  getSetsRepsExercise,
+  getSetsRepsExerciseDocument
+} from '../Sets/SetsReps/SetsRepsService';
 import firebase from '../../config/firebase';
 import isEmpty from 'lodash/isEmpty';
 import {
@@ -10,8 +16,14 @@ import {
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {FirebaseCollectionNames, getExerciseErrorObject, getNowTimestamp} from '../../config/FirebaseUtils';
 import {Versions} from '../../models/IBaseModel';
-import {deleteTimeDistanceExercise} from '../TimeDistance/TimeDistanceService';
-import {deleteSetsSeconds, deleteSetsSecondsExercise, getSetsSecondsExercise} from '../Sets/SetsSeconds/SetsSecondsService';
+import {deleteTimeDistanceExercise, getTimeDistanceDocument} from '../TimeDistance/TimeDistanceService';
+import {
+  deleteSetsSeconds,
+  deleteSetsSecondsExercise,
+  getSetSecondDocument,
+  getSetsSecondsExercise, getSetsSecondsExerciseDocument
+} from '../Sets/SetsSeconds/SetsSecondsService';
+import {getDayDocument} from '../Day/DayService';
 
 export const getExercise = async (exerciseUid: string): Promise<IExerciseModel> => {
   const querySnapshot = await firebase.firestore()
@@ -62,6 +74,28 @@ export const deleteExercise = async (exerciseUid: string): Promise<void> => {
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISES)
     .doc(exerciseUid)
     .delete();
+};
+
+export const getBatchToDeleteExercise = async (exerciseUid: string): Promise<firebase.firestore.WriteBatch> => {
+  const exerciseData = await getExercise(exerciseUid);
+  const exerciseType = exerciseData.type;
+  const typeExerciseUid = exerciseData.typeUid;
+
+  // More: https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
+  const batch = firebase.firestore().batch();
+  if (exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS) {
+    const setsRepsData = await getSetsSecondsExercise(typeExerciseUid);
+    setsRepsData.sets.forEach((setUid: string) => batch.delete(getSetSecondDocument(setUid)));
+    batch.delete(getSetsSecondsExerciseDocument(typeExerciseUid));
+  } else if (exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS) {
+    const setsRepsData = await getSetsRepsExercise(typeExerciseUid);
+    setsRepsData.sets.forEach((setUid: string) => batch.delete(getSetDocument(setUid)));
+    batch.delete(getSetsRepsExerciseDocument(typeExerciseUid));
+  } else if (exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE) {
+    batch.delete(getTimeDistanceDocument(typeExerciseUid));
+  }
+
+  return batch.delete(getExerciseDocument(exerciseUid));
 };
 
 

@@ -1,13 +1,11 @@
-import React, {FunctionComponent, useContext, useEffect, useState} from 'react';
+import React, {FunctionComponent, useEffect, useState} from 'react';
 import {ITimeDistanceModel} from '../../models/ITimeDistanceModel';
-import {Button, ButtonGroup, DropdownItem, DropdownMenu, DropdownToggle, Table} from 'reactstrap';
+import {Table} from 'reactstrap';
 import {useTranslation} from 'react-i18next';
 import {formatSecondsToPrettyPrint} from '../../utils/time-utils';
 import {withRouter} from 'react-router5';
 import {Router} from 'router5';
 import {RouteNames} from '../../routes';
-import ButtonDropdown from 'reactstrap/lib/ButtonDropdown';
-import {ExerciseHeaderEditCtx} from '../Exercise/ExerciseTypeContainer';
 import {getExerciseDocument} from '../Exercise/ExerciseService';
 import {getDay, getDayDocument} from '../Day/DayService';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
@@ -18,16 +16,18 @@ import {remove} from 'lodash';
 import {recalculateIndexes} from '../../utils/exercise-utils';
 import {retrieveErrorMessage} from '../../config/FirebaseUtils';
 
-const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanceViewProps> = ({router, timeDistanceUid, setEditVisible, exerciseUid}) => {
+const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanceViewProps> = ({router, timeDistanceUid, exerciseUid}) => {
   const { t } = useTranslation();
 
-  const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
-  const [exerciseDeleteStep2Shown, setExerciseDeleteStep2Shown] = useState<boolean>(false);
+  // const setEditVisible = useContext(ExerciseContainerAsdCtx)[1];
+
+  // const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
+  // const [exerciseDeleteStep2Shown, setExerciseDeleteStep2Shown] = useState<boolean>(false);
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
   const [timeDistanceData, setTimeDistanceDataData] = useState<ITimeDistanceModel | undefined>(undefined);
   const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
 
-  const [headerEditVisible, setHeaderEditVisible] = useContext(ExerciseHeaderEditCtx);
+  // const [headerEditVisible, setHeaderEditVisible] = useContext(ExerciseHeaderEditCtx);
 
   const {name: routeName} = router.getState();
   const detailedDayView = (routeName === RouteNames.SPECIFIC_DAY);
@@ -55,6 +55,7 @@ const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanc
   }
 
   const delExercise = async () => {
+    // TODO MOve this to ExerciseTypeContainer#delExercise!!
     setSubmitErrorMessage(undefined);
 
     try {
@@ -80,10 +81,10 @@ const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanc
     }
   };
 
-  const toggleActionDropdown = () => {
-    setExerciseDeleteStep2Shown(false);
-    setDropdownVisible(!dropdownVisible)
-  };
+  // const toggleActionDropdown = () => {
+  //   setExerciseDeleteStep2Shown(false);
+  //   setDropdownVisible(!dropdownVisible)
+  // };
 
   return (<Table size="sm" className="mb-0">
     <tbody>
@@ -125,7 +126,7 @@ const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanc
     </tbody>
     {detailedDayView && <tfoot>
     {submitErrorMessage && <tr><td colSpan={2}><ErrorAlert errorText={submitErrorMessage}/></td></tr>}
-    <tr>
+    {/*<tr>
       <td colSpan={2}>
         <ButtonGroup className="w-100">
           <Button color="success" onClick={() => setEditVisible(true)}>{t("Edit")}</Button>
@@ -145,14 +146,14 @@ const TimeDistanceView: FunctionComponent<ITimeDistanceViewRouter & ITimeDistanc
           </ButtonDropdown>
         </ButtonGroup>
       </td>
-    </tr>
+    </tr>*/}
     </tfoot>}
   </Table>);
 };
 
 interface ITimeDistanceViewProps {
   timeDistanceUid: string,
-  setEditVisible: ((visible: boolean) => void),
+  // setEditVisible: ((visible: boolean) => void),
   exerciseUid: string
 }
 

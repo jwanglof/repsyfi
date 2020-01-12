@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useContext, useEffect, useState} from 'react';
+import React, {FunctionComponent, useState} from 'react';
 import {FormikHelpers} from 'formik';
 import {ISetBasicModel, ISetModel} from '../../models/ISetModel';
 // @ts-ignore
@@ -9,16 +9,9 @@ import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import SetForm from './SetForm';
 import {getCurrentUsersUid, retrieveErrorMessage} from '../../config/FirebaseUtils';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
-import {SetsExerciseViewShowButtonCtx} from './SetsExerciseView';
 
 const SetAddForm: FunctionComponent<ISetFormProps> = ({setAddSetViewVisible, exerciseType, currentData, setsExerciseUid}) => {
-  const setButtonsIsShown = useContext(SetsExerciseViewShowButtonCtx);
-
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    setButtonsIsShown(false);
-  }, [setButtonsIsShown]);
 
   if (submitErrorMessage) {
     return <Row><Col><ErrorAlert errorText={submitErrorMessage} componentName="SetForm" uid={currentData.uid}/></Col></Row>;
@@ -56,7 +49,6 @@ const SetAddForm: FunctionComponent<ISetFormProps> = ({setAddSetViewVisible, exe
 
   const hideAddForm = () => {
     setAddSetViewVisible(false);
-    setButtonsIsShown(true);
   };
 
   return <SetForm hideFormCb={hideAddForm} exerciseType={exerciseType} currentData={currentData} onSubmit={onSubmit}/>;

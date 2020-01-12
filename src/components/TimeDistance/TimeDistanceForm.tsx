@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
+import React, {FunctionComponent, useContext, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {ITimeDistanceBasicModel, ITimeDistanceModel} from '../../models/ITimeDistanceModel';
@@ -12,9 +12,12 @@ import DurationFormGroup from '../Formik/DurationFormGroup';
 import {getTimeDistanceExercise, updateTimeDistanceExercise} from './TimeDistanceService';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {retrieveErrorMessage} from '../../config/FirebaseUtils';
+import {ExerciseContainerAsdCtx} from '../Exercise/ExerciseTypeContainer';
 
-const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistanceUid, setEditVisible}) => {
+const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistanceUid}) => {
   const { t } = useTranslation();
+
+  const setEditVisible = useContext(ExerciseContainerAsdCtx)[1];
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
   const [timeDistanceData, setTimeDistanceDataData] = useState<ITimeDistanceModel | undefined>(undefined);
@@ -72,7 +75,7 @@ const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistan
             <FieldFormGroup type="number" name="speedMax" labelText={t("Speed max")} inputProps={{step: "0.1"}}/>
             <FieldFormGroup type="number" name="inclineMin" labelText={t("Incline min")} inputProps={{step: "0.5"}}/>
             <FieldFormGroup type="number" name="inclineMax" labelText={t("Incline max")} inputProps={{step: "0.5"}}/>
-            <ButtonGroup className="w-100 m-0 p-0">
+            <ButtonGroup className="w-100 m-0">
               <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t("Save")}</Button>
               <Button color="danger" onClick={() => setEditVisible(false)}>{t("Discard")}</Button>
             </ButtonGroup>
@@ -84,8 +87,7 @@ const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistan
 };
 
 interface ITimeDistanceFormProps {
-  timeDistanceUid: string,
-  setEditVisible: ((visible: boolean) => void)
+  timeDistanceUid: string
 }
 
 export default TimeDistanceForm;

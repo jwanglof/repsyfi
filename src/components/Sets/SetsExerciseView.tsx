@@ -1,4 +1,4 @@
-import React, {createContext, FunctionComponent, useContext, useEffect, useState} from 'react';
+import React, {FunctionComponent, useContext, useEffect, useState} from 'react';
 import {withRouter} from 'react-router5';
 import {Router} from 'router5';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
@@ -7,8 +7,8 @@ import {getSetDocument, getSetsRepsExerciseDocument, getSetsRepsExerciseOnSnapsh
 import {ISetsModel} from '../../models/ISetsModel';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
-import {Button, ButtonDropdown, ButtonGroup, Col, DropdownItem, DropdownMenu, DropdownToggle, Row} from 'reactstrap';
-import {ExerciseHeaderEditCtx} from '../Exercise/ExerciseTypeContainer';
+import {Col, Row} from 'reactstrap';
+import {ExerciseContainerAsdCtx} from '../Exercise/ExerciseTypeContainer';
 import {getDay, getDayDocument} from '../Day/DayService';
 import {remove} from 'lodash';
 import {recalculateIndexes} from '../../utils/exercise-utils';
@@ -25,21 +25,15 @@ import {getLastSetData} from './SetsHelpers';
 import SetAddForm from './SetAddForm';
 import {IErrorObject, retrieveErrorMessage} from '../../config/FirebaseUtils';
 
-export const SetsExerciseViewShowButtonCtx = createContext<any>(() => {});
-
 const SetsExerciseView: FunctionComponent<ISetsViewRouter & ISetsViewProps> = ({router, setsExerciseUid, exerciseUid,  exerciseType}) => {
   const { t } = useTranslation();
 
-  const [headerEditVisible, setHeaderEditVisible] = useContext(ExerciseHeaderEditCtx);
+  const [addSetViewVisible, setAddSetViewVisible] = useContext(ExerciseContainerAsdCtx);
 
   const [currentExerciseData, setCurrentExerciseData] = useState<ISetsModel | undefined>(undefined);
   const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
-  const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
-  const [exerciseDeleteStep2Shown, setExerciseDeleteStep2Shown] = useState<boolean>(false);
-  const [addSetViewVisible, setAddSetViewVisible] = useState<boolean>(false);
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
   const [lastSetData, setLastSetData] = useState<ISetModel | undefined>(undefined);
-  const [buttonsIsShown, setButtonsIsShown] = useState<boolean>(true);
 
   useEffect(() => {
     const cbErr = (e: IErrorObject) => {
@@ -70,6 +64,7 @@ const SetsExerciseView: FunctionComponent<ISetsViewRouter & ISetsViewProps> = ({
   }
 
   const delExercise = async () => {
+    // TODO MOve this to ExerciseTypeContainer#delExercise!!
     setSubmitErrorMessage(undefined);
 
     try {
@@ -101,13 +96,7 @@ const SetsExerciseView: FunctionComponent<ISetsViewRouter & ISetsViewProps> = ({
     }
   };
 
-  const toggleActionDropdown = () => {
-    setExerciseDeleteStep2Shown(false);
-    setDropdownVisible(!dropdownVisible);
-  };
-
   return (
-    <SetsExerciseViewShowButtonCtx.Provider value={setButtonsIsShown}>
       <Col>
         <Row className="set__head">
           <Col xs={2}>#</Col>
@@ -123,28 +112,7 @@ const SetsExerciseView: FunctionComponent<ISetsViewRouter & ISetsViewProps> = ({
         </div>
 
         {addSetViewVisible && <SetAddForm currentData={getLastSetData(lastSetData, exerciseType)} setAddSetViewVisible={setAddSetViewVisible} exerciseType={exerciseType} setsExerciseUid={setsExerciseUid}/>}
-
-        {buttonsIsShown && <Row>
-            <ButtonGroup className="w-100">
-              <Button color="success" block onClick={() => setAddSetViewVisible(!addSetViewVisible)}>{t("Add set")}</Button>
-              <ButtonDropdown isOpen={dropdownVisible} toggle={toggleActionDropdown}>
-                <DropdownToggle caret>
-                  {t("Actions")}
-                </DropdownToggle>
-                <DropdownMenu right>
-                  <DropdownItem onClick={() => setHeaderEditVisible(true)} disabled={headerEditVisible}>
-                    {`${t("Edit")} ${t("name")}`}
-                  </DropdownItem>
-                  <DropdownItem toggle={false}>
-                    {!exerciseDeleteStep2Shown && <span onClick={() => setExerciseDeleteStep2Shown(true)}>{t("Delete")} {t("exercise")}</span>}
-                    {exerciseDeleteStep2Shown && <span className="text-danger" onClick={delExercise}>{t("Click again to delete!")}</span>}
-                  </DropdownItem>
-                </DropdownMenu>
-              </ButtonDropdown>
-            </ButtonGroup>
-        </Row>}
       </Col>
-    </SetsExerciseViewShowButtonCtx.Provider>
   );
 };
 

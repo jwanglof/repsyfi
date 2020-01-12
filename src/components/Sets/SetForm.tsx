@@ -32,7 +32,7 @@ const SetForm: FunctionComponent<ISetFormProps> = ({hideFormCb, exerciseType, cu
             {exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS && <Col xs={5}><FormikField name="seconds" labelText={t("Seconds")} type="number" labelHidden inputProps={{min: 0}} addedClassNames="h-75"/></Col>}
           </div>
           <Row>
-            <ButtonGroup className="w-100">
+            <ButtonGroup className="w-100" vertical>
               <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t("Save set")}</Button>
               <Button color="danger" onClick={() => hideFormCb()}>{t("Discard set")}</Button>
               {extraButtonGroups}
