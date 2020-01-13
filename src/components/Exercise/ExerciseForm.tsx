@@ -65,12 +65,12 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
       };
       const exerciseUid = await addExerciseAndGetUid(exerciseData, ownerUid);
       await addExerciseToDayArray(exerciseUid, dayUid);
+      actions.setSubmitting(false);
       setAddExerciseViewVisible(false);
     } catch (e) {
       console.error(e);
       setSubmitErrorMessage(retrieveErrorMessage(e));
     }
-    actions.setSubmitting(false);
   };
 
   const getExerciseTypes = (): Array<ExerciseTypesOptions> => ([
