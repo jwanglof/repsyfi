@@ -17,6 +17,7 @@ export enum FirebaseCollectionNames {
   FIRESTORE_COLLECTION_EXERCISE_TYPE_SETS_SECONDS = "exercises-sets-seconds",
   FIRESTORE_COLLECTION_EXERCISE_TYPE_TIME_DISTANCE = "exercises-time-distance",
   FIRESTORE_COLLECTION_QUESTIONNAIRE = "questionnaire",
+  FIRESTORE_COLLECTION_EXERCISE_SUPER_SET = "exercises-super-set"
 }
 
 export const getNowTimestamp = (): number => Math.ceil(Date.now() / 1000);

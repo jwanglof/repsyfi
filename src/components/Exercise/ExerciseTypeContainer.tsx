@@ -29,6 +29,7 @@ import {getDay, getDayDocument} from '../Day/DayService';
 import {recalculateIndexes} from '../../utils/exercise-utils';
 import {withRouter} from 'react-router5';
 import {Router} from 'router5';
+import {getSuperSetData} from '../../services/ExercisesSuperSetService';
 
 export const ExerciseHeaderEditCtx = createContext<any>([false, () => {}]);
 export const ExerciseContainerAsdCtx = createContext<any>([false, () => {}]);   // TODO Rename to something better than Asd
@@ -44,12 +45,18 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
   const [exerciseDeleteStep2Shown, setExerciseDeleteStep2Shown] = useState<boolean>(false);
   const [options, setOptions] = useState<any>({});
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
+  const [superSetName, setSuperSetName] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const fetchExerciseData = async () => {
       try {
         const res = await getExercise(exerciseUid);
         setCurrentExerciseData(res);
+
+        const superSetData = await getSuperSetData(exerciseUid);
+        if (superSetData !== null) {
+          setSuperSetName(superSetData.name);
+        }
       } catch (e) {
         console.error(e);
         setFetchDataError(retrieveErrorMessage(e));
@@ -126,7 +133,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
           <Card>
             <CardHeader className="text-center pt-0 pb-0">
               <ExerciseHeader exerciseData={currentExerciseData}/>
-              <ExerciseHeaderView exerciseData={currentExerciseData}/>
+              <ExerciseHeaderView exerciseData={currentExerciseData} superSetName={superSetName}/>
             </CardHeader>
 
             <CardBody className="p-0">
