@@ -35,46 +35,44 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
 
   // Effect to subscribe on changes on this specific day
   useEffect(() => {
-    if (!dayData) {
-      // TODO Need to verify that a user can't send any UID in here, somehow... That should be specified in the rules!
-      const unsub = firebase.firestore()
-        .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
-        // .where("ownerUid", "==", uid)
-        .doc(dayUid)
-        .onSnapshot({includeMetadataChanges: true}, doc => {
-          if (doc.exists && !isEmpty(doc.data())) {
-            const snapshotData: any = doc.data();
-            setCurrentData({
-              ownerUid: snapshotData.ownerUid,
-              uid: doc.id,
-              createdTimestamp: snapshotData.createdTimestamp,
-              notes: snapshotData.notes,
-              title: snapshotData.title,
-              muscleGroups: snapshotData.muscleGroups,
-              location: snapshotData.location,
-              exercises: snapshotData.exercises,
-              startTimestamp: snapshotData.startTimestamp,
-              endTimestamp: snapshotData.endTimestamp,
-              version: snapshotData.version,
-              questionnaire: snapshotData.questionnaire
-            });
+    // TODO Need to verify that a user can't send any UID in here, somehow... That should be specified in the rules!
+    const unsub = firebase.firestore()
+      .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
+      // .where("ownerUid", "==", uid)
+      .doc(dayUid)
+      .onSnapshot({includeMetadataChanges: true}, doc => {
+        if (doc.exists && !isEmpty(doc.data())) {
+          const snapshotData: any = doc.data();
+          setCurrentData({
+            ownerUid: snapshotData.ownerUid,
+            uid: doc.id,
+            createdTimestamp: snapshotData.createdTimestamp,
+            notes: snapshotData.notes,
+            title: snapshotData.title,
+            muscleGroups: snapshotData.muscleGroups,
+            location: snapshotData.location,
+            exercises: snapshotData.exercises,
+            startTimestamp: snapshotData.startTimestamp,
+            endTimestamp: snapshotData.endTimestamp,
+            version: snapshotData.version,
+            questionnaire: snapshotData.questionnaire
+          });
 
-            // Show the questionnaire if the user have ended the day
-            if (snapshotData.endTimestamp) {
-              setShowQuestionnaire(true);
-            }
+          // Show the questionnaire if the user have ended the day
+          if (snapshotData.endTimestamp) {
+            setShowQuestionnaire(true);
           }
-        }, err => {
-          console.error('error:', err);
-          setSnapshotErrorData(err.message);
-        });
+        }
+      }, err => {
+        console.error('error:', err);
+        setSnapshotErrorData(err.message);
+      });
 
-      // Unsubscribe on un-mount
-      return () => {
-        unsub();
-      };
-    }
-  }, [dayData, dayUid]);
+    // Unsubscribe on un-mount
+    return () => {
+      unsub();
+    };
+  }, [dayUid]);
 
   if (isEmpty(dayUid)) {
     return <ErrorAlert errorText="Must have the day's UID to proceed!" componentName="DayViewDetailed"/>;
