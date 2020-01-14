@@ -36,6 +36,7 @@ export const ExerciseContainerAsdCtx = createContext<any>([false, () => {}]);   
 
 const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IExerciseTypeContainerProps> = ({ router, exerciseUid }) => {
   const { t } = useTranslation();
+  const dayUid = router.getState().params.uid;
 
   const [currentExerciseData, setCurrentExerciseData] = useState<IExerciseModel | undefined>(undefined);
   const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
@@ -53,7 +54,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
         const res = await getExercise(exerciseUid);
         setCurrentExerciseData(res);
 
-        const superSetData = await getSuperSetData(exerciseUid);
+        const superSetData = await getSuperSetData(exerciseUid, dayUid);
         if (superSetData !== null) {
           setSuperSetName(superSetData.name);
         }
@@ -102,7 +103,6 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
     setSubmitErrorMessage(undefined);
 
     try {
-      const dayUid = router.getState().params.uid;
       const day = await getDay(dayUid);
 
       // Recalculate the indexes of the remaining exercises

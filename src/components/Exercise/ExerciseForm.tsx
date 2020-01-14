@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useState} from 'react';
+import React, {FunctionComponent, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
@@ -18,12 +18,18 @@ import {Form} from 'react-formik-ui';
 import {Router} from 'router5';
 import {withRoute} from 'react-router5';
 import {addNewSetsSecondsExerciseAndGetUid} from '../Sets/SetsSeconds/SetsSecondsService';
+import {getAllSuperSets} from '../../services/ExercisesSuperSetService';
 
 const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> = ({router, setAddExerciseViewVisible}) => {
   const { t } = useTranslation();
   const dayUid = router.getState().params.uid;
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
+  
+  useEffect(() => {
+    const allSuperSets = getAllSuperSets(dayUid);
+    console.log('allSuperSets:', allSuperSets);
+  }, [dayUid]);
 
   if (!dayUid) {
     return <ErrorAlert errorText="Need a day UID to add an exercise!" componentName="ExerciseForm"/>;

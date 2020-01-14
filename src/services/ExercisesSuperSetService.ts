@@ -5,13 +5,32 @@ import isEmpty from 'lodash/isEmpty';
 
 // TODO Remember to clear the cache when the super set exercise array is changed!
 interface ISimpleCache {
-  [key: string]: IExercisesSuperSetsModel
+  [excerciseUid: string]: IExercisesSuperSetsModel
 }
-const simpleCache: ISimpleCache = {};
+interface ISimpleCacheArray {
+  [dayUid: string]: Array<IExercisesSuperSetsModel>
+}
+const simpleExerciseCache: ISimpleCache = {};
+const simpleDayCache: ISimpleCacheArray = {};
 
-export const getSuperSetData = async (exerciseUid: string): Promise<IExercisesSuperSetsModel | null> => {
-  if (simpleCache[exerciseUid]) {
-    return Promise.resolve(simpleCache[exerciseUid]);
+export const getAllSuperSets = (dayUid: string): Array<IExercisesSuperSetsModel> => {
+  return simpleDayCache[dayUid];
+};
+
+const addSuperSetIfNotExistToDayCache = (dayUid: string, superSetData: IExercisesSuperSetsModel) => {
+  if (simpleDayCache[dayUid] && simpleDayCache[dayUid].length) {
+    const superSetExistInCahe = simpleDayCache[dayUid].some(superSet => superSet.uid === superSetData.uid);
+    if (!superSetExistInCahe) {
+      simpleDayCache[dayUid].push(superSetData);
+    }
+  } else {
+    simpleDayCache[dayUid] = [superSetData];
+  }
+};
+
+export const getSuperSetData = async (exerciseUid: string, dayUid: string): Promise<IExercisesSuperSetsModel | null> => {
+  if (simpleExerciseCache[exerciseUid]) {
+    return Promise.resolve(simpleExerciseCache[exerciseUid]);
   }
   return firebase
     .firestore()
@@ -21,19 +40,21 @@ export const getSuperSetData = async (exerciseUid: string): Promise<IExercisesSu
     .get()
     .then((querySnapshot: any) => {
       let dsa: IExercisesSuperSetsModel | null = null;
-      querySnapshot.forEach((q: any) => {
-        if (q.exists && !isEmpty(q.data())) {
-          const data = q.data()!;
+      querySnapshot.forEach((queryData: any) => {
+        if (queryData.exists && !isEmpty(queryData.data())) {
+          const data = queryData.data()!;
           const superSetData = {
-            uid: q.id,
+            uid: queryData.id,
             ownerUid: data.ownerUid,
             createdTimestamp: data.createdTimestamp,
             version: data.version,
             name: data.name,
             exercises: data.exercises
           };
+          // Add data to the different caches
           data.exercises.forEach((exUid: string) => {
-            simpleCache[exUid] = superSetData;
+            simpleExerciseCache[exUid] = superSetData;
+            addSuperSetIfNotExistToDayCache(dayUid, superSetData);
           });
           dsa = superSetData;
         }
