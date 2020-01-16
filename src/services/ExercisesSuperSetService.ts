@@ -53,8 +53,17 @@ const removeExerciseFromSuperSetDayCache = (exerciseUid: string, superSetUid: st
   }
 };
 
-const removeEntireDayCache = (dayUid: string) => {
-  delete simpleDayCache[dayUid];
+const removeEntireExerciseFromDayCache = (dayUid: string, superSetUid: string) => {
+  if (simpleDayCache[dayUid].length) {
+    simpleDayCache[dayUid].forEach(superSetModel => {
+      if (superSetModel.uid === superSetUid) {
+        const superSetIndex = simpleDayCache[dayUid].indexOf(superSetModel);
+        if (superSetIndex > -1) {
+          simpleDayCache[dayUid].splice(superSetIndex, 1);
+        }
+      }
+    });
+  }
 };
 
 const getSuperSetFromExerciseUid = (exerciseUid: string, dayUid: string): IExercisesSuperSetsModel | undefined => {
@@ -138,7 +147,7 @@ export const deleteOrUpdateSuperSetWithExercise = (exerciseUid: string, dayUid: 
     removeExerciseFromSuperSetDayCache(exerciseUid, superSetData.uid, dayUid);
     if (!superSetData.exercises.length) {
       // Delete the super set if it doesn't contain any exercises
-      removeEntireDayCache(dayUid);
+      removeEntireExerciseFromDayCache(dayUid, superSetData.uid);
       batch.delete(getSuperSetDocument(superSetData.uid));
     } else {
       // Remove the exercise from the super set
