@@ -66,7 +66,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
 
     // noinspection JSIgnoredPromiseFromCall
     fetchExerciseData();
-  }, [exerciseUid]);
+  }, [exerciseUid, dayUid]);
 
   useEffect(() => {
     if (currentExerciseData) {

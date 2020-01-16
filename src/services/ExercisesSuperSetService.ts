@@ -1,20 +1,22 @@
 import firebase from '../config/firebase';
-import {FirebaseCollectionNames} from '../config/FirebaseUtils';
-import {IExercisesSuperSetsModel} from '../models/IExercisesSuperSetsModel';
+import {FirebaseCollectionNames, getNowTimestamp} from '../config/FirebaseUtils';
+import {
+  IExercisesSuperSetsModel,
+  IExercisesSuperSetsModelWithoutUid
+} from '../models/IExercisesSuperSetsModel';
 import isEmpty from 'lodash/isEmpty';
+import {Versions} from '../models/IBaseModel';
 
-// TODO Remember to clear the cache when the super set exercise array is changed!
-interface ISimpleCache {
-  [excerciseUid: string]: IExercisesSuperSetsModel
-}
 interface ISimpleCacheArray {
   [dayUid: string]: Array<IExercisesSuperSetsModel>
 }
-const simpleExerciseCache: ISimpleCache = {};
 const simpleDayCache: ISimpleCacheArray = {};
 
 export const getAllSuperSets = (dayUid: string): Array<IExercisesSuperSetsModel> => {
-  return simpleDayCache[dayUid];
+  if (simpleDayCache[dayUid] && simpleDayCache[dayUid].length) {
+    return simpleDayCache[dayUid];
+  }
+  return [];
 };
 
 const addSuperSetIfNotExistToDayCache = (dayUid: string, superSetData: IExercisesSuperSetsModel) => {
@@ -28,10 +30,17 @@ const addSuperSetIfNotExistToDayCache = (dayUid: string, superSetData: IExercise
   }
 };
 
-export const getSuperSetData = async (exerciseUid: string, dayUid: string): Promise<IExercisesSuperSetsModel | null> => {
-  if (simpleExerciseCache[exerciseUid]) {
-    return Promise.resolve(simpleExerciseCache[exerciseUid]);
+const addExerciseToDayCache = (dayUid: string, superSetUid: string, exerciseUid: string) => {
+  if (simpleDayCache[dayUid].length) {
+    simpleDayCache[dayUid].forEach(superSetModel => {
+      if (superSetModel.uid === superSetUid) {
+        superSetModel.exercises.push(exerciseUid);
+      }
+    });
   }
+};
+
+export const getSuperSetData = async (exerciseUid: string, dayUid: string): Promise<IExercisesSuperSetsModel | null> => {
   return firebase
     .firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_SUPER_SET)
@@ -39,7 +48,7 @@ export const getSuperSetData = async (exerciseUid: string, dayUid: string): Prom
     .limit(1)
     .get()
     .then((querySnapshot: any) => {
-      let dsa: IExercisesSuperSetsModel | null = null;
+      let returnData: IExercisesSuperSetsModel | null = null;
       querySnapshot.forEach((queryData: any) => {
         if (queryData.exists && !isEmpty(queryData.data())) {
           const data = queryData.data()!;
@@ -51,14 +60,47 @@ export const getSuperSetData = async (exerciseUid: string, dayUid: string): Prom
             name: data.name,
             exercises: data.exercises
           };
-          // Add data to the different caches
-          data.exercises.forEach((exUid: string) => {
-            simpleExerciseCache[exUid] = superSetData;
-            addSuperSetIfNotExistToDayCache(dayUid, superSetData);
-          });
-          dsa = superSetData;
+
+          // Add data to cache
+          addSuperSetIfNotExistToDayCache(dayUid, superSetData);
+
+          returnData = superSetData;
         }
       });
-      return dsa;
+      return returnData;
     });
+};
+
+export const createNewSuperSetAndReturnUid = async (ownerUid: string, name: string, exerciseUid: string, dayUid: string): Promise<string> => {
+  const data: IExercisesSuperSetsModelWithoutUid = {
+    exercises: [exerciseUid],
+    name: name,
+    createdTimestamp: getNowTimestamp(),
+    ownerUid: ownerUid,
+    version: Versions.v1
+  };
+  const docRef = await firebase.firestore()
+    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_SUPER_SET)
+    .add(data);
+
+  // Add the new super set to cache
+  const superSetData: IExercisesSuperSetsModel = {
+    ...data,
+    uid: docRef.id
+  };
+  addSuperSetIfNotExistToDayCache(dayUid, superSetData);
+
+  return docRef.id;
+};
+
+export const addExerciseToSuperSet = async (superSetUid: string, exerciseUid: string, dayUid: string): Promise<void> => {
+  const update = await firebase.firestore()
+    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_SUPER_SET)
+    .doc(superSetUid)
+    .update({exercises: firebase.firestore.FieldValue.arrayUnion(exerciseUid)});
+
+  // Add the exercise to the super set day cache
+  addExerciseToDayCache(dayUid, superSetUid, exerciseUid);
+
+  return update;
 };
