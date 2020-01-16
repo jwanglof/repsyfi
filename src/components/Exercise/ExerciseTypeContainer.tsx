@@ -29,7 +29,7 @@ import {getDay, getDayDocument} from '../Day/DayService';
 import {recalculateIndexes} from '../../utils/exercise-utils';
 import {withRouter} from 'react-router5';
 import {Router} from 'router5';
-import {getSuperSetData} from '../../services/ExercisesSuperSetService';
+import {getSuperSetData, deleteOrUpdateSuperSetWithExercise} from '../../services/ExercisesSuperSetService';
 
 export const ExerciseHeaderEditCtx = createContext<any>([false, () => {}]);
 export const ExerciseContainerAsdCtx = createContext<any>([false, () => {}]);   // TODO Rename to something better than Asd
@@ -116,7 +116,8 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
       }
       const recalculatedExercises: Array<any> = recalculateIndexes(removedExercise.index, exercisesWithoutRemoved);
 
-      const batch = await getBatchToDeleteExercise(exerciseUid);
+      let batch = await getBatchToDeleteExercise(exerciseUid);
+      batch = deleteOrUpdateSuperSetWithExercise(exerciseUid, day.uid, batch);
       await batch
         .update(getDayDocument(dayUid), {exercises: recalculatedExercises})
         .commit();

@@ -40,6 +40,29 @@ const addExerciseToDayCache = (dayUid: string, superSetUid: string, exerciseUid:
   }
 };
 
+const removeExerciseFromSuperSetDayCache = (exerciseUid: string, superSetUid: string, dayUid: string) => {
+  if (simpleDayCache[dayUid].length) {
+    simpleDayCache[dayUid].forEach(superSetModel => {
+      if (superSetModel.uid === superSetUid) {
+        const index = superSetModel.exercises.indexOf(exerciseUid);
+        if (index > -1) {
+          superSetModel.exercises.splice(index, 1);
+        }
+      }
+    });
+  }
+};
+
+const removeEntireDayCache = (dayUid: string) => {
+  delete simpleDayCache[dayUid];
+};
+
+const getSuperSetFromExerciseUid = (exerciseUid: string, dayUid: string): IExercisesSuperSetsModel | undefined => {
+  return simpleDayCache[dayUid].find(superSetModel => {
+    return superSetModel.exercises.includes(exerciseUid);
+  })
+};
+
 export const getSuperSetData = async (exerciseUid: string, dayUid: string): Promise<IExercisesSuperSetsModel | null> => {
   return firebase
     .firestore()
@@ -93,14 +116,34 @@ export const createNewSuperSetAndReturnUid = async (ownerUid: string, name: stri
   return docRef.id;
 };
 
-export const addExerciseToSuperSet = async (superSetUid: string, exerciseUid: string, dayUid: string): Promise<void> => {
-  const update = await firebase.firestore()
+const getSuperSetDocument = (superSetUid: string) => {
+  return firebase.firestore()
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_SUPER_SET)
-    .doc(superSetUid)
+    .doc(superSetUid);
+};
+
+export const addExerciseToSuperSet = async (superSetUid: string, exerciseUid: string, dayUid: string): Promise<void> => {
+  const update = await getSuperSetDocument(superSetUid)
     .update({exercises: firebase.firestore.FieldValue.arrayUnion(exerciseUid)});
 
   // Add the exercise to the super set day cache
   addExerciseToDayCache(dayUid, superSetUid, exerciseUid);
 
   return update;
+};
+
+export const deleteOrUpdateSuperSetWithExercise = (exerciseUid: string, dayUid: string, batch: firebase.firestore.WriteBatch): firebase.firestore.WriteBatch => {
+  const superSetData = getSuperSetFromExerciseUid(exerciseUid, dayUid);
+  if (superSetData) {
+    removeExerciseFromSuperSetDayCache(exerciseUid, superSetData.uid, dayUid);
+    if (!superSetData.exercises.length) {
+      // Delete the super set if it doesn't contain any exercises
+      removeEntireDayCache(dayUid);
+      batch.delete(getSuperSetDocument(superSetData.uid));
+    } else {
+      // Remove the exercise from the super set
+      batch.update(getSuperSetDocument(superSetData.uid), {exercises: firebase.firestore.FieldValue.arrayRemove(exerciseUid)});
+    }
+  }
+  return batch;
 };
