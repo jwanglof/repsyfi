@@ -1,10 +1,12 @@
 import {createGlobalState} from 'react-hooks-global-state';
 
-const initialState: IGlobalState = {
-  timerRunning: false
-};
-export interface IGlobalState {
+interface IGlobalState {
   timerRunning: boolean
+  debugInformationShown: boolean
 }
+const initialState: IGlobalState = {
+  timerRunning: false,
+  debugInformationShown: false
+};
 
 export const {GlobalStateProvider, useGlobalState} = createGlobalState(initialState);

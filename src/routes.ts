@@ -12,7 +12,7 @@ export enum RouteNames {
 }
 
 const routes: Route[] = [
-  { name: RouteNames.ROOT, path: '/' },
+  { name: RouteNames.ROOT, path: '/?:showDebugInformation' },
   { name: RouteNames.ALL_DAYS, path: '/days' },
   { name: RouteNames.SPECIFIC_DAY, path: '/day/:uid' },
   { name: RouteNames.ADD_DAY, path: '/day/add' },

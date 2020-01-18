@@ -8,7 +8,7 @@ import isEmpty from 'lodash/isEmpty';
 import orderBy from 'lodash/orderBy';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {IDayModel} from '../../models/IDayModel';
-import {deleteDay, endDayNow} from './DayService';
+import {deleteDayAndRelatedData, endDayNow} from './DayService';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {Alert, Button, ButtonGroup, Col, Row} from 'reactstrap';
 import ExerciseForm from '../Exercise/ExerciseForm';
@@ -32,6 +32,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
   const [showQuestionnaire, setShowQuestionnaire] = useState<boolean>(false);
 
   const setTimerRunning = useGlobalState('timerRunning')[1];
+  const showDebugInformation = useGlobalState('debugInformationShown')[0];
 
   // Effect to subscribe on changes on this specific day
   useEffect(() => {
@@ -100,8 +101,10 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
 
   const dayDelete = async () => {
     try {
-      console.log('Removing dayUid:', dayUid);
-      await deleteDay(dayUid);
+      // More: https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
+      let batch = firebase.firestore().batch();
+      batch = await deleteDayAndRelatedData(currentData, batch);
+      await batch.commit();
       router.navigate(RouteNames.ALL_DAYS, {}, {reload: true});
     } catch (e) {
       setDeleteErrorData(retrieveErrorMessage(e));
@@ -120,6 +123,8 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
       </Row>}
 
       {addExerciseViewVisible && <ExerciseForm setAddExerciseViewVisible={setAddExerciseViewVisible}/>}
+
+      {showDebugInformation && <Row><Col>Day UID: {currentData.uid}</Col></Row>}
 
       <Row>
         {!currentData.exercises.length && <Col xs={12}><Alert color="success">{t("No exercises added")}</Alert></Col>}

@@ -1,7 +1,7 @@
 import './Exercise.scss';
 
 import React, {createContext, FunctionComponent, useEffect, useState} from 'react';
-import {getBatchToDeleteExercise, getExercise} from './ExerciseService';
+import {deleteExerciseAndRelatedData, getExercise} from './ExerciseService';
 import {IExerciseModel} from '../../models/IExerciseModel';
 import {
   Button,
@@ -14,7 +14,7 @@ import {
   Col,
   DropdownItem,
   DropdownMenu,
-  DropdownToggle
+  DropdownToggle, Row
 } from 'reactstrap';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
@@ -29,7 +29,9 @@ import {getDay, getDayDocument} from '../Day/DayService';
 import {recalculateIndexes} from '../../utils/exercise-utils';
 import {withRouter} from 'react-router5';
 import {Router} from 'router5';
-import {getSuperSetData, deleteOrUpdateSuperSetWithExercise} from '../../services/ExercisesSuperSetService';
+import {getSuperSetData} from '../../services/ExercisesSuperSetService';
+import firebase from '../../config/firebase';
+import {useGlobalState} from '../../state';
 
 export const ExerciseHeaderEditCtx = createContext<any>([false, () => {}]);
 export const ExerciseContainerAsdCtx = createContext<any>([false, () => {}]);   // TODO Rename to something better than Asd
@@ -37,6 +39,8 @@ export const ExerciseContainerAsdCtx = createContext<any>([false, () => {}]);   
 const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IExerciseTypeContainerProps> = ({ router, exerciseUid }) => {
   const { t } = useTranslation();
   const dayUid = router.getState().params.uid;
+
+  const showDebugInformation = useGlobalState('debugInformationShown')[0];
 
   const [currentExerciseData, setCurrentExerciseData] = useState<IExerciseModel | undefined>(undefined);
   const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
@@ -109,15 +113,16 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
       // Need this so they keep the order, and when adding a new exercise that an index isn't duplicated
       const exercises = day.exercises;
       const removedExercise = exercises.find(e => e.exerciseUid === exerciseUid);
-      const exercisesWithoutRemoved = exercises.filter(e => e.exerciseUid !== exerciseUid);
       if (!removedExercise) {
         setSubmitErrorMessage("Exercise not found in day's exercises!");
         return;
       }
+      const exercisesWithoutRemoved = exercises.filter(e => e.exerciseUid !== exerciseUid);
       const recalculatedExercises: Array<any> = recalculateIndexes(removedExercise.index, exercisesWithoutRemoved);
 
-      let batch = await getBatchToDeleteExercise(exerciseUid);
-      batch = deleteOrUpdateSuperSetWithExercise(exerciseUid, day.uid, batch);
+      // More: https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
+      let batch = firebase.firestore().batch();
+      batch = await deleteExerciseAndRelatedData(currentExerciseData, dayUid, batch);
       await batch
         .update(getDayDocument(dayUid), {exercises: recalculatedExercises})
         .commit();
@@ -135,9 +140,11 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
             <CardHeader className="text-center pt-0 pb-0">
               <ExerciseHeader exerciseData={currentExerciseData}/>
               <ExerciseHeaderView exerciseData={currentExerciseData} superSetName={superSetName}/>
+              {showDebugInformation && <h2>Ex UID: {currentExerciseData.uid}</h2>}
             </CardHeader>
 
             <CardBody className="p-0">
+              {showDebugInformation && <Row><Col>Type UID: {currentExerciseData.typeUid}</Col></Row>}
               {(currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS || currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS) && <SetsView setsExerciseUid={currentExerciseData.typeUid} exerciseType={currentExerciseData.type}/>}
               {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE && <TimeDistanceExerciseContainer timeDistanceExerciseUid={currentExerciseData.typeUid}/>}
             </CardBody>

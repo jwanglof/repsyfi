@@ -1,6 +1,6 @@
 import './StartPage.scss';
 
-import React, {FunctionComponent, useState} from 'react';
+import React, {FunctionComponent, useEffect, useState} from 'react';
 import {Col, Row} from 'reactstrap';
 import firebase from '../../config/firebase';
 // @ts-ignore
@@ -9,9 +9,13 @@ import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import {useTranslation} from 'react-i18next';
 import useInterval from '../../utils/useInterval';
 import Instructions from './Instructions';
+import {withRouter} from 'react-router5';
+import {Router} from 'router5';
+import {useGlobalState} from '../../state';
 
-const StartPage: FunctionComponent<ILoginProps> = ({userSignedIn, userDetails}) => {
+const StartPage: FunctionComponent<ILoginRouter & ILoginProps> = ({router, userSignedIn, userDetails}) => {
   const { t, i18n } = useTranslation();
+  const params: any = router.getState().params;
 
   const featureList: Array<string> = [
     t("Track your sets and repetitions"),
@@ -24,6 +28,16 @@ const StartPage: FunctionComponent<ILoginProps> = ({userSignedIn, userDetails}) 
   ];
 
   const [currentFeatureIndex, setCurrentFeatureIndex] = useState<number>(0);
+
+  const setDebugInformationShown = useGlobalState('debugInformationShown')[1];
+
+  useEffect(() => {
+    // Use ?showDebugInformation=true in the URL on the first page to show debug information
+    // Note that this can't be used on any other routes than this!
+    if (params.showDebugInformation === 'true') {
+      setDebugInformationShown(true);
+    }
+  }, []);
 
   const durationCb = () => {
     if (!userSignedIn) {
@@ -42,12 +56,13 @@ const StartPage: FunctionComponent<ILoginProps> = ({userSignedIn, userDetails}) 
   const uiConfig = {
     signInFlow: 'redirect',
     callbacks: {
-      signInSuccessWithAuthResult: (authResult: any) => {
-        // console.log(111, authResult);
-        // const { credential: { accessToken }, additionalUserInfo: { profile: { email, given_name, picture } } } = authResult;
-        // console.log(444, accessToken, email, given_name, picture);
-        return false;
-      },
+      signInSuccessWithAuthResult: () => false
+      // signInSuccessWithAuthResult: (authResult: any) => {
+      //   // console.log(111, authResult);
+      //   // const { credential: { accessToken }, additionalUserInfo: { profile: { email, given_name, picture } } } = authResult;
+      //   // console.log(444, accessToken, email, given_name, picture);
+      //   // return false;
+      // },
     },
     signInOptions: [
       firebase.auth.GoogleAuthProvider.PROVIDER_ID,
@@ -116,4 +131,8 @@ interface ILoginProps {
   userDetails: firebase.User | undefined
 }
 
-export default StartPage;
+interface ILoginRouter {
+  router: Router
+}
+
+export default withRouter(StartPage);

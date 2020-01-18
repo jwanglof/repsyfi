@@ -7,16 +7,24 @@ import {
   IDayUpdateModel
 } from '../../models/IDayModel';
 import firebase, {getCurrentUsersUid} from '../../config/firebase';
-import {deleteExercise} from '../Exercise/ExerciseService';
+import {deleteExerciseUidAndRelatedDataWithoutSuperSets} from '../Exercise/ExerciseService';
 import isEmpty from 'lodash/isEmpty';
 import {FirebaseCollectionNames, getDayErrorObject, getNowTimestamp} from '../../config/FirebaseUtils';
 import {Versions} from '../../models/IBaseModel';
+import {deleteSuperSet, getSuperSetFromExerciseUid} from '../../services/ExercisesSuperSetService';
+import {getDayQuestionnaireDocument} from './DayQuestionnaireService';
 
 // "Cache"
 interface IDayServiceCache {
   locations: Array<string>
 }
 const dayServiceCache: IDayServiceCache = {locations: []};
+
+export const getDayDocument = (dayUid: string): firebase.firestore.DocumentReference => {
+  return firebase.firestore()
+    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
+    .doc(dayUid);
+};
 
 export const addLocationToCache = (location: string) => {
   if (dayServiceCache.locations.length > 0) {
@@ -54,23 +62,55 @@ export const getDay = async (dayUid: string): Promise<IDayModel> => {
     });
 };
 
-export const deleteDay = async (dayUid: string): Promise<void> => {
-  const dayData = await getDay(dayUid);
-  // Remove all exercises that exist on the day
-  // TODO Side effect, should be removed and made from the caller!
+/**
+ * Delete an entire day document together with all related data in Firestore.
+ *
+ * Related data that will be deleted are:
+ * <ul>
+ *   <li>Exercises ({@link deleteExerciseUidAndRelatedDataWithoutSuperSets}) and related data. See linked method for more information!</li>
+ *   <li>Super set document if an exercise is part of it</li>
+ *   <li>The day's questionnaire if it exist</li>
+ * </ul>
+ *
+ * <strong>CAN NOT be reversed! Use with caution!</strong>
+ *
+ * @param {IDayModel} dayData The day data that will be used for information about what will be deleted.
+ * @param {firebase.firestore.WriteBatch} batch Used for chaining.
+ * @returns {Promise<firebase.firestore.WriteBatch>} A WriteBatch for chaining.
+ */
+export const deleteDayAndRelatedData = async (dayData: IDayModel, batch: firebase.firestore.WriteBatch): Promise<firebase.firestore.WriteBatch> => {
+  const dayUid = dayData.uid;
+
   if (dayData.exercises.length) {
-    await Promise.all(dayData.exercises.map(e => deleteExercise(e.exerciseUid)));
+    const superSetUniqueUIDs: string[] = [];
+
+    // Remove exercises with related data
+    await Promise.all(dayData.exercises.map(async (e) => {
+      batch = await deleteExerciseUidAndRelatedDataWithoutSuperSets(e.exerciseUid, dayUid, batch);
+
+      // Add unique super set UIDs to delete
+      const superSetData = getSuperSetFromExerciseUid(e.exerciseUid, dayUid);
+      if (superSetData && !superSetUniqueUIDs.includes(superSetData.uid)) {
+        superSetUniqueUIDs.push(superSetData.uid);
+      }
+    }));
+
+    // Delete super sets
+    superSetUniqueUIDs.forEach(uid => {
+      batch = deleteSuperSet(uid, dayUid, batch);
+    });
   }
-  return await firebase.firestore()
-    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
-    .doc(dayUid)
-    .delete();
+
+  // Delete questionnaire
+  if (dayData.questionnaire) {
+     batch.delete(getDayQuestionnaireDocument(dayData.questionnaire));
+  }
+
+  return batch.delete(getDayDocument(dayUid));
 };
 
 export const endDayNow = async (dayUid: string): Promise<void> => {
-  return await firebase.firestore()
-    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
-    .doc(dayUid)
+  return await getDayDocument(dayUid)
     .update({
       endTimestamp: Math.ceil(Date.now() / 1000)  // TODO Can I use IDayModel somehow?
     });
@@ -139,9 +179,7 @@ export const updateDay = async (dayUid: string, dayData: IDayBasicUpdateModel) =
   if (!dayData.endTimestamp) {
     data.endTimestamp = firebase.firestore.FieldValue.delete();
   }
-  return await firebase.firestore()
-    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
-    .doc(dayUid)
+  return await getDayDocument(dayUid)
     .update(data);
 };
 
@@ -151,9 +189,7 @@ export const addExerciseToDayArray = async (exerciseUid: string, dayUid: string)
     exerciseUid,
     index: dayData.exercises.length
   };
-  return await firebase.firestore()
-    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
-    .doc(dayUid)
+  return await getDayDocument(dayUid)
     .update({exercises: firebase.firestore.FieldValue.arrayUnion(exerciseData)});
 };
 
@@ -212,10 +248,4 @@ export const getAllLocations = async (): Promise<IDayServiceCache['locations']> 
   dayServiceCache.locations = locations;
 
   return dayServiceCache.locations;
-};
-
-export const getDayDocument = (dayUid: string): any => {
-  return firebase.firestore()
-    .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_DAYS)
-    .doc(dayUid);
 };
