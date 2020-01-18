@@ -89,6 +89,8 @@ const resources = {
       "No": "No",
       "(HH MM SS)": "(hour minute second)",
       "Update": "Update",
+      "Part of super set": "Part of super set",
+      "New super set": "New super set",
 
       // Features
       "Track your sets and repetitions": "Track your sets and repetitions",
@@ -185,6 +187,8 @@ const resources = {
       "No": "Nej",
       "(HH MM SS)": "(timme minut sekund)",
       "Update": "Uppdatera",
+      "Part of super set": "Del av superset",
+      "New super set": "Nytt superset",
 
       // Features
       "Track your sets and repetitions": "Hålla koll på dina set och repetitioner",
