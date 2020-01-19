@@ -12,12 +12,12 @@ import DurationFormGroup from '../Formik/DurationFormGroup';
 import {getTimeDistanceExercise, updateTimeDistanceExercise} from './TimeDistanceService';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {retrieveErrorMessage} from '../../config/FirebaseUtils';
-import {ExerciseContainerAsdCtx} from '../Exercise/ExerciseTypeContainer';
+import {ExerciseContainerAddSetViewVisibleCtx} from '../Exercise/ExerciseTypeContainer';
 
 const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistanceUid}) => {
   const { t } = useTranslation();
 
-  const setEditVisible = useContext(ExerciseContainerAsdCtx)[1];
+  const setEditVisible = useContext(ExerciseContainerAddSetViewVisibleCtx)[1];
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
   const [timeDistanceData, setTimeDistanceDataData] = useState<ITimeDistanceModel | undefined>(undefined);

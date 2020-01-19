@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useState} from 'react';
+import React, {FunctionComponent, useContext, useEffect, useState} from 'react';
 import {FormikHelpers} from 'formik';
 import {ISetBasicUpdateModel, ISetModel} from '../../models/ISetModel';
 // @ts-ignore
@@ -16,13 +16,22 @@ import {useTranslation} from 'react-i18next';
 import firebase from '../../config/firebase';
 import {ISetsModel} from '../../models/ISetsModel';
 import {retrieveErrorMessage} from '../../config/FirebaseUtils';
+import {ExerciseContainerEditSetViewVisibleCtx} from '../Exercise/ExerciseTypeContainer';
 
 const SetEditForm: FunctionComponent<ISetFormProps> = ({setEditVisible, exerciseType, currentData, exerciseData, setLastSetData}) => {
   const { t } = useTranslation();
+  const setEditSetViewVisible = useContext(ExerciseContainerEditSetViewVisibleCtx)[1];
 
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const [deleteStep2Shown, setDeleteStep2Shown] = useState<boolean>(false);
+
+  useEffect(() => {
+    setEditSetViewVisible(true);
+    return () => {
+      setEditSetViewVisible(false);
+    };
+  }, []);
 
   if (errorMessage) {
     return <Row><Col><ErrorAlert errorText={errorMessage} componentName="SetForm" uid={currentData.uid}/></Col></Row>;

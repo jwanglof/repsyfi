@@ -6,7 +6,7 @@ import {ISetsModel} from '../../models/ISetsModel';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
 import {Col, Row} from 'reactstrap';
-import {ExerciseContainerAsdCtx} from '../Exercise/ExerciseTypeContainer';
+import {ExerciseContainerAddSetViewVisibleCtx} from '../Exercise/ExerciseTypeContainer';
 import {getSetsSecondsExerciseOnSnapshot} from './SetsSeconds/SetsSecondsService';
 import {ISetModel} from '../../models/ISetModel';
 import SetViewContainer from './SetViewContainer';
@@ -17,7 +17,7 @@ import {IErrorObject, retrieveErrorMessage} from '../../config/FirebaseUtils';
 const SetsExerciseView: FunctionComponent<ISetsViewProps> = ({setsExerciseUid,  exerciseType}) => {
   const { t } = useTranslation();
 
-  const [addSetViewVisible, setAddSetViewVisible] = useContext(ExerciseContainerAsdCtx);
+  const [addSetViewVisible, setAddSetViewVisible] = useContext(ExerciseContainerAddSetViewVisibleCtx);
 
   const [currentExerciseData, setCurrentExerciseData] = useState<ISetsModel | undefined>(undefined);
   const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
@@ -62,7 +62,7 @@ const SetsExerciseView: FunctionComponent<ISetsViewProps> = ({setsExerciseUid,  
         <div className="legend">
           {currentExerciseData.sets.map((setUid, i) => {
             const isLastSet = i === currentExerciseData.sets.length - 1;
-            return <SetViewContainer key={i} setUid={setUid} disabled={addSetViewVisible} exerciseType={exerciseType} isLastSet={isLastSet} setLastSetData={setLastSetData} exerciseData={currentExerciseData}/>
+            return <SetViewContainer key={i} setUid={setUid} exerciseType={exerciseType} isLastSet={isLastSet} setLastSetData={setLastSetData} exerciseData={currentExerciseData}/>
           })}
         </div>
 

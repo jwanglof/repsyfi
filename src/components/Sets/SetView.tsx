@@ -1,22 +1,25 @@
-import React, {FunctionComponent} from 'react';
+import React, {FunctionComponent, useContext} from 'react';
 import {ISetModel} from '../../models/ISetModel';
 import classnames from 'classnames';
 import {Col, Row} from 'reactstrap';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {useGlobalState} from '../../state';
+import {ExerciseContainerAddSetViewVisibleCtx} from '../Exercise/ExerciseTypeContainer';
 
-const SetView: FunctionComponent<ISetViewProps> = ({setEditVisible, disabled, exerciseType, currentData}) => {
+const SetView: FunctionComponent<ISetViewProps> = ({setEditVisible, exerciseType, currentData}) => {
   const showDebugInformation = useGlobalState('debugInformationShown')[0];
+  const addSetViewVisible = useContext(ExerciseContainerAddSetViewVisibleCtx)[0];
+
 
   const onClick = () => {
-    if (!disabled) {
+    if (!addSetViewVisible) {
       setEditVisible(true);
       // setButtonsIsShown(false);
     }
   };
 
   const classNames = classnames('one-set', {
-    "one-set--muted": disabled
+    "one-set--muted": addSetViewVisible
   });
 
   return (
@@ -34,7 +37,6 @@ const SetView: FunctionComponent<ISetViewProps> = ({setEditVisible, disabled, ex
 
 interface ISetViewProps {
   setEditVisible: ((editVisible: boolean) => void)
-  disabled: boolean
   exerciseType: ExerciseTypesEnum
   currentData: ISetModel
 }

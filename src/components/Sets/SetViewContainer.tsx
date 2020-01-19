@@ -11,7 +11,7 @@ import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {ISetsModel} from '../../models/ISetsModel';
 import {retrieveErrorMessage} from '../../config/FirebaseUtils';
 
-const SetViewContainer: FunctionComponent<ISetViewContainerProps> = ({setUid, disabled, exerciseType, isLastSet, setLastSetData, exerciseData}) => {
+const SetViewContainer: FunctionComponent<ISetViewContainerProps> = ({setUid, exerciseType, isLastSet, setLastSetData, exerciseData}) => {
   const [editVisible, setEditVisible] = useState<boolean>(false);
   const [currentData, setCurrentData] = useState<ISetModel | undefined>(undefined);
   const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
@@ -53,7 +53,7 @@ const SetViewContainer: FunctionComponent<ISetViewContainerProps> = ({setUid, di
 
   return (
     <>
-      {!editVisible && <SetView setEditVisible={setEditVisible} disabled={disabled} exerciseType={exerciseType} currentData={currentData}/>}
+      {!editVisible && <SetView setEditVisible={setEditVisible} exerciseType={exerciseType} currentData={currentData}/>}
       {editVisible && <SetEditForm setEditVisible={setEditVisible} exerciseType={exerciseType} currentData={currentData} exerciseData={exerciseData} setLastSetData={setLastSetData}/>}
     </>
   );
@@ -61,7 +61,6 @@ const SetViewContainer: FunctionComponent<ISetViewContainerProps> = ({setUid, di
 
 interface ISetViewContainerProps {
   setUid: string
-  disabled: boolean
   exerciseType: ExerciseTypesEnum
   isLastSet: boolean
   setLastSetData: ((lastSetData: ISetModel | undefined) => void)

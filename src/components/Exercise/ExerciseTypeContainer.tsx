@@ -34,7 +34,8 @@ import firebase from '../../config/firebase';
 import {useGlobalState} from '../../state';
 
 export const ExerciseHeaderEditCtx = createContext<any>([false, () => {}]);
-export const ExerciseContainerAsdCtx = createContext<any>([false, () => {}]);   // TODO Rename to something better than Asd
+export const ExerciseContainerAddSetViewVisibleCtx = createContext<any>([false, () => {}]);
+export const ExerciseContainerEditSetViewVisibleCtx = createContext<any>([false, () => {}]);
 
 const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IExerciseTypeContainerProps> = ({ router, exerciseUid }) => {
   const { t } = useTranslation();
@@ -46,6 +47,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
   const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
   const [headerEditVisible, setHeaderEditVisible] = useState<boolean>(false);
   const [addSetViewVisible, setAddSetViewVisible] = useState<boolean>(false);
+  const [editSetViewVisible, setEditSetViewVisible] = useState<boolean>(false);
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const [exerciseDeleteStep2Shown, setExerciseDeleteStep2Shown] = useState<boolean>(false);
   const [options, setOptions] = useState<any>({});
@@ -134,24 +136,25 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
 
   return (
     <ExerciseHeaderEditCtx.Provider value={[headerEditVisible, setHeaderEditVisible]}>
-      <ExerciseContainerAsdCtx.Provider value={[addSetViewVisible, setAddSetViewVisible]}>
-        <Col lg={4} xs={12} className="mb-2">
-          <Card>
-            <CardHeader className="text-center pt-0 pb-0">
-              <ExerciseHeader exerciseData={currentExerciseData}/>
-              <ExerciseHeaderView exerciseData={currentExerciseData} superSetName={superSetName}/>
-              {showDebugInformation && <h2>Ex UID: {currentExerciseData.uid}</h2>}
-            </CardHeader>
+      <ExerciseContainerAddSetViewVisibleCtx.Provider value={[addSetViewVisible, setAddSetViewVisible]}>
+        <ExerciseContainerEditSetViewVisibleCtx.Provider value={[editSetViewVisible, setEditSetViewVisible]}>
+          <Col lg={4} xs={12} className="mb-2">
+            <Card>
+              <CardHeader className="text-center pt-0 pb-0">
+                <ExerciseHeader exerciseData={currentExerciseData}/>
+                <ExerciseHeaderView exerciseData={currentExerciseData} superSetName={superSetName}/>
+                {showDebugInformation && <h2>Ex UID: {currentExerciseData.uid}</h2>}
+              </CardHeader>
 
-            <CardBody className="p-0">
-              {showDebugInformation && <Row><Col>Type UID: {currentExerciseData.typeUid}</Col></Row>}
-              {(currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS || currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS) && <SetsView setsExerciseUid={currentExerciseData.typeUid} exerciseType={currentExerciseData.type}/>}
-              {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE && <TimeDistanceExerciseContainer timeDistanceExerciseUid={currentExerciseData.typeUid}/>}
-            </CardBody>
+              <CardBody className="p-0">
+                {showDebugInformation && <Row><Col>Type UID: {currentExerciseData.typeUid}</Col></Row>}
+                {(currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS || currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS) && <SetsView setsExerciseUid={currentExerciseData.typeUid} exerciseType={currentExerciseData.type}/>}
+                {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE && <TimeDistanceExerciseContainer timeDistanceExerciseUid={currentExerciseData.typeUid}/>}
+              </CardBody>
 
-            <CardFooter className="p-0">
-              {!addSetViewVisible && <ButtonGroup className="w-100" vertical>
-                  <Button color="success" block onClick={() => setAddSetViewVisible(!addSetViewVisible)}>{options.actionButtonText}</Button>
+              <CardFooter className="p-0">
+                {!addSetViewVisible && !editSetViewVisible && <ButtonGroup className="w-100" vertical>
+                  <Button color="success" block onClick={() => setAddSetViewVisible(true)}>{options.actionButtonText}</Button>
                   <ButtonDropdown isOpen={dropdownVisible} toggle={toggleActionDropdown}>
                     <DropdownToggle caret>
                       {t("Actions")}
@@ -164,15 +167,16 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
                       {exerciseDeleteStep2Shown && <DropdownItem className="text-danger" onClick={() => delExercise()}>{t("Click again to delete!")}</DropdownItem>}
                     </DropdownMenu>
                   </ButtonDropdown>
-              </ButtonGroup>}
-              {/*<ButtonGroup className="w-100"></ButtonGroup>  // Something wrong with buttongroup and dropdown.. */}
-              {options.showFooterInfo && <div className="text-muted text-center font-italic">
-                <small>{t("Click on a set for different actions")}</small>
-              </div>}
-            </CardFooter>
-          </Card>
-        </Col>
-      </ExerciseContainerAsdCtx.Provider>
+                </ButtonGroup>}
+                {/*<ButtonGroup className="w-100"></ButtonGroup>  // Something wrong with buttongroup and dropdown.. */}
+                {options.showFooterInfo && <div className="text-muted text-center font-italic">
+                  <small>{t("Click on a set for different actions")}</small>
+                </div>}
+              </CardFooter>
+            </Card>
+          </Col>
+        </ExerciseContainerEditSetViewVisibleCtx.Provider>
+      </ExerciseContainerAddSetViewVisibleCtx.Provider>
     </ExerciseHeaderEditCtx.Provider>
   );
 };
