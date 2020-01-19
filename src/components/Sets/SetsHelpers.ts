@@ -16,21 +16,20 @@ const _isEmptyOrNegative = (value: any) => {
   return false;
 };
 
-const getErrorText = (key: string) => key + " must exist, and be 0 or higher";
-
 export const setsValidation = (values: ISetsFormValidate, t: i18next.TFunction): ISetsFormValidateErrors => {
   const errors: ISetsFormValidateErrors = {};
+  const appendedErrorText = t("must exist, and be 0 or higher");
   if (_isEmptyOrNegative(values.amountInKg)) {
-    errors.amountInKg = t(getErrorText("Amount"));
+    errors.amountInKg = `${t("Amount")} ${appendedErrorText}`;
   }
   if (_isEmptyOrNegative(values.reps)) {
-    errors.reps = t(getErrorText("Repetitions"));
+    errors.reps = `${t("Repetitions")} ${appendedErrorText}`;
   }
   if (_isEmptyOrNegative(values.seconds)) {
-    errors.seconds = t(getErrorText("Seconds"));
+    errors.seconds = `${t("Seconds")} ${appendedErrorText}`;
   }
   if (_isEmptyOrNegative(values.index)) {
-    errors.index = t(getErrorText("Index"));
+    errors.index = `${t("Index")} ${appendedErrorText}`;
   }
   return errors;
 };

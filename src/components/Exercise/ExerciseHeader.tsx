@@ -12,6 +12,7 @@ import {ExerciseHeaderEditCtx} from './ExerciseTypeContainer';
 // @ts-ignore
 import {Form} from 'react-formik-ui';
 import {retrieveErrorMessage} from '../../config/FirebaseUtils';
+import {exerciseFormValidation} from './ExerciseHelpers';
 
 const ExerciseHeader: FunctionComponent<IExerciseHeaderProps> = ({exerciseData}) => {
   const { t } = useTranslation();
@@ -39,19 +40,13 @@ const ExerciseHeader: FunctionComponent<IExerciseHeaderProps> = ({exerciseData})
     actions.setSubmitting(false);
   };
 
-  const validate = (values: IExerciseHeaderValidate): IExerciseHeaderValidate | {} => {
-    const errors: IExerciseHeaderValidate = {};
-    if (values.exerciseName === '') {
-      errors.exerciseName = t("Exercise name can't be empty");
-    }
-    return errors;
-  };
-
   return (
     <Formik
       initialValues={{exerciseName: exerciseData.exerciseName}}
       onSubmit={onSubmit}
-      validate={validate}
+      validate={(values: any) => {
+        return exerciseFormValidation(values, t);
+      }}
       render={({errors, isSubmitting}) => (
         <>
           {submitErrorMessage && <ErrorAlert errorText={submitErrorMessage} componentName="ExerciseHeader"/>}
@@ -71,9 +66,6 @@ const ExerciseHeader: FunctionComponent<IExerciseHeaderProps> = ({exerciseData})
   );
 };
 
-interface IExerciseHeaderValidate {
-  exerciseName?: string
-}
 
 interface IExerciseHeaderProps {
   exerciseData: IExerciseModel

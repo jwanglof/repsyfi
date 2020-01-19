@@ -37,7 +37,7 @@ const StartPage: FunctionComponent<ILoginRouter & ILoginProps> = ({router, userS
     if (params.showDebugInformation === 'true') {
       setDebugInformationShown(true);
     }
-  }, []);
+  }, [params.showDebugInformation, setDebugInformationShown]);
 
   const durationCb = () => {
     if (!userSignedIn) {

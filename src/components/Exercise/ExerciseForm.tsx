@@ -3,7 +3,7 @@ import {useTranslation} from 'react-i18next';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {getCurrentUsersUid, retrieveErrorMessage} from '../../config/FirebaseUtils';
-import {Formik, FormikHelpers, Form} from 'formik';
+import {Form, Formik, FormikHelpers} from 'formik';
 import isEmpty from 'lodash/isEmpty';
 import {addExerciseAndGetUid} from './ExerciseService';
 import {IExerciseBasicModel} from '../../models/IExerciseModel';
@@ -23,6 +23,7 @@ import {
 } from '../../services/ExercisesSuperSetService';
 import {IExercisesSuperSetsModel} from '../../models/IExercisesSuperSetsModel';
 import {orderBy} from 'lodash';
+import {exerciseFormValidation} from './ExerciseHelpers';
 
 const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> = ({router, setAddExerciseViewVisible}) => {
   const { t } = useTranslation();
@@ -45,14 +46,6 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
   if (submitErrorMessage) {
     return <ErrorAlert errorText={submitErrorMessage} componentName="AddExerciseForm"/>;
   }
-
-  const validate = (values: IExerciseFormValidate): IExerciseFormValidate | {} => {
-    const errors: IExerciseFormValidate = {};
-    if (isEmpty(values.exerciseName)) {
-      errors.exerciseName = "Exercise name can't be empty"
-    }
-    return errors;
-  };
 
   const onSubmit = async (values: IExerciseForm, actions: FormikHelpers<IExerciseForm>) => {
     actions.setSubmitting(true);
@@ -129,7 +122,9 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
         <Formik
           initialValues={emptyInitialValues}
           onSubmit={onSubmit}
-          validate={validate}>
+          validate={(values: any) => {
+            return exerciseFormValidation(values, t);
+          }}>
           {({ errors, isSubmitting }) => (
             <Form>
               <FieldFormGroup name="exerciseName" labelText={t('Exercise name')} inputProps={{autoFocus: true}}/>
@@ -164,9 +159,6 @@ interface IExerciseForm {
   superSet: string | undefined
 }
 
-interface IExerciseFormValidate {
-  exerciseName?: string
-}
 
 interface IExerciseFormRouter {
   router: Router

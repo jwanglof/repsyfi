@@ -26,10 +26,10 @@ const SetForm: FunctionComponent<ISetFormProps> = ({hideFormCb, exerciseType, cu
           <div className="form-row pt-1">
             <Col xs={2}>{currentData.index}</Col>
             <Col xs={5}>
-              <FormikField name="amountInKg" labelText={t("Amount in KG")} type="number" labelHidden inputProps={{min: 0, autoFocus: true}} addedClassNames="h-75"/>
+              <FormikField name="amountInKg" labelText={t("Amount in KG")} type="number" labelHidden inputProps={{min: 0, autoFocus: true}}/>
             </Col>
-            {exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS && <Col xs={5}><FormikField name="reps" labelText={t("Repetitions")} type="number" labelHidden inputProps={{min: 0}} addedClassNames="h-75"/></Col>}
-            {exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS && <Col xs={5}><FormikField name="seconds" labelText={t("Seconds")} type="number" labelHidden inputProps={{min: 0}} addedClassNames="h-75"/></Col>}
+            {exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS && <Col xs={5}><FormikField name="reps" labelText={t("Repetitions")} type="number" labelHidden inputProps={{min: 0}}/></Col>}
+            {exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS && <Col xs={5}><FormikField name="seconds" labelText={t("Seconds")} type="number" labelHidden inputProps={{min: 0}}/></Col>}
           </div>
           <Row>
             <ButtonGroup className="w-100" vertical>
