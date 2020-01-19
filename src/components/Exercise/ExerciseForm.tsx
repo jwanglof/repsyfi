@@ -23,13 +23,11 @@ import {
 } from '../../services/ExercisesSuperSetService';
 import {IExercisesSuperSetsModel} from '../../models/IExercisesSuperSetsModel';
 import {orderBy} from 'lodash';
-import {exerciseFormValidation} from './ExerciseHelpers';
+import {exerciseFormValidation, getSuperSetOptions, SUPER_SET_DEFAULT_TYPES} from './ExerciseHelpers';
 
 const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> = ({router, setAddExerciseViewVisible}) => {
   const { t } = useTranslation();
   const dayUid = router.getState().params.uid;
-  const emptySuperSetValue = 'empty-super-set-option-value';
-  const newSuperSetValue = 'new-super-set-option-value';
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
   const [superSets, setSuperSets] = useState<IExercisesSuperSetsModel[]>([]);
@@ -71,7 +69,7 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
       };
       const exerciseUid = await addExerciseAndGetUid(exerciseData, ownerUid);
 
-      if (values.superSet === newSuperSetValue) {
+      if (values.superSet === SUPER_SET_DEFAULT_TYPES.NEW) {
         // Create new super set with created exercise
         let superSetName = '1';
         if (superSets.length) {
@@ -79,7 +77,7 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
           superSetName = (parseInt(superSets[superSets.length - 1].name) + 1).toString();
         }
         await createNewSuperSetAndReturnUid(ownerUid, superSetName, exerciseUid, dayUid);
-      } else if (values.superSet !== emptySuperSetValue && values.superSet) {
+      } else if (values.superSet !== SUPER_SET_DEFAULT_TYPES.EMPTY && values.superSet) {
         // Update existing super set with created exercise
         await addExerciseToSuperSet(values.superSet, exerciseUid, dayUid);
       }
@@ -100,20 +98,10 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
     // {value: ExerciseTypesEnum.EXERCISE_TYPE_NOT_CHOSEN, label: 'Other'},  // TODO Implement
   ]);
 
-  const getSuperSetOptions = (): ISelectFormOptions[] => {
-    const d = superSets.map((s): ISelectFormOptions => {
-      return {value: s.uid, label: s.name};
-    });
-    const emptyOption = {value: emptySuperSetValue, label: t('No')};
-    const newOption = {value: newSuperSetValue, label: t('New super set')};
-    d.unshift(emptyOption, newOption);
-    return d;
-  };
-
   const emptyInitialValues: IExerciseForm = {
     exerciseName: '',
     type: ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS,
-    superSet: emptySuperSetValue
+    superSet: SUPER_SET_DEFAULT_TYPES.EMPTY
   };
 
   return (
@@ -129,7 +117,7 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
             <Form>
               <FieldFormGroup name="exerciseName" labelText={t('Exercise name')} inputProps={{autoFocus: true}}/>
               <SelectFormGroup name="type" labelText={t('Exercise type')} options={getExerciseTypes()}/>
-              <SelectFormGroup name="superSet" labelText={t('Part of super set')} options={getSuperSetOptions()}/>
+              <SelectFormGroup name="superSet" labelText={t('Part of super set')} options={getSuperSetOptions(superSets, t)}/>
 
               <Row>
                 <Col xs={12}>

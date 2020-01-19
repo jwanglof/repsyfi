@@ -14,12 +14,11 @@ import {
   Col,
   DropdownItem,
   DropdownMenu,
-  DropdownToggle, Row
+  DropdownToggle,
+  Row
 } from 'reactstrap';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
-import ExerciseHeader from './ExerciseHeader';
-import ExerciseHeaderView from './ExerciseHeaderView';
 import TimeDistanceExerciseContainer from '../TimeDistance/TimeDistanceExerciseContainer';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {useTranslation} from 'react-i18next';
@@ -32,6 +31,8 @@ import {Router} from 'router5';
 import {getSuperSetData} from '../../services/ExercisesSuperSetService';
 import firebase from '../../config/firebase';
 import {useGlobalState} from '../../state';
+import ExerciseHeaderContainer from './ExerciseHeader/ExerciseHeaderContainer';
+import {EXERCISE_HEADER_TYPES} from './ExerciseHeader/ExerciseHeaderHelpers';
 
 export const ExerciseHeaderEditCtx = createContext<any>([false, () => {}]);
 export const ExerciseContainerAddSetViewVisibleCtx = createContext<any>([false, () => {}]);
@@ -45,7 +46,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
 
   const [currentExerciseData, setCurrentExerciseData] = useState<IExerciseModel | undefined>(undefined);
   const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
-  const [headerEditVisible, setHeaderEditVisible] = useState<boolean>(false);
+  const [headerEditVisible, setHeaderEditVisible] = useState<EXERCISE_HEADER_TYPES>(EXERCISE_HEADER_TYPES.SHOW_EXERCISE_NAME);
   const [addSetViewVisible, setAddSetViewVisible] = useState<boolean>(false);
   const [editSetViewVisible, setEditSetViewVisible] = useState<boolean>(false);
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
@@ -134,6 +135,8 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
     }
   };
 
+  const showFooterButtons = !addSetViewVisible && !editSetViewVisible && !headerEditVisible;
+
   return (
     <ExerciseHeaderEditCtx.Provider value={[headerEditVisible, setHeaderEditVisible]}>
       <ExerciseContainerAddSetViewVisibleCtx.Provider value={[addSetViewVisible, setAddSetViewVisible]}>
@@ -141,8 +144,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
           <Col lg={4} xs={12} className="mb-2">
             <Card>
               <CardHeader className="text-center pt-0 pb-0">
-                <ExerciseHeader exerciseData={currentExerciseData}/>
-                <ExerciseHeaderView exerciseData={currentExerciseData} superSetName={superSetName}/>
+                <ExerciseHeaderContainer exerciseData={currentExerciseData} superSetName={superSetName}/>
                 {showDebugInformation && <h2>Ex UID: {currentExerciseData.uid}</h2>}
               </CardHeader>
 
@@ -153,14 +155,14 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
               </CardBody>
 
               <CardFooter className="p-0">
-                {!addSetViewVisible && !editSetViewVisible && <ButtonGroup className="w-100" vertical>
+                {showFooterButtons && <ButtonGroup className="w-100" vertical>
                   <Button color="success" block onClick={() => setAddSetViewVisible(true)}>{options.actionButtonText}</Button>
                   <ButtonDropdown isOpen={dropdownVisible} toggle={toggleActionDropdown}>
                     <DropdownToggle caret>
                       {t("Actions")}
                     </DropdownToggle>
                     <DropdownMenu>
-                      <DropdownItem onClick={() => setHeaderEditVisible(true)} disabled={headerEditVisible}>
+                      <DropdownItem onClick={() => setHeaderEditVisible(EXERCISE_HEADER_TYPES.EDIT_EXERCISE_NAME)}>
                         {`${t("Edit")} ${t("name")}`}
                       </DropdownItem>
                       {!exerciseDeleteStep2Shown && <DropdownItem toggle={false} onClick={() => setExerciseDeleteStep2Shown(true)}>{t("Delete")} {t("exercise")}</DropdownItem>}

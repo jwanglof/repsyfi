@@ -1,28 +1,29 @@
 import React, {FunctionComponent, useContext, useState} from 'react';
-import {IExerciseHeaderModel, IExerciseModel} from '../../models/IExerciseModel';
+import {IExerciseHeaderModel, IExerciseModel} from '../../../models/IExerciseModel';
 import {useTranslation} from 'react-i18next';
-import {updateExercise} from './ExerciseService';
-import {Formik, FormikHelpers} from 'formik';
+import {updateExercise} from '../ExerciseService';
+import {Form, Formik, FormikHelpers} from 'formik';
 import {Button, ButtonGroup} from 'reactstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import FormikField from '../Formik/FormikField';
-import ErrorAlert from '../ErrorAlert/ErrorAlert';
-import {ExerciseHeaderEditCtx} from './ExerciseTypeContainer';
-// TODO :(
-// @ts-ignore
-import {Form} from 'react-formik-ui';
-import {retrieveErrorMessage} from '../../config/FirebaseUtils';
-import {exerciseFormValidation} from './ExerciseHelpers';
+import FormikField from '../../Formik/FormikField';
+import ErrorAlert from '../../ErrorAlert/ErrorAlert';
+import {ExerciseHeaderEditCtx} from '../ExerciseTypeContainer';
+import {retrieveErrorMessage} from '../../../config/FirebaseUtils';
+import {exerciseFormValidation} from '../ExerciseHelpers';
+import {EXERCISE_HEADER_TYPES} from './ExerciseHeaderHelpers';
 
-const ExerciseHeader: FunctionComponent<IExerciseHeaderProps> = ({exerciseData}) => {
+const ExerciseHeaderForm: FunctionComponent<IExerciseHeaderProps> = ({exerciseData}) => {
   const { t } = useTranslation();
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
-  const [headerEditVisible, setHeaderEditVisible] = useContext(ExerciseHeaderEditCtx);
-
-  if (!headerEditVisible) return null;
+  // const [headerEditVisible, setHeaderEditVisible] = useContext(ExerciseHeaderEditCtx);
+  const setHeaderEditVisible = useContext(ExerciseHeaderEditCtx)[1];
 
   const onSubmit = async (values: any, actions: FormikHelpers<IExerciseHeaderModel>) => {
+    if (values.exerciseName === exerciseData.exerciseName) {
+      showExerciseNameAndHideThisForm();
+      return;
+    }
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
 
@@ -32,12 +33,16 @@ const ExerciseHeader: FunctionComponent<IExerciseHeaderProps> = ({exerciseData})
       };
       await updateExercise(exerciseData.uid, updateData);
       exerciseData.exerciseName = values.exerciseName;
-      setHeaderEditVisible(false)
+      actions.setSubmitting(false);
+      showExerciseNameAndHideThisForm();
     } catch (e) {
       setSubmitErrorMessage(retrieveErrorMessage(e));
     }
 
-    actions.setSubmitting(false);
+  };
+
+  const showExerciseNameAndHideThisForm = () => {
+    setHeaderEditVisible(EXERCISE_HEADER_TYPES.SHOW_EXERCISE_NAME)
   };
 
   return (
@@ -46,23 +51,23 @@ const ExerciseHeader: FunctionComponent<IExerciseHeaderProps> = ({exerciseData})
       onSubmit={onSubmit}
       validate={(values: any) => {
         return exerciseFormValidation(values, t);
-      }}
-      render={({errors, isSubmitting}) => (
+      }}>
+      {({errors, isSubmitting}) => (
         <>
           {submitErrorMessage && <ErrorAlert errorText={submitErrorMessage} componentName="ExerciseHeader"/>}
           {isSubmitting && <FontAwesomeIcon icon="spinner" spin/>}
           {!isSubmitting && <>
-            <Form mode='structured'>
+            <Form>
               <FormikField labelText="Exercise name" name="exerciseName" labelHidden inputProps={{autoFocus: true}}/>
               <ButtonGroup className="w-100">
                 <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t("Save")}</Button>
-                <Button color="danger" onClick={() => setHeaderEditVisible(false)}>{t("Discard")}</Button>
+                <Button color="danger" onClick={showExerciseNameAndHideThisForm}>{t("Discard")}</Button>
               </ButtonGroup>
             </Form>
           </>}
         </>
       )}
-    />
+    </Formik>
   );
 };
 
@@ -71,4 +76,4 @@ interface IExerciseHeaderProps {
   exerciseData: IExerciseModel
 }
 
-export default ExerciseHeader;
+export default ExerciseHeaderForm;
