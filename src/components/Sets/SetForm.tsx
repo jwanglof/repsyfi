@@ -23,8 +23,8 @@ const SetForm: FunctionComponent<ISetFormProps> = ({hideFormCb, exerciseType, cu
       <>
         {isSubmitting && <Row><Col className="text-center"><FontAwesomeIcon icon="spinner" spin/></Col></Row>}
         {!isSubmitting && <Form>
-          <div className="form-row pt-1">
-            <Col xs={2}>{currentData.index}</Col>
+          <div className="row pt-1 pb-1">
+            <Col className="pt-1" xs={2}>{currentData.index}</Col>
             <Col xs={5}>
               <FormikField name="amountInKg" labelText={t("Amount in KG")} type="number" labelHidden inputProps={{min: 0, autoFocus: true}}/>
             </Col>
