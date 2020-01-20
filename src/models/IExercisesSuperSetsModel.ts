@@ -1,6 +1,6 @@
 import {IBaseModel, IBaseModelUpdating, IBaseModelWithoutUid} from './IBaseModel';
 
-interface IExercisesSuperSetsBasicModel {
+export interface IExercisesSuperSetsBasicModel {
   name: string
   exercises: string[]
 }

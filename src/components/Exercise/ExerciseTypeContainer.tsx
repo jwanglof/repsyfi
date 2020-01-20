@@ -23,18 +23,19 @@ import TimeDistanceExerciseContainer from '../TimeDistance/TimeDistanceExerciseC
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 import {useTranslation} from 'react-i18next';
 import SetsView from '../Sets/SetsExerciseView';
-import {retrieveErrorMessage} from '../../config/FirebaseUtils';
+import {IErrorObject, retrieveErrorMessage} from '../../config/FirebaseUtils';
 import {getDay, getDayDocument} from '../Day/DayService';
 import {recalculateIndexes} from '../../utils/exercise-utils';
 import {withRouter} from 'react-router5';
 import {Router} from 'router5';
-import {getSuperSetData} from '../../services/ExercisesSuperSetService';
+import {getSuperSetData, getSuperSetOnSnapshot} from '../../services/ExercisesSuperSetService';
 import firebase from '../../config/firebase';
 import {useGlobalState} from '../../state';
 import ExerciseHeaderContainer from './ExerciseHeader/ExerciseHeaderContainer';
 import {EXERCISE_HEADER_TYPES} from './ExerciseHeader/ExerciseHeaderHelpers';
+import {IExercisesSuperSetsModel} from '../../models/IExercisesSuperSetsModel';
 
-export const ExerciseHeaderEditCtx = createContext<any>([false, () => {}]);
+export const ExerciseHeaderEditCtx = createContext<any>([EXERCISE_HEADER_TYPES, () => {}]);
 export const ExerciseContainerAddSetViewVisibleCtx = createContext<any>([false, () => {}]);
 export const ExerciseContainerEditSetViewVisibleCtx = createContext<any>([false, () => {}]);
 
@@ -46,14 +47,15 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
 
   const [currentExerciseData, setCurrentExerciseData] = useState<IExerciseModel | undefined>(undefined);
   const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
-  const [headerEditVisible, setHeaderEditVisible] = useState<EXERCISE_HEADER_TYPES>(EXERCISE_HEADER_TYPES.SHOW_EXERCISE_NAME);
+  const [headerEditType, setHeaderEditType] = useState<EXERCISE_HEADER_TYPES>(EXERCISE_HEADER_TYPES.SHOW_EXERCISE_NAME);
   const [addSetViewVisible, setAddSetViewVisible] = useState<boolean>(false);
   const [editSetViewVisible, setEditSetViewVisible] = useState<boolean>(false);
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const [exerciseDeleteStep2Shown, setExerciseDeleteStep2Shown] = useState<boolean>(false);
   const [options, setOptions] = useState<any>({});
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
-  const [superSetName, setSuperSetName] = useState<string | undefined>(undefined);
+  const [superSetData, setSuperSetData] = useState<IExercisesSuperSetsModel | undefined>(undefined);
+  const [initialSuperSetData, setInitialSuperSetData] = useState<IExercisesSuperSetsModel | null>(null);
 
   useEffect(() => {
     const fetchExerciseData = async () => {
@@ -63,7 +65,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
 
         const superSetData = await getSuperSetData(exerciseUid, dayUid);
         if (superSetData !== null) {
-          setSuperSetName(superSetData.name);
+          setInitialSuperSetData(superSetData);
         }
       } catch (e) {
         console.error(e);
@@ -74,6 +76,15 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
     // noinspection JSIgnoredPromiseFromCall
     fetchExerciseData();
   }, [exerciseUid, dayUid]);
+
+  useEffect(() => {
+    if (initialSuperSetData !== null) {
+      const unsubFn = initializeSuperSetData(initialSuperSetData);
+      return () => {
+        unsubFn();
+      };
+    }
+  }, [initialSuperSetData]);
 
   useEffect(() => {
     if (currentExerciseData) {
@@ -100,6 +111,24 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
   if (!currentExerciseData) {
     return <LoadingAlert componentName="ExerciseTypeContainer"/>;
   }
+
+  const initializeSuperSetData = (superSetsModelData: IExercisesSuperSetsModel) => {
+    // Note that if this method is called from a component,
+    //  the Firestore subscription _will not_ be cancelled on unmount!
+    const cbErr = (e: IErrorObject) => {
+      setFetchDataError(retrieveErrorMessage(e));
+    };
+
+    const cb = (data: any) => {
+      if (data.exercises.includes(exerciseUid)) {
+        setSuperSetData(data);
+      } else {
+        setSuperSetData(undefined);
+      }
+    };
+
+    return getSuperSetOnSnapshot(superSetsModelData.uid, cb, cbErr);
+  };
 
   const toggleActionDropdown = () => {
     setExerciseDeleteStep2Shown(false);
@@ -135,16 +164,16 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
     }
   };
 
-  const showFooterButtons = !addSetViewVisible && !editSetViewVisible && !headerEditVisible;
+  const showFooterButtons = !addSetViewVisible && !editSetViewVisible && !headerEditType;
 
   return (
-    <ExerciseHeaderEditCtx.Provider value={[headerEditVisible, setHeaderEditVisible]}>
+    <ExerciseHeaderEditCtx.Provider value={[headerEditType, setHeaderEditType]}>
       <ExerciseContainerAddSetViewVisibleCtx.Provider value={[addSetViewVisible, setAddSetViewVisible]}>
         <ExerciseContainerEditSetViewVisibleCtx.Provider value={[editSetViewVisible, setEditSetViewVisible]}>
           <Col lg={4} xs={12} className="mb-2">
             <Card>
               <CardHeader className="text-center pt-0 pb-0">
-                <ExerciseHeaderContainer exerciseData={currentExerciseData} superSetName={superSetName}/>
+                <ExerciseHeaderContainer exerciseData={currentExerciseData} superSetData={superSetData} initializeSuperSetData={initializeSuperSetData}/>
                 {showDebugInformation && <h2>Ex UID: {currentExerciseData.uid}</h2>}
               </CardHeader>
 
@@ -162,11 +191,12 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
                       {t("Actions")}
                     </DropdownToggle>
                     <DropdownMenu>
-                      <DropdownItem onClick={() => setHeaderEditVisible(EXERCISE_HEADER_TYPES.EDIT_EXERCISE_NAME)}>
+                      <DropdownItem onClick={() => setHeaderEditType(EXERCISE_HEADER_TYPES.EDIT_EXERCISE_NAME)}>
                         {`${t("Edit")} ${t("name")}`}
                       </DropdownItem>
                       {!exerciseDeleteStep2Shown && <DropdownItem toggle={false} onClick={() => setExerciseDeleteStep2Shown(true)}>{t("Delete")} {t("exercise")}</DropdownItem>}
                       {exerciseDeleteStep2Shown && <DropdownItem className="text-danger" onClick={() => delExercise()}>{t("Click again to delete!")}</DropdownItem>}
+                      <DropdownItem onClick={() => setHeaderEditType(EXERCISE_HEADER_TYPES.EDIT_SUPER_SET)}>{t('Edit super set')}</DropdownItem>
                     </DropdownMenu>
                   </ButtonDropdown>
                 </ButtonGroup>}

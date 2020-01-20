@@ -12,17 +12,15 @@ import {retrieveErrorMessage} from '../../../config/FirebaseUtils';
 import {exerciseFormValidation} from '../ExerciseHelpers';
 import {EXERCISE_HEADER_TYPES} from './ExerciseHeaderHelpers';
 
-const ExerciseHeaderForm: FunctionComponent<IExerciseHeaderProps> = ({exerciseData}) => {
+const ExerciseHeaderEditNameForm: FunctionComponent<IExerciseHeaderProps> = ({exerciseData}) => {
   const { t } = useTranslation();
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
-  // const [headerEditVisible, setHeaderEditVisible] = useContext(ExerciseHeaderEditCtx);
   const setHeaderEditVisible = useContext(ExerciseHeaderEditCtx)[1];
 
   const onSubmit = async (values: any, actions: FormikHelpers<IExerciseHeaderModel>) => {
     if (values.exerciseName === exerciseData.exerciseName) {
-      showExerciseNameAndHideThisForm();
-      return;
+      return showExerciseNameAndHideThisForm();
     }
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
@@ -34,11 +32,10 @@ const ExerciseHeaderForm: FunctionComponent<IExerciseHeaderProps> = ({exerciseDa
       await updateExercise(exerciseData.uid, updateData);
       exerciseData.exerciseName = values.exerciseName;
       actions.setSubmitting(false);
-      showExerciseNameAndHideThisForm();
+      return showExerciseNameAndHideThisForm();
     } catch (e) {
       setSubmitErrorMessage(retrieveErrorMessage(e));
     }
-
   };
 
   const showExerciseNameAndHideThisForm = () => {
@@ -58,7 +55,7 @@ const ExerciseHeaderForm: FunctionComponent<IExerciseHeaderProps> = ({exerciseDa
           {isSubmitting && <FontAwesomeIcon icon="spinner" spin/>}
           {!isSubmitting && <>
             <Form>
-              <FormikField labelText="Exercise name" name="exerciseName" labelHidden inputProps={{autoFocus: true}}/>
+              <FormikField name="exerciseName" labelHidden inputProps={{autoFocus: true}}/>
               <ButtonGroup className="w-100">
                 <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t("Save")}</Button>
                 <Button color="danger" onClick={showExerciseNameAndHideThisForm}>{t("Discard")}</Button>
@@ -76,4 +73,4 @@ interface IExerciseHeaderProps {
   exerciseData: IExerciseModel
 }
 
-export default ExerciseHeaderForm;
+export default ExerciseHeaderEditNameForm;

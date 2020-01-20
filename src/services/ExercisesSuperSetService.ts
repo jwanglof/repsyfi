@@ -1,5 +1,10 @@
 import firebase from '../config/firebase';
-import {FirebaseCollectionNames, getNowTimestamp} from '../config/FirebaseUtils';
+import {
+  FirebaseCollectionNames,
+  getErrorObjectCustomMessage,
+  getNowTimestamp,
+  IErrorObject, retrieveErrorMessage
+} from '../config/FirebaseUtils';
 import {IExercisesSuperSetsModel, IExercisesSuperSetsModelWithoutUid} from '../models/IExercisesSuperSetsModel';
 import isEmpty from 'lodash/isEmpty';
 import {Versions} from '../models/IBaseModel';
@@ -137,7 +142,7 @@ export const getSuperSetData = async (exerciseUid: string, dayUid: string): Prom
  * @param {string} dayUid The day UID the super set exists on in the cache.
  * @returns {Promise<String>} A promise with the new super set document's UID.
  */
-export const createNewSuperSetAndReturnUid = async (ownerUid: string, name: string, exerciseUid: string, dayUid: string): Promise<string> => {
+export const createAndGetNewSuperSetWithExercise = async (ownerUid: string, name: string, exerciseUid: string, dayUid: string): Promise<IExercisesSuperSetsModel> => {
   const data: IExercisesSuperSetsModelWithoutUid = {
     exercises: [exerciseUid],
     name: name,
@@ -156,7 +161,7 @@ export const createNewSuperSetAndReturnUid = async (ownerUid: string, name: stri
   };
   addSuperSetIfNotExistToDayCache(dayUid, superSetData);
 
-  return docRef.id;
+  return superSetData;
 };
 
 /**
@@ -178,15 +183,8 @@ export const addExerciseToSuperSet = async (superSetUid: string, exerciseUid: st
 };
 
 /**
- * Delete an exercise's UID from a super set document's exercise array in Firestore and from cache.
- *
- * This method have side-effects, namely:
- * <ul>
- *   <li><i>>IF</i> the super set is left without exercises the super set document will be removed in Firestore.</li>
- *   <li><i>>IF</i> the super set have exercises left the super set document will be altered in Firestore.</li>
- * </ul>
- *
- * <strong>CAN NOT be reversed! Use with caution!</strong>
+ * Wrapper for {@link deleteExerciseFromSuperSetWithUid}, see linked method's information!
+ * This method will not alter any Firestore documents if no super set data is found.
  *
  * @param {string} exerciseUid The exercise UID that should be removed from the super set.
  * @param {string} dayUid The day UID the super set exists on in the cache.
@@ -196,15 +194,37 @@ export const addExerciseToSuperSet = async (superSetUid: string, exerciseUid: st
 export const deleteExerciseFromSuperSet = (exerciseUid: string, dayUid: string, batch: firebase.firestore.WriteBatch): firebase.firestore.WriteBatch => {
   const superSetData = getSuperSetFromExerciseUid(exerciseUid, dayUid);
   if (superSetData) {
-    deleteExerciseFromSuperSetDayCache(exerciseUid, superSetData.uid, dayUid);
-    if (!superSetData.exercises.length) {
-      // Delete the super set if it doesn't contain any exercises
-      deleteEntireExerciseFromDayCache(dayUid, superSetData.uid);
-      batch.delete(getSuperSetDocument(superSetData.uid));
-    } else {
-      // Remove the exercise from the super set
-      batch.update(getSuperSetDocument(superSetData.uid), {exercises: firebase.firestore.FieldValue.arrayRemove(exerciseUid)});
-    }
+    batch = deleteExerciseFromSuperSetWithUid(exerciseUid, dayUid, superSetData, batch);
+  }
+  return batch;
+};
+
+/**
+ * Delete an exercise's UID from a super set document's exercise array in Firestore and from cache.
+ *
+ * This method have side-effects, namely:
+ * <ul>
+ *   <li><i>IF</i> the super set is left without exercises the super set document will be removed in Firestore.</li>
+ *   <li><i>ELSE IF</i> the super set have exercises left the super set document will be altered in Firestore.</li>
+ * </ul>
+ *
+ * <strong>CAN NOT be reversed! Use with caution!</strong>
+ *
+ * @param {string} exerciseUid The exercise UID that should be removed from the super set.
+ * @param {string} dayUid The day UID the super set exists on in the cache.
+ * @param {IExercisesSuperSetsModel} superSetData The super set data that will be used for information about what will be deleted.
+ * @param {firebase.firestore.WriteBatch} batch Used for chaining.
+ * @returns {firebase.firestore.WriteBatch} A WriteBatch for chaining.
+ */
+export const deleteExerciseFromSuperSetWithUid = (exerciseUid: string, dayUid: string, superSetData: IExercisesSuperSetsModel, batch: firebase.firestore.WriteBatch): firebase.firestore.WriteBatch => {
+  deleteExerciseFromSuperSetDayCache(exerciseUid, superSetData.uid, dayUid);
+  if (!superSetData.exercises.length) {
+    // Delete the super set if it doesn't contain any exercises
+    deleteEntireExerciseFromDayCache(dayUid, superSetData.uid);
+    batch.delete(getSuperSetDocument(superSetData.uid));
+  } else {
+    // Remove the exercise from the super set
+    batch.update(getSuperSetDocument(superSetData.uid), {exercises: firebase.firestore.FieldValue.arrayRemove(exerciseUid)});
   }
   return batch;
 };
@@ -223,3 +243,36 @@ export const deleteSuperSet = (superSetUid: string, dayUid: string, batch: fireb
   removeEntireDayFromDayCache(dayUid);
   return batch.delete(getSuperSetDocument(superSetUid));
 };
+
+/**
+ * Get a Firebase snapshot listener.
+ *
+ * @param {string} superSetUid The super set UID that the listener will be returned for.
+ * @param {function} cb Callback function that will be called on new snapshot data.
+ * @param {function} errCb Callback function that will be called on snapshot errors.
+ * @returns An unsubscribe function that can be called to cancel the snapshot listener.
+ */
+export const getSuperSetOnSnapshot = (superSetUid: string, cb: ((data: IExercisesSuperSetsModel) => void), errCb: ((error: IErrorObject) => void)): any => {
+  return getSuperSetDocument(superSetUid)
+    .onSnapshot({includeMetadataChanges: true}, doc => {
+      if (doc.exists && !isEmpty(doc.data())) {
+        const snapshotData: any = doc.data();
+        cb(getSuperSetModelFromSnapshotData(superSetUid, snapshotData));
+      } else {
+        errCb(getErrorObjectCustomMessage(superSetUid, FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_SUPER_SET, 'No data'));
+      }
+    }, err => {
+      console.error('error:', err);
+      const errMessage = retrieveErrorMessage(err);
+      errCb(getErrorObjectCustomMessage(superSetUid, FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_SUPER_SET, errMessage));
+    });
+};
+
+const getSuperSetModelFromSnapshotData = (superSetUid: string, snapshotData: any): IExercisesSuperSetsModel => ({
+  exercises: snapshotData.exercises,
+  name: snapshotData.name,
+  uid: superSetUid,
+  ownerUid: snapshotData.ownerUid,
+  createdTimestamp: snapshotData.createdTimestamp,
+  version: snapshotData.version
+});

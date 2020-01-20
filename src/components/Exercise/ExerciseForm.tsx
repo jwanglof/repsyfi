@@ -18,12 +18,13 @@ import {withRoute} from 'react-router5';
 import {addNewSetsSecondsExerciseAndGetUid} from '../Sets/SetsSeconds/SetsSecondsService';
 import {
   addExerciseToSuperSet,
-  createNewSuperSetAndReturnUid,
+  createAndGetNewSuperSetWithExercise,
   getAllSuperSets
 } from '../../services/ExercisesSuperSetService';
 import {IExercisesSuperSetsModel} from '../../models/IExercisesSuperSetsModel';
 import {orderBy} from 'lodash';
-import {exerciseFormValidation, getSuperSetOptions, SUPER_SET_DEFAULT_TYPES} from './ExerciseHelpers';
+import {exerciseFormValidation, parseProvidedSuperSetOptions, SUPER_SET_DEFAULT_TYPES} from './ExerciseHelpers';
+import {getNextSuperSetName} from '../../utils/exercise-utils';
 
 const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> = ({router, setAddExerciseViewVisible}) => {
   const { t } = useTranslation();
@@ -71,12 +72,8 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
 
       if (values.superSet === SUPER_SET_DEFAULT_TYPES.NEW) {
         // Create new super set with created exercise
-        let superSetName = '1';
-        if (superSets.length) {
-          // The name is auto set to integers (for now) so just add 1 to the name
-          superSetName = (parseInt(superSets[superSets.length - 1].name) + 1).toString();
-        }
-        await createNewSuperSetAndReturnUid(ownerUid, superSetName, exerciseUid, dayUid);
+        const superSetName = getNextSuperSetName(superSets);
+        await createAndGetNewSuperSetWithExercise(ownerUid, superSetName, exerciseUid, dayUid);
       } else if (values.superSet !== SUPER_SET_DEFAULT_TYPES.EMPTY && values.superSet) {
         // Update existing super set with created exercise
         await addExerciseToSuperSet(values.superSet, exerciseUid, dayUid);
@@ -98,6 +95,14 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
     // {value: ExerciseTypesEnum.EXERCISE_TYPE_NOT_CHOSEN, label: 'Other'},  // TODO Implement
   ]);
 
+  const getSuperSetOptions = (): ISelectFormOptions[] => {
+    const d = parseProvidedSuperSetOptions(superSets);
+    const emptyOption = {value: SUPER_SET_DEFAULT_TYPES.EMPTY, label: t('No')};
+    const newOption = {value: SUPER_SET_DEFAULT_TYPES.NEW, label: t('New super set')};
+    d.unshift(emptyOption, newOption);
+    return d;
+  };
+
   const emptyInitialValues: IExerciseForm = {
     exerciseName: '',
     type: ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS,
@@ -113,24 +118,29 @@ const ExerciseForm: FunctionComponent<IExerciseFormRouter & IExerciseFormProps> 
           validate={(values: any) => {
             return exerciseFormValidation(values, t);
           }}>
-          {({ errors, isSubmitting }) => (
-            <Form>
-              <FieldFormGroup name="exerciseName" labelText={t('Exercise name')} inputProps={{autoFocus: true}}/>
-              <SelectFormGroup name="type" labelText={t('Exercise type')} options={getExerciseTypes()}/>
-              <SelectFormGroup name="superSet" labelText={t('Part of super set')} options={getSuperSetOptions(superSets, t)}/>
+          {({ errors, isSubmitting, values }) => {
+            const showSuperSetDropDown = values.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS || values.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS;
+            return (
+              <Form>
+                <FieldFormGroup name="exerciseName" labelText={t('Exercise name')} inputProps={{autoFocus: true}}/>
+                <SelectFormGroup name="type" labelText={t('Exercise type')} options={getExerciseTypes()}/>
+                {showSuperSetDropDown && <SelectFormGroup name="superSet" labelText={t('Part of super set')} options={getSuperSetOptions()}/>}
 
-              <Row>
-                <Col xs={12}>
-                  <FormGroup>
-                    <ButtonGroup className="w-100">
-                      <Button type="submit" color="primary" disabled={isSubmitting || !isEmpty(errors)}>{t('Save exercise')}</Button>
-                      <Button color="danger" onClick={() => setAddExerciseViewVisible(false)}>{t('Discard exercise')}</Button>
-                    </ButtonGroup>
-                  </FormGroup>
-                </Col>
-              </Row>
-            </Form>
-          )}
+                <Row>
+                  <Col xs={12}>
+                    <FormGroup>
+                      <ButtonGroup className="w-100">
+                        <Button type="submit" color="primary"
+                                disabled={isSubmitting || !isEmpty(errors)}>{t('Save exercise')}</Button>
+                        <Button color="danger"
+                                onClick={() => setAddExerciseViewVisible(false)}>{t('Discard exercise')}</Button>
+                      </ButtonGroup>
+                    </FormGroup>
+                  </Col>
+                </Row>
+              </Form>
+            );
+          }}
         </Formik>
       </Col>
     </Row>
@@ -146,7 +156,6 @@ interface IExerciseForm {
   type: ExerciseTypesEnum
   superSet: string | undefined
 }
-
 
 interface IExerciseFormRouter {
   router: Router

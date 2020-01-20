@@ -1,8 +1,8 @@
 import {InputType} from 'reactstrap/lib/Input';
 
 export interface IFormikProps {
-  labelText: string,
   name: string,
+  labelText?: string,
   type?: InputType,
   labelHidden?: boolean,
   suggestions?: string[],
