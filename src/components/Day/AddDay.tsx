@@ -9,13 +9,11 @@ import {IDayBasicModel} from '../../models/IDayModel';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import getUnixTime from 'date-fns/getUnixTime';
 import parseISO from 'date-fns/parseISO';
-import {Formik, FormikHelpers} from 'formik';
+import {Formik, FormikHelpers, Form} from 'formik';
 import {getCurrentUsersUid, retrieveErrorMessage} from '../../config/FirebaseUtils';
 import {Button, Col, FormGroup, Row} from 'reactstrap';
 import DateTimePickerFormGroup from '../Formik/DateTimePickerFormGroup';
 import DatepickerFormGroup from '../Formik/DatepickerFormGroup';
-// @ts-ignore
-import {Form} from 'react-formik-ui';
 import isDate from 'date-fns/isDate';
 import {RouteNames} from '../../routes';
 import FieldFormGroup from '../Formik/FieldFormGroup';
@@ -76,12 +74,13 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
       // Add the location to the cache
       addLocationToCache(values.location);
 
+      actions.setSubmitting(false);
+
       router.navigate(RouteNames.SPECIFIC_DAY, {uid: newUid}, {reload: true});
     } catch (e) {
       console.error(e);
       setSubmitErrorMessage(retrieveErrorMessage(e));
     }
-    actions.setSubmitting(false);
   };
 
   const validate = (values: IAddDayEditData): IAddDayFormValidate | {} => {
@@ -101,10 +100,9 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
         <Formik
           initialValues={initialData}
           onSubmit={onSubmit}
-          validate={validate}
-          // render={({ errors, status, touched, isSubmitting }) => (
-          render={({ errors, isSubmitting }) => (
-            <Form mode='structured'>
+          validate={validate}>
+          {({ errors, isSubmitting }) => (
+            <Form>
               <AutocompleteFormGroup name="location" labelText={t("Workout location")} suggestions={locations}/>
               <FieldFormGroup name="muscleGroups" labelText={t("Muscle groups")}/>
               <FieldFormGroup name="title" labelText={t("Title")}/>
@@ -120,7 +118,7 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
               </FormGroup>
             </Form>
           )}
-        />
+        </Formik>
       </Col>
     </Row>
   );
