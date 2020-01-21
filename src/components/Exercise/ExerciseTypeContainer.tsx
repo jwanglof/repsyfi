@@ -165,6 +165,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
   };
 
   const showFooterButtons = !addSetViewVisible && !editSetViewVisible && !headerEditType;
+  const typeContainsSets = (currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS || currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS);
 
   return (
     <ExerciseHeaderEditCtx.Provider value={[headerEditType, setHeaderEditType]}>
@@ -179,7 +180,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
 
               <CardBody className="p-0">
                 {showDebugInformation && <Row><Col>Type UID: {currentExerciseData.typeUid}</Col></Row>}
-                {(currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS || currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS) && <SetsView setsExerciseUid={currentExerciseData.typeUid} exerciseType={currentExerciseData.type}/>}
+                {typeContainsSets && <SetsView setsExerciseUid={currentExerciseData.typeUid} exerciseType={currentExerciseData.type}/>}
                 {currentExerciseData.type === ExerciseTypesEnum.EXERCISE_TYPE_TIME_DISTANCE && <TimeDistanceExerciseContainer timeDistanceExerciseUid={currentExerciseData.typeUid}/>}
               </CardBody>
 
@@ -196,7 +197,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
                       </DropdownItem>
                       {!exerciseDeleteStep2Shown && <DropdownItem toggle={false} onClick={() => setExerciseDeleteStep2Shown(true)}>{t("Delete")} {t("exercise")}</DropdownItem>}
                       {exerciseDeleteStep2Shown && <DropdownItem className="text-danger" onClick={() => delExercise()}>{t("Click again to delete!")}</DropdownItem>}
-                      <DropdownItem onClick={() => setHeaderEditType(EXERCISE_HEADER_TYPES.EDIT_SUPER_SET)}>{t('Edit super set')}</DropdownItem>
+                      {typeContainsSets && <DropdownItem onClick={() => setHeaderEditType(EXERCISE_HEADER_TYPES.EDIT_SUPER_SET)}>{t('Edit super set')}</DropdownItem>}
                     </DropdownMenu>
                   </ButtonDropdown>
                 </ButtonGroup>}
