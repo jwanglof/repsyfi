@@ -4,7 +4,14 @@ import {
   ITimeDistanceModelWithoutUid,
   ITimeDistanceUpdateModel
 } from '../../models/ITimeDistanceModel';
-import {FirebaseCollectionNames, getNowTimestamp, getTimeDistanceExerciseErrorObject} from '../../config/FirebaseUtils';
+import {
+  FirebaseCollectionNames,
+  getErrorObjectCustomMessage,
+  getNowTimestamp,
+  getTimeDistanceExerciseErrorObject,
+  IErrorObject,
+  retrieveErrorMessage
+} from '../../config/FirebaseUtils';
 import {Versions} from '../../models/IBaseModel';
 import firebase from '../../config/firebase';
 import isEmpty from 'lodash/isEmpty';
@@ -36,20 +43,7 @@ export const getTimeDistanceExercise = async (exerciseUid: string): Promise<ITim
     .get();
   if (!isEmpty(querySnapshot.data())) {
     const exerciseData = querySnapshot.data()!;
-    return {
-      totalTimeSeconds: exerciseData.totalTimeSeconds,
-      totalDistanceMeter: exerciseData.totalDistanceMeter,
-      totalWarmupSeconds: exerciseData.totalWarmupSeconds,
-      totalKcal: exerciseData.totalKcal,
-      speedMin: exerciseData.speedMin,
-      speedMax: exerciseData.speedMax,
-      inclineMin: exerciseData.inclineMin,
-      inclineMax: exerciseData.inclineMax,
-      uid: querySnapshot.id,
-      ownerUid: exerciseData.ownerUid,
-      createdTimestamp: exerciseData.createdTimestamp,
-      version: exerciseData.version
-    };
+    return getTimeDistanceModelFromSnapshotData(exerciseUid, exerciseData);
   } else {
     throw getTimeDistanceExerciseErrorObject(exerciseUid);
   }
@@ -82,3 +76,34 @@ export const getTimeDistanceDocument = (timeDistanceUid: string): firebase.fires
     .collection(FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_TIME_DISTANCE)
     .doc(timeDistanceUid);
 };
+
+export const getTimeDistanceOnSnapshot  = (timeDistanceUid: string, cb: ((data: ITimeDistanceModel) => void), errCb: ((error: IErrorObject) => void)): any => {
+  return getTimeDistanceDocument(timeDistanceUid)
+    .onSnapshot({includeMetadataChanges: true}, doc => {
+      if (doc.exists && !isEmpty(doc.data())) {
+        const snapshotData: any = doc.data();
+        cb(getTimeDistanceModelFromSnapshotData(timeDistanceUid, snapshotData));
+      } else {
+        errCb(getErrorObjectCustomMessage(timeDistanceUid, FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_TIME_DISTANCE, 'No data'));
+      }
+    }, err => {
+      console.error('error:', err);
+      const errMessage = retrieveErrorMessage(err);
+      errCb(getErrorObjectCustomMessage(timeDistanceUid, FirebaseCollectionNames.FIRESTORE_COLLECTION_EXERCISE_TYPE_TIME_DISTANCE, errMessage));
+    });
+};
+
+const getTimeDistanceModelFromSnapshotData = (timeDistanceUid: string, snapshotData: any): ITimeDistanceModel => ({
+  totalTimeSeconds: snapshotData.totalTimeSeconds,
+  totalDistanceMeter: snapshotData.totalDistanceMeter,
+  totalWarmupSeconds: snapshotData.totalWarmupSeconds,
+  totalKcal: snapshotData.totalKcal,
+  speedMin: snapshotData.speedMin,
+  speedMax: snapshotData.speedMax,
+  inclineMin: snapshotData.inclineMin,
+  inclineMax: snapshotData.inclineMax,
+  uid: timeDistanceUid,
+  ownerUid: snapshotData.ownerUid,
+  createdTimestamp: snapshotData.createdTimestamp,
+  version: snapshotData.version
+});

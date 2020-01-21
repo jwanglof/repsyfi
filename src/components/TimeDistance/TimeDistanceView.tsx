@@ -1,40 +1,11 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
+import React, {FunctionComponent} from 'react';
 import {ITimeDistanceModel} from '../../models/ITimeDistanceModel';
 import {Table} from 'reactstrap';
 import {useTranslation} from 'react-i18next';
 import {formatSecondsToPrettyPrint} from '../../utils/time-utils';
-import ErrorAlert from '../ErrorAlert/ErrorAlert';
-import {getTimeDistanceExercise} from './TimeDistanceService';
-import LoadingAlert from '../LoadingAlert/LoadingAlert';
-import {retrieveErrorMessage} from '../../config/FirebaseUtils';
 
-const TimeDistanceView: FunctionComponent<ITimeDistanceViewProps> = ({timeDistanceUid}) => {
+const TimeDistanceView: FunctionComponent<ITimeDistanceViewProps> = ({timeDistanceData}) => {
   const { t } = useTranslation();
-
-  const [timeDistanceData, setTimeDistanceDataData] = useState<ITimeDistanceModel | undefined>(undefined);
-  const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    const fetchExerciseData = async () => {
-      try {
-        const res = await getTimeDistanceExercise(timeDistanceUid);
-        setTimeDistanceDataData(res);
-      } catch (e) {
-        console.error(e);
-        setFetchDataError(retrieveErrorMessage(e));
-      }
-    };
-
-    fetchExerciseData();
-  }, [timeDistanceUid]);
-
-  if (fetchDataError) {
-    return <ErrorAlert errorText={fetchDataError} componentName="TimeDistanceView"/>;
-  }
-
-  if (!timeDistanceData) {
-    return <LoadingAlert componentName="TimeDistanceView"/>;
-  }
 
   return (<Table size="sm" className="mb-0">
     <tbody>
@@ -78,7 +49,7 @@ const TimeDistanceView: FunctionComponent<ITimeDistanceViewProps> = ({timeDistan
 };
 
 interface ITimeDistanceViewProps {
-  timeDistanceUid: string,
+  timeDistanceData: ITimeDistanceModel
 }
 
 export default TimeDistanceView;

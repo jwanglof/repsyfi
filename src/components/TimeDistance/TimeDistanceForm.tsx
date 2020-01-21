@@ -1,47 +1,25 @@
-import React, {FunctionComponent, useContext, useEffect, useState} from 'react';
+import React, {FunctionComponent, useContext, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {ITimeDistanceBasicModel, ITimeDistanceModel} from '../../models/ITimeDistanceModel';
-import {Formik, FormikHelpers, Form} from 'formik';
+import {Form, Formik, FormikHelpers} from 'formik';
 import {Button, ButtonGroup} from 'reactstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import FieldFormGroup from '../Formik/FieldFormGroup';
 import DurationFormGroup from '../Formik/DurationFormGroup';
-import {getTimeDistanceExercise, updateTimeDistanceExercise} from './TimeDistanceService';
-import LoadingAlert from '../LoadingAlert/LoadingAlert';
+import {updateTimeDistanceExercise} from './TimeDistanceService';
 import {retrieveErrorMessage} from '../../config/FirebaseUtils';
 import {ExerciseContainerAddSetViewVisibleCtx} from '../Exercise/ExerciseTypeContainer';
 
-const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistanceUid}) => {
+const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistanceData}) => {
   const { t } = useTranslation();
 
   const setEditVisible = useContext(ExerciseContainerAddSetViewVisibleCtx)[1];
 
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
-  const [timeDistanceData, setTimeDistanceDataData] = useState<ITimeDistanceModel | undefined>(undefined);
-  const [fetchDataError, setFetchDataError] = useState<string | undefined>(undefined);
 
-  useEffect(() => {
-    const fetchExerciseData = async () => {
-      try {
-        const res = await getTimeDistanceExercise(timeDistanceUid);
-        setTimeDistanceDataData(res);
-      } catch (e) {
-        console.error(e);
-        setFetchDataError(retrieveErrorMessage(e));
-      }
-    };
-
-    // noinspection JSIgnoredPromiseFromCall
-    fetchExerciseData();
-  }, [timeDistanceUid]);
-
-  if (fetchDataError || submitErrorMessage) {
-    return <ErrorAlert errorText={fetchDataError || submitErrorMessage} componentName="TimeDistanceView"/>;
-  }
-
-  if (!timeDistanceData) {
-    return <LoadingAlert componentName="TimeDistanceView"/>;
+  if (submitErrorMessage) {
+    return <ErrorAlert errorText={submitErrorMessage} componentName="TimeDistanceView"/>;
   }
 
   const onSubmit = async (values: ITimeDistanceBasicModel, actions: FormikHelpers<ITimeDistanceModel>) => {
@@ -87,7 +65,7 @@ const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistan
 };
 
 interface ITimeDistanceFormProps {
-  timeDistanceUid: string
+  timeDistanceData: ITimeDistanceModel
 }
 
 export default TimeDistanceForm;
