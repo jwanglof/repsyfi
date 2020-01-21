@@ -31,7 +31,7 @@ const SetEditForm: FunctionComponent<ISetFormProps> = ({setEditVisible, exercise
     return () => {
       setEditSetViewVisible(false);
     };
-  }, []);
+  }, [setEditSetViewVisible]);
 
   if (errorMessage) {
     return <Row><Col><ErrorAlert errorText={errorMessage} componentName="SetForm" uid={currentData.uid}/></Col></Row>;

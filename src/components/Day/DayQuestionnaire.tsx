@@ -2,9 +2,7 @@ import React, {FunctionComponent, useEffect, useState} from 'react';
 import {Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, CardTitle, Col, Row} from 'reactstrap';
 import {useTranslation} from 'react-i18next';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {Formik, FormikHelpers} from 'formik';
-// @ts-ignore
-import {Form} from 'react-formik-ui';
+import {Formik, FormikHelpers, Form} from 'formik';
 import DurationFormGroup from '../Formik/DurationFormGroup';
 import {FEELING, IDayQuestionnaireBasicModelV1, IDayQuestionnaireModelV1} from '../../models/IDayQuestionnaireModel';
 import {FirebaseCollectionNames, getCurrentUsersUid, retrieveErrorMessage} from '../../config/FirebaseUtils';
@@ -128,11 +126,11 @@ const DayQuestionnaire: FunctionComponent<IDayQuestionnaireRouter & IDayQuestion
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={onSubmit}
-      render={({errors, isSubmitting}) => (
+      onSubmit={onSubmit}>
+      {({errors, isSubmitting}) => (
         <>
           {isSubmitting && <div className="text-center"><FontAwesomeIcon icon="spinner" spin/></div>}
-          {!isSubmitting && <Form mode='structured'>
+          {!isSubmitting && <Form>
             <Row>
               <Col className="mt-3" xs={12}>
                 <Card>
@@ -199,7 +197,7 @@ const DayQuestionnaire: FunctionComponent<IDayQuestionnaireRouter & IDayQuestion
           </Form>}
         </>
       )}
-    />
+    </Formik>
   );
 };
 

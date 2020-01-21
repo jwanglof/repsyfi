@@ -2,12 +2,10 @@ import React, {FunctionComponent, useContext, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {ITimeDistanceBasicModel, ITimeDistanceModel} from '../../models/ITimeDistanceModel';
-import {Formik, FormikHelpers} from 'formik';
+import {Formik, FormikHelpers, Form} from 'formik';
 import {Button, ButtonGroup} from 'reactstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import FieldFormGroup from '../Formik/FieldFormGroup';
-// @ts-ignore
-import {Form} from 'react-formik-ui';
 import DurationFormGroup from '../Formik/DurationFormGroup';
 import {getTimeDistanceExercise, updateTimeDistanceExercise} from './TimeDistanceService';
 import LoadingAlert from '../LoadingAlert/LoadingAlert';
@@ -34,6 +32,7 @@ const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistan
       }
     };
 
+    // noinspection JSIgnoredPromiseFromCall
     fetchExerciseData();
   }, [timeDistanceUid]);
 
@@ -50,23 +49,24 @@ const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistan
     setSubmitErrorMessage(undefined);
     try {
       await updateTimeDistanceExercise(timeDistanceData.uid, values);
+      actions.setSubmitting(false);
+
       // Hide this form
       setEditVisible(false)
     } catch (e) {
       console.error(e);
       setSubmitErrorMessage(retrieveErrorMessage(e));
     }
-    actions.setSubmitting(false);
   };
 
   return (
     <Formik
       initialValues={timeDistanceData}
-      onSubmit={onSubmit}
-      render={({errors, isSubmitting}) => (
+      onSubmit={onSubmit}>
+      {({errors, isSubmitting}) => (
         <>
           {isSubmitting && <div className="text-center"><FontAwesomeIcon icon="spinner" spin/></div>}
-          {!isSubmitting && <Form mode='structured'>
+          {!isSubmitting && <Form>
             <DurationFormGroup name="totalTimeSeconds" labelText={t("Total exercise time (HH MM SS)")} autoFocus/>
             <DurationFormGroup name="totalWarmupSeconds" labelText={t("Total warm-up time (HH MM SS)")}/>
             <FieldFormGroup type="number" name="totalDistanceMeter" labelText={t("Total distance (meters)")}/>
@@ -82,7 +82,7 @@ const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistan
           </Form>}
         </>
       )}
-    />
+    </Formik>
   );
 };
 

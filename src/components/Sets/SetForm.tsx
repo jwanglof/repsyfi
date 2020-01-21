@@ -1,8 +1,6 @@
 import React, {FunctionComponent} from 'react';
-import {Formik, FormikHelpers} from 'formik';
+import {Formik, FormikHelpers, Form} from 'formik';
 import {ISetModel} from '../../models/ISetModel';
-// @ts-ignore
-import {Form} from 'react-formik-ui';
 import FormikField from '../Formik/FormikField';
 import {useTranslation} from 'react-i18next';
 import {Button, ButtonGroup, Col, Row} from 'reactstrap';
@@ -18,8 +16,8 @@ const SetForm: FunctionComponent<ISetFormProps> = ({hideFormCb, exerciseType, cu
     onSubmit={onSubmit}
     validate={(values: any) => {
       return setsValidation(values, t);
-    }}
-    render={({errors, isSubmitting}) => (
+    }}>
+    {({errors, isSubmitting}) => (
       <>
         {isSubmitting && <Row><Col className="text-center"><FontAwesomeIcon icon="spinner" spin/></Col></Row>}
         {!isSubmitting && <Form>
@@ -41,7 +39,7 @@ const SetForm: FunctionComponent<ISetFormProps> = ({hideFormCb, exerciseType, cu
         </Form>}
       </>
     )}
-  />;
+  </Formik>;
 };
 
 interface ISetFormProps {

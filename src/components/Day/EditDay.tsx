@@ -11,13 +11,11 @@ import ErrorAlert from '../ErrorAlert/ErrorAlert';
 import {isEmpty} from 'lodash';
 import getUnixTime from 'date-fns/getUnixTime';
 import parseISO from 'date-fns/parseISO';
-import {Formik, FormikHelpers} from 'formik';
+import {Formik, FormikHelpers, Form} from 'formik';
 import {Button, ButtonGroup, Col, FormGroup, Row} from 'reactstrap';
 import FieldFormGroup from '../Formik/FieldFormGroup';
 import DateTimePickerFormGroup from '../Formik/DateTimePickerFormGroup';
 import DatepickerFormGroup from '../Formik/DatepickerFormGroup';
-// @ts-ignore
-import {Form} from 'react-formik-ui';
 import {isDate, format} from 'date-fns';
 import {RouteNames} from '../../routes';
 import {retrieveErrorMessage} from '../../config/FirebaseUtils';
@@ -87,12 +85,12 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
         data.endTimestamp = undefined;
       }
       await updateDay(dayUid, data);
+      actions.setSubmitting(false);
       router.navigate(RouteNames.SPECIFIC_DAY, {uid: dayUid}, {reload: true});
     } catch (e) {
       console.error(e);
       setSubmitErrorMessage(retrieveErrorMessage(e));
     }
-    actions.setSubmitting(false);
   };
 
   const validate = (values: IEditDayEditData): IEditDayFormValidate | {} => {
@@ -114,10 +112,9 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
         <Formik
           initialValues={initialData}
           onSubmit={onUpdate}
-          validate={validate}
-          // render={({ errors, status, touched, isSubmitting }) => (
-          render={({ errors, isSubmitting }) => (
-            <Form mode='structured'>
+          validate={validate}>
+          {({ errors, isSubmitting }) => (
+            <Form>
               <FieldFormGroup name="location" labelText={t("Workout location")}/>
               <FieldFormGroup name="muscleGroups" labelText={t("Muscle groups")}/>
               <FieldFormGroup name="title" labelText={t("Title")}/>
@@ -139,7 +136,7 @@ const EditDay: FunctionComponent<IEditDayProps & IEditDayRouter> = ({router, day
               </FormGroup>
             </Form>
           )}
-        />
+        </Formik>
       </Col>
     </Row>
   );
