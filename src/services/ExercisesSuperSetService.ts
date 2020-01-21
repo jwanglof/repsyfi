@@ -44,7 +44,7 @@ const addExerciseToDayCache = (dayUid: string, superSetUid: string, exerciseUid:
 };
 
 const deleteExerciseFromSuperSetDayCache = (exerciseUid: string, superSetUid: string, dayUid: string) => {
-  if (simpleDayCache[dayUid]) {
+  if (!simpleDayCache[dayUid]) {
     return;
   }
   simpleDayCache[dayUid].forEach(superSetModel => {
@@ -217,14 +217,15 @@ export const deleteExerciseFromSuperSet = (exerciseUid: string, dayUid: string, 
  * @returns {firebase.firestore.WriteBatch} A WriteBatch for chaining.
  */
 export const deleteExerciseFromSuperSetWithUid = (exerciseUid: string, dayUid: string, superSetData: IExercisesSuperSetsModel, batch: firebase.firestore.WriteBatch): firebase.firestore.WriteBatch => {
-  deleteExerciseFromSuperSetDayCache(exerciseUid, superSetData.uid, dayUid);
+  const superSetUid = superSetData.uid;
+  deleteExerciseFromSuperSetDayCache(exerciseUid, superSetUid, dayUid);
   if (!superSetData.exercises.length) {
     // Delete the super set if it doesn't contain any exercises
-    deleteEntireExerciseFromDayCache(dayUid, superSetData.uid);
-    batch.delete(getSuperSetDocument(superSetData.uid));
+    deleteEntireExerciseFromDayCache(dayUid, superSetUid);
+    batch.delete(getSuperSetDocument(superSetUid));
   } else {
     // Remove the exercise from the super set
-    batch.update(getSuperSetDocument(superSetData.uid), {exercises: firebase.firestore.FieldValue.arrayRemove(exerciseUid)});
+    batch.update(getSuperSetDocument(superSetUid), {exercises: firebase.firestore.FieldValue.arrayRemove(exerciseUid)});
   }
   return batch;
 };

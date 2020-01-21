@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useContext, useEffect, useState} from 'react';
+import React, {Dispatch, FunctionComponent, SetStateAction, useContext, useEffect, useState} from 'react';
 import {Form, Formik, FormikHelpers} from 'formik';
 import {IExercisesSuperSetsModel} from '../../../models/IExercisesSuperSetsModel';
 import {Button, ButtonGroup, Col} from 'reactstrap';
@@ -6,11 +6,12 @@ import {EXERCISE_HEADER_TYPES} from './ExerciseHeaderHelpers';
 import {ExerciseHeaderEditCtx} from '../ExerciseTypeContainer';
 import {useTranslation} from 'react-i18next';
 import SelectFormGroup, {ISelectFormOptions} from '../../Formik/SelectFormGroup';
-import {SUPER_SET_DEFAULT_TYPES} from '../ExerciseHelpers';
+import {parseProvidedSuperSetOptions, SUPER_SET_DEFAULT_TYPES} from '../ExerciseHelpers';
 import {
+  addExerciseToSuperSet,
   createAndGetNewSuperSetWithExercise,
   deleteExerciseFromSuperSetWithUid,
-  getAllSuperSets
+  getAllSuperSets, getSuperSetFromExerciseUid
 } from '../../../services/ExercisesSuperSetService';
 import {orderBy} from 'lodash';
 import {withRoute} from 'react-router5';
@@ -20,8 +21,9 @@ import firebase from '../../../config/firebase';
 import {getCurrentUsersUid, retrieveErrorMessage} from '../../../config/FirebaseUtils';
 import ErrorAlert from '../../ErrorAlert/ErrorAlert';
 import {getNextSuperSetName} from '../../../utils/exercise-utils';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
-const ExerciseHeaderSuperSetForm: FunctionComponent<IExerciseHeaderSuperSetFormRouter & IExerciseHeaderSuperSetFormProps> = ({router, exerciseData, superSetData, initializeSuperSetData}) => {
+const ExerciseHeaderSuperSetForm: FunctionComponent<IExerciseHeaderSuperSetFormRouter & IExerciseHeaderSuperSetFormProps> = ({router, exerciseData, superSetData, setInitialSuperSetData}) => {
   const { t } = useTranslation();
   const dayUid = router.getState().params.uid;
 
@@ -39,31 +41,58 @@ const ExerciseHeaderSuperSetForm: FunctionComponent<IExerciseHeaderSuperSetFormR
     return <ErrorAlert errorText={submitErrorMessage} componentName="ExerciseHeaderSuperSetForm"/>;
   }
 
+  const removeSuperSet = async (exerciseUid: string) => {
+    // More: https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
+    let batch = firebase.firestore().batch();
+    if (superSetData) {
+      batch = deleteExerciseFromSuperSetWithUid(exerciseUid, dayUid, superSetData, batch);
+    }
+    setInitialSuperSetData(null);
+    return await batch.commit();
+  };
+
+  const newSuperSet = async (exerciseUid: string) => {
+    const ownerUid: string = await getCurrentUsersUid();
+    const superSetName = getNextSuperSetName(superSets);
+    const superSetData = await createAndGetNewSuperSetWithExercise(ownerUid, superSetName, exerciseUid, dayUid);
+    setInitialSuperSetData(superSetData);
+  };
+
+  const changeSuperSet = async (exerciseUid: string, changeToSuperSetUid: string) => {
+    // More: https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
+    let batch = firebase.firestore().batch();// const changeToSuperSetUid = values.superSet;
+    // Delete the current exercise from existing super set, if the current exercise have a super set
+    if (superSetData) {
+      batch = deleteExerciseFromSuperSetWithUid(exerciseUid, dayUid, superSetData, batch);
+    }
+    // Add the current exercise to the super set
+    await addExerciseToSuperSet(changeToSuperSetUid, exerciseUid, dayUid);
+    const newSuperSetData = getSuperSetFromExerciseUid(exerciseUid, dayUid);
+    if (newSuperSetData) {
+      setInitialSuperSetData(newSuperSetData);
+    }
+    return await batch.commit();
+  };
+
   const onSubmit = async (values: IExerciseForm, actions: FormikHelpers<IExerciseForm>) => {
-    console.log('OnSubtmi', values);
     if (superSetData && values.superSet === superSetData.uid) {
       return showExerciseNameAndHideThisForm();
     }
+
     actions.setSubmitting(true);
     setSubmitErrorMessage(undefined);
 
     try {
-      const ownerUid: string = await getCurrentUsersUid();
       const exerciseUid = exerciseData.uid;
 
-      // More: https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
-      let batch = firebase.firestore().batch();
-      if (superSetData && values.superSet === SUPER_SET_DEFAULT_TYPES.REMOVE) {
-        batch = deleteExerciseFromSuperSetWithUid(exerciseUid, dayUid, superSetData, batch);
+      if (values.superSet === SUPER_SET_DEFAULT_TYPES.REMOVE) {
+        await removeSuperSet(exerciseUid);
       } else if (values.superSet === SUPER_SET_DEFAULT_TYPES.NEW) {
-        const superSetName = getNextSuperSetName(superSets);
-        const superSetData = await createAndGetNewSuperSetWithExercise(ownerUid, superSetName, exerciseUid, dayUid);
-        initializeSuperSetData(superSetData);
-      } else {
-        // TODO!
-        console.info('Change super set is left to implement!!');
+        await newSuperSet(exerciseUid);
+      } else if (values.superSet) {
+        await changeSuperSet(exerciseUid, values.superSet)
       }
-      await batch.commit();
+
       actions.setSubmitting(false);
       return showExerciseNameAndHideThisForm();
     } catch (e) {
@@ -77,9 +106,7 @@ const ExerciseHeaderSuperSetForm: FunctionComponent<IExerciseHeaderSuperSetFormR
   };
 
   const getSuperSetOptions = (): ISelectFormOptions[] => {
-    // TODO! Add these options when user can change the super set!!
-    // const d = parseProvidedSuperSetOptions(superSets, t);
-    const d = [];
+    const d = parseProvidedSuperSetOptions(superSets);
     // Only add the remove option if the exercise have any super set data
     if (superSetData) {
       const removeOption = {value: SUPER_SET_DEFAULT_TYPES.REMOVE, label: t('Remove from super set')};
@@ -104,14 +131,17 @@ const ExerciseHeaderSuperSetForm: FunctionComponent<IExerciseHeaderSuperSetFormR
           initialValues={initialData}
           onSubmit={onSubmit}>
           {({errors, isSubmitting}) => (
-            <Form>
-              <SelectFormGroup name="superSet" options={getSuperSetOptions()}/>
+            <>
+              {isSubmitting && <FontAwesomeIcon icon="spinner" spin/>}
+              {!isSubmitting && <Form>
+                <SelectFormGroup name="superSet" options={getSuperSetOptions()}/>
 
-              <ButtonGroup className="w-100">
-                <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t("Save")}</Button>
-                <Button color="danger" onClick={showExerciseNameAndHideThisForm}>{t("Discard")}</Button>
-              </ButtonGroup>
-            </Form>
+                <ButtonGroup className="w-100">
+                  <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t("Save")}</Button>
+                  <Button color="danger" onClick={showExerciseNameAndHideThisForm}>{t("Discard")}</Button>
+                </ButtonGroup>
+              </Form>}
+            </>
           )}
         </Formik>
       </Col>
@@ -122,7 +152,7 @@ const ExerciseHeaderSuperSetForm: FunctionComponent<IExerciseHeaderSuperSetFormR
 interface IExerciseHeaderSuperSetFormProps {
   exerciseData: IExerciseModel
   superSetData?: IExercisesSuperSetsModel
-  initializeSuperSetData: (initialSuperSetData: IExercisesSuperSetsModel) => {}
+  setInitialSuperSetData: Dispatch<SetStateAction<IExercisesSuperSetsModel | null>>
 }
 
 interface IExerciseHeaderSuperSetFormRouter {

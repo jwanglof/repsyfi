@@ -79,12 +79,27 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
 
   useEffect(() => {
     if (initialSuperSetData !== null) {
-      const unsubFn = initializeSuperSetData(initialSuperSetData);
+      const cbErr = (e: IErrorObject) => {
+        setFetchDataError(retrieveErrorMessage(e));
+      };
+
+      const cb = (data: any) => {
+        if (data.exercises.includes(exerciseUid)) {
+          setSuperSetData(data);
+        } else {
+          setSuperSetData(undefined);
+        }
+      };
+
+      const unsubFn = getSuperSetOnSnapshot(initialSuperSetData.uid, cb, cbErr);
+
       return () => {
         unsubFn();
       };
+    } else {
+      setSuperSetData(undefined);
     }
-  }, [initialSuperSetData]);
+  }, [initialSuperSetData, exerciseUid]);
 
   useEffect(() => {
     if (currentExerciseData) {
@@ -111,24 +126,6 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
   if (!currentExerciseData) {
     return <LoadingAlert componentName="ExerciseTypeContainer"/>;
   }
-
-  const initializeSuperSetData = (superSetsModelData: IExercisesSuperSetsModel) => {
-    // Note that if this method is called from a component,
-    //  the Firestore subscription _will not_ be cancelled on unmount!
-    const cbErr = (e: IErrorObject) => {
-      setFetchDataError(retrieveErrorMessage(e));
-    };
-
-    const cb = (data: any) => {
-      if (data.exercises.includes(exerciseUid)) {
-        setSuperSetData(data);
-      } else {
-        setSuperSetData(undefined);
-      }
-    };
-
-    return getSuperSetOnSnapshot(superSetsModelData.uid, cb, cbErr);
-  };
 
   const toggleActionDropdown = () => {
     setExerciseDeleteStep2Shown(false);
@@ -174,7 +171,7 @@ const ExerciseTypeContainer: FunctionComponent<IExerciseTypeContainerRouter & IE
           <Col lg={4} xs={12} className="mb-2">
             <Card>
               <CardHeader className="text-center pt-0 pb-0">
-                <ExerciseHeaderContainer exerciseData={currentExerciseData} superSetData={superSetData} initializeSuperSetData={initializeSuperSetData}/>
+                <ExerciseHeaderContainer exerciseData={currentExerciseData} superSetData={superSetData} setInitialSuperSetData={setInitialSuperSetData}/>
                 {showDebugInformation && <h2>Ex UID: {currentExerciseData.uid}</h2>}
               </CardHeader>
 
