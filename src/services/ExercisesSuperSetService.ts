@@ -218,13 +218,13 @@ export const deleteExerciseFromSuperSet = (exerciseUid: string, dayUid: string, 
  */
 export const deleteExerciseFromSuperSetWithUid = (exerciseUid: string, dayUid: string, superSetData: IExercisesSuperSetsModel, batch: firebase.firestore.WriteBatch): firebase.firestore.WriteBatch => {
   const superSetUid = superSetData.uid;
-  deleteExerciseFromSuperSetDayCache(exerciseUid, superSetUid, dayUid);
-  if (!superSetData.exercises.length) {
-    // Delete the super set if it doesn't contain any exercises
+  if (superSetData.exercises.length === 1) {
+    // Delete the super set if the exercise was the only one in it
     deleteEntireExerciseFromDayCache(dayUid, superSetUid);
     batch.delete(getSuperSetDocument(superSetUid));
   } else {
     // Remove the exercise from the super set
+    deleteExerciseFromSuperSetDayCache(exerciseUid, superSetUid, dayUid);
     batch.update(getSuperSetDocument(superSetUid), {exercises: firebase.firestore.FieldValue.arrayRemove(exerciseUid)});
   }
   return batch;
