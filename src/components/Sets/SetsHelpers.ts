@@ -1,4 +1,4 @@
-import {isEmpty, isNumber, isUndefined} from 'lodash';
+import {isEmpty, isNumber, isUndefined, toNumber} from 'lodash';
 import * as i18next from 'i18next';
 import {ISetModel} from '../../models/ISetModel';
 import {Versions} from '../../models/IBaseModel';
@@ -16,11 +16,14 @@ const _isEmptyOrNegative = (value: any) => {
   return false;
 };
 
+const _isANumber = (value: any) => !toNumber(value);
+
 export const setsValidation = (values: ISetsFormValidate, t: i18next.TFunction): ISetsFormValidateErrors => {
   const errors: ISetsFormValidateErrors = {};
-  const appendedErrorText = t("must exist, and be 0 or higher");
-  if (_isEmptyOrNegative(values.amountInKg)) {
-    errors.amountInKg = `${t("Amount")} ${appendedErrorText}`;
+  const appendedErrorText = `${t("must exist")}, ${t("and")} ${t("be 0 or higher")}`;
+  const mustBeNumberErrorText = `${t("must exist")}, ${t("be a number")}, ${t("and")} ${t("be 0 or higher")}`;
+  if (_isANumber(values.amountInKg) || _isEmptyOrNegative(values.amountInKg)) {
+    errors.amountInKg = `${t("Amount")} ${mustBeNumberErrorText}`;
   }
   if (_isEmptyOrNegative(values.reps)) {
     errors.reps = `${t("Repetitions")} ${appendedErrorText}`;

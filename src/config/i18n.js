@@ -89,7 +89,10 @@ const resources = {
       "New super set": "Nytt superset",
       "Edit super set": "Redigera superset",
       "Remove from super set": "Ta bort från superset",
-      "must exist, and be 0 or higher": "måste finnas, och vara 0 eller högre",
+      "must exist": "måste finnas",
+      "be 0 or higher": "vara 0 eller högre",
+      "be a number": "vara en siffra",
+      "and": "och",
       "Amount": "Vikt",
       "can't be empty": "får inte vara tomt",
 
