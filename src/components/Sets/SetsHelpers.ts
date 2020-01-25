@@ -1,38 +1,35 @@
-import {isEmpty, isNumber, isUndefined, toNumber} from 'lodash';
 import * as i18next from 'i18next';
 import {ISetModel} from '../../models/ISetModel';
 import {Versions} from '../../models/IBaseModel';
 import {ISetsModel} from '../../models/ISetsModel';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 
-const _isEmptyOrNegative = (value: any) => {
-  if (!isUndefined(value)) {
-    if (isNumber(value) && value < 0) {
-      return true;
-    } else if (!isNumber(value) && isEmpty(value)) {
-      return true;
-    }
-  }
-  return false;
+const _isEmpty = (value: any) => {
+  return !value.toString() || value.toString() === "";
 };
 
-const _isANumber = (value: any) => !toNumber(value);
+const _isNegative = (value: any) => {
+  const floatValue = parseFloat(value);
+  return floatValue < 0.0;
+};
+
+const _isNumber = (value: any) => {
+  const floatValue = parseFloat(value);
+  return Object.is(floatValue, NaN);
+};
 
 export const setsValidation = (values: ISetsFormValidate, t: i18next.TFunction): ISetsFormValidateErrors => {
   const errors: ISetsFormValidateErrors = {};
-  const appendedErrorText = `${t("must exist")}, ${t("and")} ${t("be 0 or higher")}`;
   const mustBeNumberErrorText = `${t("must exist")}, ${t("be a number")}, ${t("and")} ${t("be 0 or higher")}`;
-  if (_isANumber(values.amountInKg) || _isEmptyOrNegative(values.amountInKg)) {
+  const {amountInKg, reps, seconds} = values;
+  if (_isNumber(amountInKg) || _isEmpty(amountInKg) || _isNegative(amountInKg)) {
     errors.amountInKg = `${t("Amount")} ${mustBeNumberErrorText}`;
   }
-  if (_isEmptyOrNegative(values.reps)) {
-    errors.reps = `${t("Repetitions")} ${appendedErrorText}`;
+  if (reps !== undefined && (_isNumber(reps) || _isEmpty(reps) || _isNegative(reps))) {
+    errors.reps = `${t("Repetitions")} ${mustBeNumberErrorText}`;
   }
-  if (_isEmptyOrNegative(values.seconds)) {
-    errors.seconds = `${t("Seconds")} ${appendedErrorText}`;
-  }
-  if (_isEmptyOrNegative(values.index)) {
-    errors.index = `${t("Index")} ${appendedErrorText}`;
+  if (seconds !== undefined && (_isNumber(seconds) || _isEmpty(seconds) || _isNegative(seconds))) {
+    errors.seconds = `${t("Seconds")} ${mustBeNumberErrorText}`;
   }
   return errors;
 };
