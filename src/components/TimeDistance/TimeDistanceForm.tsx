@@ -37,6 +37,9 @@ const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistan
     }
   };
 
+  const defaultInputProps = {min: 0};
+  const speedInputProps = {step: "0.1", ...defaultInputProps};
+  const inclineInputProps = {step: "0.5", ...defaultInputProps};
   return (
     <Formik
       initialValues={timeDistanceData}
@@ -47,12 +50,12 @@ const TimeDistanceForm: FunctionComponent<ITimeDistanceFormProps> = ({timeDistan
           {!isSubmitting && <Form>
             <DurationFormGroup name="totalTimeSeconds" labelText={t("Total exercise time (HH MM SS)")} autoFocus/>
             <DurationFormGroup name="totalWarmupSeconds" labelText={t("Total warm-up time (HH MM SS)")}/>
-            <FieldFormGroup type="number" name="totalDistanceMeter" labelText={t("Total distance (meters)")}/>
-            <FieldFormGroup type="number" name="totalKcal" labelText={t("Total kcal")}/>
-            <FieldFormGroup type="number" name="speedMin" labelText={t("Speed min")} inputProps={{step: "0.1"}}/>
-            <FieldFormGroup type="number" name="speedMax" labelText={t("Speed max")} inputProps={{step: "0.1"}}/>
-            <FieldFormGroup type="number" name="inclineMin" labelText={t("Incline min")} inputProps={{step: "0.5"}}/>
-            <FieldFormGroup type="number" name="inclineMax" labelText={t("Incline max")} inputProps={{step: "0.5"}}/>
+            <FieldFormGroup type="number" name="totalDistanceMeter" labelText={t("Total distance (meters)")} inputProps={defaultInputProps}/>
+            <FieldFormGroup type="number" name="totalKcal" labelText={t("Total kcal")} inputProps={defaultInputProps}/>
+            <FieldFormGroup type="number" name="speedMin" labelText={t("Speed min")} inputProps={speedInputProps}/>
+            <FieldFormGroup type="number" name="speedMax" labelText={t("Speed max")} inputProps={speedInputProps}/>
+            <FieldFormGroup type="number" name="inclineMin" labelText={t("Incline min")} inputProps={inclineInputProps}/>
+            <FieldFormGroup type="number" name="inclineMax" labelText={t("Incline max")} inputProps={inclineInputProps}/>
             <ButtonGroup className="w-100 m-0">
               <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t("Save")}</Button>
               <Button color="danger" onClick={() => setEditVisible(false)}>{t("Discard")}</Button>

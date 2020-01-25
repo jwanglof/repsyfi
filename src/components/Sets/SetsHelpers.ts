@@ -4,13 +4,13 @@ import {Versions} from '../../models/IBaseModel';
 import {ISetsModel} from '../../models/ISetsModel';
 import {ExerciseTypesEnum} from '../../enums/ExerciseTypesEnum';
 
-const _isEmpty = (value: any) => {
-  return !value.toString() || value.toString() === "";
-};
+const _isEmpty = (value: any) => !value.toString() || value.toString() === '';
 
-const _isNegative = (value: any) => {
+const _isNegative = (value: any) => _isLowerThan(value, 0.0);
+
+const _isLowerThan = (value: any, lowerThan: number) => {
   const floatValue = parseFloat(value);
-  return floatValue < 0.0;
+  return floatValue < lowerThan;
 };
 
 const _isNumber = (value: any) => {
@@ -20,16 +20,16 @@ const _isNumber = (value: any) => {
 
 export const setsValidation = (values: ISetsFormValidate, t: i18next.TFunction): ISetsFormValidateErrors => {
   const errors: ISetsFormValidateErrors = {};
-  const mustBeNumberErrorText = `${t("must exist")}, ${t("be a number")}, ${t("and")} ${t("be 0 or higher")}`;
+  const firstErrorText = `${t("must exist")}, ${t("be a number")}, ${t("and")}`;
   const {amountInKg, reps, seconds} = values;
   if (_isNumber(amountInKg) || _isEmpty(amountInKg) || _isNegative(amountInKg)) {
-    errors.amountInKg = `${t("Amount")} ${mustBeNumberErrorText}`;
+    errors.amountInKg = `${t("Amount")} ${firstErrorText} ${t("be 0 or higher")}`;
   }
-  if (reps !== undefined && (_isNumber(reps) || _isEmpty(reps) || _isNegative(reps))) {
-    errors.reps = `${t("Repetitions")} ${mustBeNumberErrorText}`;
+  if (reps !== undefined && (_isNumber(reps) || _isEmpty(reps) || _isLowerThan(reps, 1))) {
+    errors.reps = `${t("Repetitions")} ${firstErrorText} ${t("be 1 or higher")}`;
   }
-  if (seconds !== undefined && (_isNumber(seconds) || _isEmpty(seconds) || _isNegative(seconds))) {
-    errors.seconds = `${t("Seconds")} ${mustBeNumberErrorText}`;
+  if (seconds !== undefined && (_isNumber(seconds) || _isEmpty(seconds) || _isLowerThan(seconds, 1))) {
+    errors.seconds = `${t("Seconds")} ${firstErrorText} ${t("be 1 or higher")}`;
   }
   return errors;
 };
