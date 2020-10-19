@@ -33,7 +33,8 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
 
   const setTimerRunning = useGlobalState('timerRunning')[1];
   const showDebugInformation = useGlobalState('debugInformationShown')[0];
-
+  const setNewDayUid = useGlobalState('newDayUid')[1];
+  
   // Effect to subscribe on changes on this specific day
   useEffect(() => {
     // TODO Need to verify that a user can't send any UID in here, somehow... That should be specified in the rules!
@@ -91,6 +92,7 @@ const DayViewDetailed: FunctionComponent<IDayViewDetailedRouter & IDayViewDetail
     try {
       await endDayNow(dayUid);
       setTimerRunning(false);
+      setNewDayUid(null);
 
       // Show questionnaire when day ends
       setShowQuestionnaire(true);

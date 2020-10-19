@@ -11,6 +11,8 @@ import Dashboard from './components/Dashboard/Dashboard';
 import {RouteNames} from './routes';
 import {Router, State} from 'router5';
 import Faq from './components/Faq/Faq';
+import {Col, Navbar, Row} from 'reactstrap';
+import {useGlobalState} from './state';
 
 const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
   const topRouteName: string = route.name.split('.')[0];
@@ -21,6 +23,9 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
   const [signInStatusLoading, setSignInStatusLoading] = useState<boolean>(true);
   const [userSignedIn, setUserSignedIn] = useState<boolean>(false);
   const [userDetails, setUserDetails] = useState<firebase.User | undefined>(undefined);
+  const [showTopNavBar, setShowTopNavBar] = useState<boolean>(false);
+
+  const newDayUid = useGlobalState('newDayUid')[0];
 
   useEffect(() => {
     const initFirebase = async () => {
@@ -57,6 +62,21 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
     }
   }, [firebaseIsInitialized]);
 
+  useEffect(() => {
+    if (newDayUid) {
+      if (topRouteName === RouteNames.SPECIFIC_DAY) {
+        const activeUid = params.uid;
+        if (activeUid !== newDayUid) {
+          setShowTopNavBar(true);
+        } else {
+          setShowTopNavBar(false);
+        }
+      } else {
+        setShowTopNavBar(true);
+      }
+    }
+  }, [topRouteName, newDayUid, params]);
+
   if (!firebaseIsInitialized) {
     return <div>Initializing Firebase!</div>;
   }
@@ -70,6 +90,10 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
       return component;
     }
     router.navigate(RouteNames.ROOT, {}, {reload: true})
+  };
+
+  const goToActiveDay = () => {
+    router.navigate(RouteNames.SPECIFIC_DAY, {uid: newDayUid}, {reload: true});
   };
 
   switch (topRouteName) {
@@ -97,6 +121,9 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
 
   return (
     <>
+      {showTopNavBar ? <Navbar color="light" fixed="top" light>
+        <Row className="text-center"><Col onClick={goToActiveDay}>Gå till startad dag</Col></Row>
+      </Navbar> : null}
       <div className="App">
         {shownComponent}
       </div>

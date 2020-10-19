@@ -35,6 +35,7 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | undefined>(undefined);
   const [locations, setLocations] = useState<Array<string>>([]);
   const setTimerRunning = useGlobalState('timerRunning')[1];
+  const setNewDayUid = useGlobalState('newDayUid')[1];
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -70,6 +71,7 @@ const AddDay: FunctionComponent<IAddDayProps & IAddDayRouter> = ({router}) => {
       };
       const newUid = await addDay(data, ownerUid);
       setTimerRunning(true);
+      setNewDayUid(newUid);
 
       // Add the location to the cache
       addLocationToCache(values.location);
