@@ -19,21 +19,21 @@ const SetForm: FunctionComponent<ISetFormProps> = ({hideFormCb, exerciseType, cu
     }}>
     {({errors, isSubmitting}) => (
       <>
-        {isSubmitting && <Row><Col className="text-center"><FontAwesomeIcon icon="spinner" spin/></Col></Row>}
+        {isSubmitting && <Row><Col className="text-center py-2"><FontAwesomeIcon icon="spinner" spin/></Col></Row>}
         {!isSubmitting && <Form>
-          <div className="row pt-1 pb-1">
-            <Col className="pt-1" xs={2}>{currentData.index}</Col>
-            <Col xs={5}>
+          <Row>
+            <Col xs={2} className="py-2"><strong>{currentData.index}</strong></Col>
+            <Col xs={5} className="px-1">
               <FormikField name="amountInKg" labelText={t('Amount in KG')} type="number" labelHidden
-                           inputProps={{min: 0, autoFocus: true, step: '0.1'}}/>
+                           inputProps={{min: 0, autoFocus: true, step: '1'}}/>
             </Col>
             {exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS &&
-            <Col xs={5}><FormikField name="reps" labelText={t('Repetitions')} type="number" labelHidden
-                                     inputProps={{min: 0}}/></Col>}
+            <Col xs={5} className="px-1"><FormikField name="reps" labelText={t('Repetitions')} type="number" labelHidden
+                                     inputProps={{min: 0}} addedClassNames="p-2"/></Col>}
             {exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS &&
-            <Col xs={5}><FormikField name="seconds" labelText={t('Seconds')} type="number" labelHidden
-                                     inputProps={{min: 0}}/></Col>}
-          </div>
+            <Col xs={5} className="px-1"><FormikField name="seconds" labelText={t('Seconds')} type="number" labelHidden
+                                     inputProps={{min: 0}} addedClassNames="p-2"/></Col>}
+          </Row>
           <Row>
             <ButtonGroup className="w-100" vertical>
               <Button type="submit" color="primary" disabled={isSubmitting || !errors}>{t('Save set')}</Button>

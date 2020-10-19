@@ -10,7 +10,6 @@ const SetView: FunctionComponent<ISetViewProps> = ({setEditVisible, exerciseType
   const showDebugInformation = useGlobalState('debugInformationShown')[0];
   const addSetViewVisible = useContext(ExerciseContainerAddSetViewVisibleCtx)[0];
 
-
   const onClick = () => {
     if (!addSetViewVisible) {
       setEditVisible(true);
@@ -26,10 +25,10 @@ const SetView: FunctionComponent<ISetViewProps> = ({setEditVisible, exerciseType
     <>
       {showDebugInformation && <Row><Col>Set UID: {currentData.uid}</Col></Row>}
       <Row className={classNames} onClick={onClick}>
-        <Col xs={2} className=""><strong>{currentData.index}</strong></Col>
-        <Col xs={5} className="">{currentData.amountInKg}</Col>
-        {exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS && <Col xs={5} className="">{currentData.reps}</Col>}
-        {exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS && <Col xs={5} className="">{currentData.seconds}</Col>}
+        <Col xs={2} className="py-2"><strong>{currentData.index}</strong></Col>
+        <Col xs={5} className="py-2">{currentData.amountInKg}</Col>
+        {exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS && <Col xs={5} className="py-2">{currentData.reps}</Col>}
+        {exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS && <Col xs={5} className="py-2">{currentData.seconds}</Col>}
       </Row>
     </>
   );

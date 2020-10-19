@@ -48,7 +48,7 @@ const SetViewContainer: FunctionComponent<ISetViewContainerProps> = ({setUid, ex
   }
 
   if (!currentData) {
-    return <Row><Col><LoadingAlert componentName="SetViewContainer"/></Col></Row>;
+    return <Row><Col className="py-2"><LoadingAlert componentName="SetViewContainer"/></Col></Row>;
   }
 
   return (
