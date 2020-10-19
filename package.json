@@ -23,7 +23,7 @@
     "react-dom": "16.14.0",
     "react-firebaseui": "4.0.0",
     "react-formik-ui": "4.0.5",
-    "react-hooks-global-state": "0.16.0",
+    "react-hooks-global-state": "1.0.1",
     "react-i18next": "11.7.3",
     "react-router5": "8.0.1",
     "react-scripts": "3.4.3",

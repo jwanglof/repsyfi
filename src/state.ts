@@ -9,4 +9,4 @@ const initialState: IGlobalState = {
   debugInformationShown: false
 };
 
-export const {GlobalStateProvider, useGlobalState} = createGlobalState(initialState);
+export const {useGlobalState} = createGlobalState(initialState);

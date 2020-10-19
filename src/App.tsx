@@ -10,7 +10,6 @@ import EditDay from './components/Day/EditDay';
 import Dashboard from './components/Dashboard/Dashboard';
 import {RouteNames} from './routes';
 import {Router, State} from 'router5';
-import {GlobalStateProvider} from './state';
 import Faq from './components/Faq/Faq';
 
 const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
@@ -96,12 +95,14 @@ const App: FunctionComponent<IAppProps & IAppRouter> = ({ route, router }) => {
       shownComponent = <StartPage userSignedIn={userSignedIn || false} userDetails={userDetails}/>;
   }
 
-  return (<GlobalStateProvider>
-    <div className="App">
-      {shownComponent}
-    </div>
-    {userSignedIn && <Footer/>}
-  </GlobalStateProvider>);
+  return (
+    <>
+      <div className="App">
+        {shownComponent}
+      </div>
+      {userSignedIn && <Footer/>}
+    </>
+  );
 };
 
 interface IAppProps {}
@@ -112,5 +113,3 @@ interface IAppRouter {
 }
 
 export default routeNode<any>('app')(withRouter(App));
-
-// export default withRouter(App);
