@@ -25,14 +25,14 @@ const SetForm: FunctionComponent<ISetFormProps> = ({hideFormCb, exerciseType, cu
             <Col xs={2} className="py-2"><strong>{currentData.index}</strong></Col>
             <Col xs={5} className="px-1">
               <FormikField name="amountInKg" labelText={t('Amount in KG')} type="number" labelHidden
-                           inputProps={{min: 0, autoFocus: true, step: '1'}}/>
+                           inputProps={{min: 0, autoFocus: true, step: '0.25'}}/>
             </Col>
             {exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_REPS &&
             <Col xs={5} className="px-1"><FormikField name="reps" labelText={t('Repetitions')} type="number" labelHidden
-                                     inputProps={{min: 0}} addedClassNames="p-2"/></Col>}
+                                     inputProps={{min: 0, step: '1'}} addedClassNames="p-2"/></Col>}
             {exerciseType === ExerciseTypesEnum.EXERCISE_TYPE_SETS_SECONDS &&
             <Col xs={5} className="px-1"><FormikField name="seconds" labelText={t('Seconds')} type="number" labelHidden
-                                     inputProps={{min: 0}} addedClassNames="p-2"/></Col>}
+                                     inputProps={{min: 0, step: '1'}} addedClassNames="p-2"/></Col>}
           </Row>
           <Row>
             <ButtonGroup className="w-100" vertical>
